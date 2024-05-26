@@ -336,7 +336,10 @@ PrefabInstance:
       addedObject: {fileID: -5034421367472650527}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4246e0462914bad4d8cd32e5ffd50c1c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4947174038401592107}
+      addedObject: {fileID: 2730312005925993399}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4246e0462914bad4d8cd32e5ffd50c1c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7759996482826016945}
   m_SourcePrefab: {fileID: 100100000, guid: 4246e0462914bad4d8cd32e5ffd50c1c, type: 3}
 --- !u!4 &86228248158341084 stripped
 Transform:
@@ -361,10 +364,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 0f9b3fc01c37ac242b6190c315730826, type: 2}
-  speed: 50
+  speed: 5
   isReady: 0
   shotStartTransform: {fileID: 86228248158341084}
   dashSkill: {fileID: -5034421367472650527}
+  controller: {fileID: 7759996482826016945}
 --- !u!114 &-5034421367472650527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -379,8 +383,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: b5d2a98723e397e4cb3d1e319cbf785f, type: 2}
   speed: 5
---- !u!65 &4947174038401592107
+--- !u!65 &2730312005925993399
 BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 641722898158217954}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.7501873, y: 1.7963933, z: 0.7289486}
+  m_Center: {x: -0.021120071, y: 0.90872747, z: 0.047580764}
+--- !u!143 &7759996482826016945
+CharacterController:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -398,5 +423,10 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.5406921, y: 1.8200972, z: 0.3431543}
-  m_Center: {x: -0.001437366, y: 0.89695394, z: 0.01834526}
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}

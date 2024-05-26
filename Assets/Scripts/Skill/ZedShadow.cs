@@ -10,6 +10,7 @@ public class ZedShadow : ShotSkill
     public Transform shotStartTransform;
     private int objectID;
     public DashSkill dashSkill;
+    public CharacterController controller;
 
     public override void Use(GameObject charactor)
     {
@@ -22,8 +23,10 @@ public class ZedShadow : ShotSkill
     private IEnumerator CoSpawnShadow(Zed zed)
     {
         Vector3 point = Raycast.GetMousePointVec();
-        point.y = transform.position.y;
+        //point.y = transform.position.y;
         transform.forward = point;
+
+        transform.forward = new Vector3(point.x, transform.position.y, point.z);
 
         yield return new WaitForSeconds(data.useDelay);
 
@@ -82,8 +85,6 @@ public class ZedShadow : ShotSkill
         point.y = transform.position.y;
         return point;
     }
-
-    public override void OnCollisionEnter(Collision collision) { }
 
     public void SetID(int id) { objectID = id; }
     public int GetID() { return objectID; }

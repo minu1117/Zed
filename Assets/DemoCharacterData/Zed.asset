@@ -17,3 +17,5 @@ MonoBehaviour:
   level: 1
   charactorName: Zed
   moveSpeed: 10
+  jumpSpeed: 20
+  gravity: 70

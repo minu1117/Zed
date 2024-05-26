@@ -369,7 +369,7 @@
 "Assets/Scripts/IDamageable.cs"
 "Assets/Scripts/Raycast.cs"
 "Assets/Scripts/Skill/BuffSkill.cs"
-"Assets/Scripts/Skill/CharactorData.cs"
+"Assets/Scripts/Skill/CharacterData.cs"
 "Assets/Scripts/Skill/DashSkill.cs"
 "Assets/Scripts/Skill/MeleeSkill.cs"
 "Assets/Scripts/Skill/RotationShotSkill.cs"

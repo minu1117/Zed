@@ -73,6 +73,7 @@
     <Compile Include="Assets\Scripts\Raycast.cs" />
     <Compile Include="Assets\unity-chan!\Unity-chan! Model\Scripts\SpringBone.cs" />
     <Compile Include="Assets\unity-chan!\Unity-chan! Model\Scripts\SpringCollider.cs" />
+    <Compile Include="Assets\Scripts\Skill\CharacterData.cs" />
     <Compile Include="Assets\Scripts\Skill\ZedShadow.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillType.cs" />
     <Compile Include="Assets\Scripts\DemoChampion.cs" />
@@ -83,7 +84,6 @@
     <Compile Include="Assets\unity-chan!\Unity-chan! Model\Scripts\IdleChanger.cs" />
     <Compile Include="Assets\Scripts\Skill\RotationShotSkill.cs" />
     <Compile Include="Assets\Scripts\Camera\TargetFallow.cs" />
-    <Compile Include="Assets\Scripts\Skill\CharactorData.cs" />
     <Compile Include="Assets\unity-chan!\Unity-chan! Model\Scripts\UnityChanControlScriptWithRgidBody.cs" />
     <Compile Include="Assets\Scripts\Skill\Skill.cs" />
     <Compile Include="Assets\Scripts\Skill\MeleeSkill.cs" />

@@ -13,11 +13,11 @@ public class ShotSkill : Skill
 
     private IEnumerator CoShot(GameObject charactor, Vector3 startVec)
     {
-        Zed zed;
-        if (charactor.TryGetComponent(out zed))
-        {
-            zed.isMoved = false;
-        }
+        //Zed zed;
+        //if (charactor.TryGetComponent(out zed))
+        //{
+        //    zed.isMoved = false;
+        //}
 
         float duration = data.duration;
 
@@ -25,10 +25,10 @@ public class ShotSkill : Skill
         Vector3 totalMovement = startVec.normalized * duration * speed;
 
         yield return new WaitForSeconds(data.useDelay);
-        if (zed != null)
-        {
-            zed.isMoved = true;
-        }
+        //if (zed != null)
+        //{
+        //    zed.isMoved = true;
+        //}
 
         transform.DOMove(transform.position + totalMovement, duration)
                  .SetEase(Ease.Linear)

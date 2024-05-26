@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.Pool;
 
 public class Zed : DemoChampion
 {
     public bool isMoved = true;
     public Dictionary<int, ZedShadow> shadows = new();
-    public NavMeshAgent agent;
+    public CharacterController controller;
+    private Vector3 dir;
 
     public void Update()
     {
@@ -50,21 +50,33 @@ public class Zed : DemoChampion
     {
         if (isMoved)
         {
-            float xMove = Input.GetAxis("Horizontal");
-            float zMove = Input.GetAxis("Vertical");
+            if (controller.isGrounded)
+            {
+                float h = Input.GetAxis("Horizontal");
+                float v = Input.GetAxis("Vertical");
+                dir = new Vector3(h * data.moveSpeed, 0f, v * data.moveSpeed);
 
-            Vector3 getVel = new Vector3(xMove, 0, zMove) * data.moveSpeed;
-            rigidBody.velocity = getVel;
+                if (dir != Vector3.zero)
+                    transform.rotation = Quaternion.Euler(0, Mathf.Atan2(h, v) * Mathf.Rad2Deg, 0);
 
-            if (getVel != Vector3.zero)
-                transform.forward = getVel;
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    dir.y = data.jumpSpeed;
+                }
+            }
+            else
+            {
+                dir.y -= data.gravity * Time.deltaTime;
+            }
+
+            controller.Move(dir * Time.deltaTime);
         }
     }
 
     public void StopMove()
     {
         isMoved = false;
-        rigidBody.velocity = Vector3.zero;
+        dir = Vector3.zero;
     }
 
     public void AddShadow(ZedShadow shadow)

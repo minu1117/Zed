@@ -2,10 +2,9 @@ using UnityEngine;
 
 public class DemoChampion : MonoBehaviour
 {
-    public CharactorData data;
+    public CharacterData data;
     public SkillSlot slot;
     public Transform shotStartTransform;
-    public Rigidbody rigidBody;
 
     public void Awake()
     {

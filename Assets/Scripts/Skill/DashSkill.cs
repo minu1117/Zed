@@ -1,9 +1,7 @@
 using DG.Tweening;
 using System;
 using System.Collections;
-using System.Drawing;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 public class DashSkill : Skill
 {
@@ -81,16 +79,5 @@ public class DashSkill : Skill
         };
 
         return action;
-    }
-
-    public override void OnCollisionEnter(Collision collision)
-    {
-        if (gameObject.TryGetComponent(out ZedShadow shadow))
-        {
-            if (!shadow.isReady)
-                return;
-        }
-
-        base.OnCollisionEnter(collision);
     }
 }
