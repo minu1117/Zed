@@ -16,8 +16,11 @@ MonoBehaviour:
   skillName: QSkill
   skillDescription: 1
   skillLevel: 1
+  levelRestriction: 0
   damage: 10
   coolDown: 0
   duration: 1
-  useDelay: 0
+  useDelay: 1
+  speed: 20
+  immobilityTime: 0
   isShadow: 0

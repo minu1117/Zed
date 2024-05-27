@@ -1,83 +1,40 @@
-using DG.Tweening;
-using System;
 using System.Collections;
 using UnityEngine;
 
 public class DashSkill : Skill
 {
-    public float speed;
-
-    public override void Use(GameObject charactor)
+    public override void Use(GameObject character)
     {
-        var hit = Raycast.GetHit(Input.mousePosition, "Enemy");
-        if (hit.collider != null)
-        {
-            StartCoroutine(CoTargetDash(charactor, hit));
-        }
-        else
-        {
-            StartCoroutine(CoDash(charactor, Raycast.GetMousePointVec()));
-        }
+        if (!isComplated || isCoolTime)
+            return;
+
+        base.Use(character);
+        StartCoroutine(CoDash(character, Raycast.GetMousePointVec()));
     }
 
-    private IEnumerator CoTargetDash(GameObject charactor, RaycastHit hit)
+    private IEnumerator CoDash(GameObject character, Vector3 point)
     {
-        Action action = null;
-        if (charactor.TryGetComponent(out Zed zed))
-        {
-            action = GetZedMoveAction(zed);
-        }
+        var rb = character.GetComponent<Rigidbody>();
+        Zed zed = GetStopZed(character);
 
-        float duration = data.duration;
-        Vector3 point = hit.point;
-        point.y = charactor.transform.position.y;
-        charactor.transform.LookAt(point);
+        rb.velocity = Vector3.zero;
+        point.y = character.transform.position.y;
 
-        // 나아갈 거리 미리 계산
-        Vector3 totalMovement = charactor.transform.forward * duration * speed;
-        totalMovement.x += totalMovement.x;
-        totalMovement.z += totalMovement.z;
+        Vector3 LookAtDirection = (point == Vector3.zero) ? transform.forward : point;
+        Vector3 dashDirection = (point - transform.position).normalized;
+        character.transform.LookAt(LookAtDirection);
 
-        yield return new WaitForSeconds(data.useDelay);
+        yield return waitUseDelay;
 
-        transform.DOMove(charactor.transform.position + totalMovement, duration)
-                 .SetEase(Ease.InOutBack)
-                 .OnComplete(() => action.Invoke());
-    }
+        rb.velocity = dashDirection * data.speed;
 
-    private IEnumerator CoDash(GameObject charactor, Vector3 point)
-    {
-        Action action = null;
-        if (charactor.TryGetComponent(out Zed zed))
-        {
-            action = GetZedMoveAction(zed);
-        }
+        yield return waitduration;
+        
+        rb.velocity = Vector3.zero;
 
-        float duration = data.duration;
-        point.y = charactor.transform.position.y;
-        charactor.transform.LookAt(point);
+        yield return waitimmobilityTime;
 
-        // 나아갈 거리 미리 계산
-        Vector3 totalMovement = charactor.transform.forward * duration * speed;
-
-        yield return new WaitForSeconds(data.useDelay);
-
-        transform.DOMove(charactor.transform.position + totalMovement, duration)
-                 .SetEase(Ease.InOutBack)
-                 .OnComplete(() => action.Invoke());
-    }
-
-    private Action GetZedMoveAction(Zed zed)
-    {
-        zed.StopMove();
-        Action action = () =>
-        {
-            if (zed != null)
-            {
-                zed.isMoved = true;
-            }
-        };
-
-        return action;
+        OnComplate();
+        OnMoveZed(zed);
     }
 }

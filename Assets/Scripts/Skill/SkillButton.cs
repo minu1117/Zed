@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Drawing;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -21,33 +23,55 @@ public class SkillButton : MonoBehaviour
                     );
     }
 
-    public Skill OnDash(GameObject charactor)
+    public Skill OnDash(GameObject character)
     {
         DashSkill dash = null;
-        if (charactor.TryGetComponent(out DashSkill dashSkill))
+        if (character.TryGetComponent(out DashSkill dashSkill))
         {
             dash = dashSkill;
-            dash.Use(charactor);
+            dash.Use(character);
         }
 
         return dash;
     }
 
-    public Skill StartSkill(GameObject charactor, Vector3 startPosition)
+    public Skill StartSkill(GameObject character)
     {
         Vector3 point = Raycast.GetMousePointVec();
 
-        point.y = charactor.transform.position.y;
-        charactor.transform.LookAt(point);
+        point.y = character.transform.position.y;
 
         var useSkill = skillPool.Get();
         useSkill.SetPool(skillPool);
-        useSkill.transform.position = startPosition;
-        useSkill.transform.rotation = charactor.transform.rotation;
+        //useSkill.transform.position = startPosition;
+        //useSkill.transform.rotation = character.transform.rotation;
 
-        if (skill.data.isShadow && charactor.TryGetComponent(out Zed zed) && useSkill.TryGetComponent(out ZedShadow shadow))
+        StartCoroutine(WaitUseSkill(useSkill, character, point));
+
+        //useSkill.Use(character);
+        return useSkill;
+    }
+
+    private IEnumerator WaitUseSkill(Skill useSkill, GameObject character, Vector3 lookAtPoint)
+    {
+        useSkill.gameObject.SetActive(false);
+
+        yield return new WaitForSeconds(useSkill.data.useDelay);
+
+        Vector3 startPosition = character.gameObject.transform.position;
+        if (character.TryGetComponent(out DemoChampion champion))
         {
-            useSkill.transform.position = charactor.transform.position;
+            startPosition = champion.shotStartTransform.position;
+        }
+
+        character.transform.LookAt(lookAtPoint);
+        useSkill.gameObject.SetActive(true);
+        useSkill.transform.position = startPosition;
+        useSkill.transform.rotation = character.transform.rotation;
+
+        if (skill.data.isShadow && character.TryGetComponent(out Zed zed) && useSkill.TryGetComponent(out ZedShadow shadow))
+        {
+            useSkill.transform.position = character.transform.position;
 
             if (shadow.GetID() <= 0)
             {
@@ -58,8 +82,7 @@ public class SkillButton : MonoBehaviour
             zed.AddShadow(shadow);
         }
 
-        useSkill.Use(charactor);
-        return useSkill;
+        useSkill.Use(character);
     }
 
     private Skill CreateSkill()

@@ -1,13 +1,38 @@
+using Cinemachine;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Pool;
+using UnityEngine.XR;
 
 public class Zed : DemoChampion
 {
     public bool isMoved = true;
     public Dictionary<int, ZedShadow> shadows = new();
-    public CharacterController controller;
     private Vector3 dir;
+    private Vector3 normalizedCameraForward;
+    private Vector3 normalizedCameraRight;
+    public CinemachineVirtualCamera virtualCamera;
+    private Rigidbody rb;
+    private NavMeshAgent agent;
+
+    public override void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        agent = GetComponent<NavMeshAgent>();
+
+        base.Awake();
+        normalizedCameraForward = virtualCamera.transform.forward;
+        normalizedCameraRight = virtualCamera.transform.right;
+
+        normalizedCameraForward.y = 0;
+        normalizedCameraRight.y = 0;
+        normalizedCameraForward.Normalize();
+        normalizedCameraRight.Normalize();
+
+    }
+
+    public NavMeshAgent GetAgent() { return agent; }
 
     public void Update()
     {
@@ -42,7 +67,10 @@ public class Zed : DemoChampion
             Skill useSkill = UseSkill("R");
             CopySkill(useSkill, slot.GetSlotDict()["R"].GetPool());
         }
+    }
 
+    public void FixedUpdate()
+    {
         Move();
     }
 
@@ -50,26 +78,17 @@ public class Zed : DemoChampion
     {
         if (isMoved)
         {
-            if (controller.isGrounded)
-            {
-                float h = Input.GetAxis("Horizontal");
-                float v = Input.GetAxis("Vertical");
-                dir = new Vector3(h * data.moveSpeed, 0f, v * data.moveSpeed);
+            float h = Input.GetAxis("Horizontal");
+            float v = Input.GetAxis("Vertical");
 
-                if (dir != Vector3.zero)
-                    transform.rotation = Quaternion.Euler(0, Mathf.Atan2(h, v) * Mathf.Rad2Deg, 0);
-
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    dir.y = data.jumpSpeed;
-                }
-            }
-            else
+            Vector3 moveDirection = (v * normalizedCameraForward + h * normalizedCameraRight).normalized;
+            dir = moveDirection * data.moveSpeed;
+            if (moveDirection != Vector3.zero)
             {
-                dir.y -= data.gravity * Time.deltaTime;
+                rb.transform.rotation = Quaternion.LookRotation(moveDirection);
             }
 
-            controller.Move(dir * Time.deltaTime);
+            rb.velocity = dir;
         }
     }
 
@@ -77,6 +96,7 @@ public class Zed : DemoChampion
     {
         isMoved = false;
         dir = Vector3.zero;
+        rb.velocity = dir;
     }
 
     public void AddShadow(ZedShadow shadow)

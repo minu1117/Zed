@@ -4,34 +4,23 @@ using UnityEngine;
 
 public class ShotSkill : Skill
 {
-    public float speed;
-
-    public override void Use(GameObject charactor)
+    public override void Use(GameObject character)
     {
-        StartCoroutine(CoShot(charactor, charactor.transform.forward));
+        if (!isComplated || isCoolTime)
+            return;
+
+        base.Use(character);
+        StartCoroutine(CoShot(character.transform.forward));
     }
 
-    private IEnumerator CoShot(GameObject charactor, Vector3 startVec)
+    private IEnumerator CoShot(Vector3 startVec)
     {
-        //Zed zed;
-        //if (charactor.TryGetComponent(out zed))
-        //{
-        //    zed.isMoved = false;
-        //}
-
-        float duration = data.duration;
-
         // 나아갈 거리 미리 계산
-        Vector3 totalMovement = startVec.normalized * duration * speed;
-
-        yield return new WaitForSeconds(data.useDelay);
-        //if (zed != null)
-        //{
-        //    zed.isMoved = true;
-        //}
-
-        transform.DOMove(transform.position + totalMovement, duration)
+        Vector3 totalMovement = startVec.normalized * data.duration * data.speed;
+        transform.DOMove(transform.position + totalMovement, data.duration)
                  .SetEase(Ease.Linear)
-                 .OnComplete(() => pool.Release(this));
+                 .OnComplete(() => ReleaseFunc());
+
+        yield return waitimmobilityTime;
     }
 }

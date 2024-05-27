@@ -3,14 +3,18 @@ using UnityEngine;
 
 public class MeleeSkill : Skill
 {
-    public override void Use(GameObject charactor)
+    public override void Use(GameObject character)
     {
+        if (!isComplated || isCoolTime)
+            return;
+
+        base.Use(character);
         StartCoroutine(CoMelee());
     }
 
     private IEnumerator CoMelee()
     {
-        yield return new WaitForSeconds(data.useDelay + data.duration);
-        pool.Release(this);
+        yield return waitduration;
+        ReleaseFunc();
     }
 }

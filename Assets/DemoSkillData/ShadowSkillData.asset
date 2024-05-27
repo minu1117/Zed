@@ -16,8 +16,11 @@ MonoBehaviour:
   skillName: Shadow
   skillDescription: 1
   skillLevel: 1
+  levelRestriction: 0
   damage: 0
   coolDown: 0
-  duration: 10000
+  duration: 5
   useDelay: 0
+  speed: 0
+  immobilityTime: 0
   isShadow: 1

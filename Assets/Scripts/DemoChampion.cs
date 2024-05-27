@@ -6,7 +6,7 @@ public class DemoChampion : MonoBehaviour
     public SkillSlot slot;
     public Transform shotStartTransform;
 
-    public void Awake()
+    public virtual void Awake()
     {
         data.currentHp = data.maxhp;
     }
@@ -20,9 +20,9 @@ public class DemoChampion : MonoBehaviour
         if (!skillDict.ContainsKey(key))
             return null;
 
-        Skill skill;
+        Skill skill = null;
         if (skillDict[key].skill.data.type != SkillType.Dash)
-            skill = skillDict[key].StartSkill(gameObject, shotStartTransform.position);
+            skill = skillDict[key].StartSkill(gameObject);
         else
             skill = skillDict[key].OnDash(gameObject);
 

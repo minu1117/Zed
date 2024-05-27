@@ -19,6 +19,9 @@ public class RotationShotSkill : ShotSkill
 
     public override void Use(GameObject charactor)
     {
+        if (!isComplated || isCoolTime)
+            return;
+
         base.Use(charactor);
         Rotate(charactor.transform.position, RotateType.Y);
     }

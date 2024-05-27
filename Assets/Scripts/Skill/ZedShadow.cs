@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Pool;
 
 public class ZedShadow : ShotSkill
@@ -10,7 +11,15 @@ public class ZedShadow : ShotSkill
     public Transform shotStartTransform;
     private int objectID;
     public DashSkill dashSkill;
-    public CharacterController controller;
+    private NavMeshAgent agent;
+
+    public override void Awake()
+    {
+        base.Awake();
+        agent = GetComponent<NavMeshAgent>();
+    }
+
+    public NavMeshAgent GetAgent() { return agent; }
 
     public override void Use(GameObject charactor)
     {
@@ -23,9 +32,6 @@ public class ZedShadow : ShotSkill
     private IEnumerator CoSpawnShadow(Zed zed)
     {
         Vector3 point = Raycast.GetMousePointVec();
-        //point.y = transform.position.y;
-        transform.forward = point;
-
         transform.forward = new Vector3(point.x, transform.position.y, point.z);
 
         yield return new WaitForSeconds(data.useDelay);
@@ -53,6 +59,7 @@ public class ZedShadow : ShotSkill
 
         Vector3 point = GetUsePoint();
 
+        yield return new WaitForSeconds(skill.data.useDelay);
         yield return new WaitUntil(() => isReady == true);
 
         transform.LookAt(point);
