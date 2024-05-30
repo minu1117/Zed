@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
-using UnityEngine.XR;
 
-public class Zed : DemoChampion
+public class Zed : SingletonChampion<Zed>
 {
     public bool isMoved = true;
     public Dictionary<int, ZedShadow> shadows = new();
@@ -16,7 +15,7 @@ public class Zed : DemoChampion
     private Rigidbody rb;
     private NavMeshAgent agent;
 
-    public override void Awake()
+    protected override void Awake()
     {
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();

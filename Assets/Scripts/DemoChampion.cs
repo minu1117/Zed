@@ -6,7 +6,7 @@ public class DemoChampion : MonoBehaviour
     public SkillSlot slot;
     public Transform shotStartTransform;
 
-    public virtual void Awake()
+    protected virtual void Awake()
     {
         data.currentHp = data.maxhp;
     }

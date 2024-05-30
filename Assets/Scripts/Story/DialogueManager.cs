@@ -20,7 +20,7 @@ public struct TalkData
     public string talk;
 }
 
-public class DialogueManager : MonoBehaviour
+public class DialogueManager : Singleton<DialogueManager>
 {
     public Dictionary<string, List<TalkData>> allTalkData;
     private Coroutine messageCoroutine;
@@ -33,10 +33,35 @@ public class DialogueManager : MonoBehaviour
 
     public string csvFileName;
 
-    public TextMeshProUGUI tempTMP;
+    public TextMeshProUGUI tmp;
+    public GameObject dialoguePanel;
+    public float blinkTime;
+    private WaitForSeconds blinkWait;
+    
+    private string eventNameColumnStr;
+    private string characterNameColumnStr;
+    private string textColumnStr;
 
-    public void Awake()
+    private string endStr;
+    private string lineSplitStr;
+    private string emptySellStr;
+
+    public bool isTalking = false;
+    private TypingType currentTypingType;
+
+    protected override void Awake()
     {
+        base.Awake();
+
+        eventNameColumnStr = "EventName";
+        characterNameColumnStr = "CharacterName";
+        textColumnStr = "Text";
+        endStr = "End";
+        lineSplitStr = "\\n";
+        emptySellStr = "-";
+
+        blinkWait = new WaitForSeconds(blinkTime);
+
         ReadAllText();
     }
 
@@ -48,13 +73,15 @@ public class DialogueManager : MonoBehaviour
         string currentEventName = string.Empty;
         foreach (var textData in csv)
         {
-            string eventName = textData["EventName"].ToString();
-            if (eventName == "End")
+            string eventName = textData[eventNameColumnStr].ToString();
+            if (eventName == endStr)
                 continue;
 
             if (!string.IsNullOrEmpty(eventName))
             {
-                if (!allTalkData.ContainsKey(eventName) && eventName != "-")
+                // 겹치는 EventName 키가 없고, 이벤트 이름이 emptySellStr이 아닐 경우
+                // 이벤트 별로 구분하여 대화를 Dictionary에 저장
+                if (!allTalkData.ContainsKey(eventName) && eventName != emptySellStr)
                 {
                     currentEventName = eventName;
                     allTalkData.Add(currentEventName, new List<TalkData>());
@@ -62,17 +89,27 @@ public class DialogueManager : MonoBehaviour
 
                 var data = new TalkData
                 {
-                    name = textData["CharacterName"].ToString(),
-                    talk = textData["Text"].ToString()
+                    name = textData[characterNameColumnStr].ToString(),
+                    talk = textData[textColumnStr].ToString()
                 };
 
-                if (data.talk.Contains("\\n"))
+                // 저장한 대화에서 개행 처리를 해야 할 경우
+                if (data.talk.Contains(lineSplitStr))
                 {
-                    var newLineStr = data.talk.Split("\\n");
+                    // Line Split 문자가 있는 구간마다 문자 분리
+                    // 분리된 문자를 개행 처리 한 후 데이터에 추가
+                    string[] lineSplit = data.talk.Split(lineSplitStr);
                     data.talk = string.Empty;
-                    foreach (var str in newLineStr)
+                    for (int i = 0; i < lineSplit.Length; i++) 
                     {
-                        data.talk += $"{str}{Environment.NewLine}";
+                        // 마지막 줄이 아닐 경우에만 개행
+                        string splitStr = lineSplit[i];
+                        if (i < lineSplit.Length - 1)
+                        {
+                            splitStr = $"{splitStr}{Environment.NewLine}";
+                        }
+
+                        data.talk += splitStr;
                     }
                 }
 
@@ -90,6 +127,11 @@ public class DialogueManager : MonoBehaviour
         //}
     }
 
+    private void ChangeActiveDialoguePanel()
+    {
+        dialoguePanel.SetActive(!dialoguePanel.activeSelf);
+    }
+
     public void SetCurrentTalk(string eventName)
     {
         if (!allTalkData.ContainsKey(eventName) || allTalkData[eventName].Count == 0)
@@ -99,7 +141,7 @@ public class DialogueManager : MonoBehaviour
         currentTalkIndex = 0;
     }
 
-    public void GetMessage(TextMeshProUGUI text, TypingType type)
+    public void GetMessage(TypingType type)
     {
         if (currentTalkData == null || currentTalkData.Count == 0)
             return;
@@ -108,29 +150,44 @@ public class DialogueManager : MonoBehaviour
         {
             StopCoroutine(messageCoroutine);
             messageCoroutine = null;
-            text.text = currentText;
-            currentTalkIndex = 0;
+            tmp.text = currentText;
             return;
+        }
+
+        if (currentTalkData.Count == currentTalkIndex)
+        {
+            currentTalkIndex = 0;
+            isTalking = false;
+            tmp.text = string.Empty;
+            dialoguePanel.SetActive(false);
+            Zed.Instance.isMoved = true;
+            return;
+        }
+
+        if (currentTalkIndex == 0)
+        {
+            ChangeActiveDialoguePanel();
         }
 
         var message = currentTalkData[currentTalkIndex].talk;
         currentText = message;
         currentTalkIndex++;
 
-        messageCoroutine = StartCoroutine(CoDoText(text, message, type));
+        messageCoroutine = StartCoroutine(CoDoText(tmp, message, type));
     }
 
     private IEnumerator CoDoText(TextMeshProUGUI text, string endValue, TypingType type)
     {
         string tempString = string.Empty;
         WaitForSeconds timer = null;
+
         switch (type)
         {
             case TypingType.TypingSpeed:
-                timer = new WaitForSeconds(textRevealTime / endValue.Length);
+                timer = new WaitForSeconds(typingSpeed);
                 break;
             case TypingType.RevealTime:
-                timer = new WaitForSeconds(typingSpeed);
+                timer = new WaitForSeconds(textRevealTime / endValue.Length);
                 break;
             default:
                 break;
@@ -138,6 +195,8 @@ public class DialogueManager : MonoBehaviour
 
         if (timer == null)
             yield break;
+
+        StartCoroutine(CoBlinkDialoguePanel());
 
         text.text = string.Empty;
         for (int i = 0; i < endValue.Length; i++)
@@ -149,5 +208,30 @@ public class DialogueManager : MonoBehaviour
         }
 
         messageCoroutine = null;
+    }
+
+    private IEnumerator CoBlinkDialoguePanel()
+    {
+        ChangeActiveDialoguePanel();
+
+        yield return blinkWait;
+
+        ChangeActiveDialoguePanel();
+    }
+
+    public void SetTypingType(TypingType type)
+    {
+        currentTypingType = type;
+    }
+
+    public void Update()
+    {
+        if (isTalking)
+        {
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                GetMessage(currentTypingType);
+            }
+        }
     }
 }

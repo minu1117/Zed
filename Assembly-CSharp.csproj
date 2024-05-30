@@ -64,6 +64,7 @@
     <Compile Include="Assets\unity-chan!\Unity-chan! Model\Scripts\IKCtrlRightHand.cs" />
     <Compile Include="Assets\Scripts\IDamageable.cs" />
     <Compile Include="Assets\unity-chan!\Unity-chan! Model\Scripts\CameraController.cs" />
+    <Compile Include="Assets\Scripts\Utility\Singleton.cs" />
     <Compile Include="Assets\Scripts\Zed.cs" />
     <Compile Include="Assets\unity-chan!\Unity-chan! Model\Scripts\ThirdPersonCamera.cs" />
     <Compile Include="Assets\unity-chan!\Unity-chan! Model\SplashScreen\Scripts\SplashScreen.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="Assets\Scripts\Utility\CSVReader.cs" />
     <Compile Include="Assets\Scripts\Skill\CharacterData.cs" />
     <Compile Include="Assets\Scripts\Skill\ZedShadow.cs" />
+    <Compile Include="Assets\Scripts\SingletonChampion.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillType.cs" />
     <Compile Include="Assets\Scripts\DemoChampion.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillData.cs" />
