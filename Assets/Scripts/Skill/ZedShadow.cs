@@ -12,11 +12,13 @@ public class ZedShadow : ShotSkill
     private int objectID;
     public DashSkill dashSkill;
     private NavMeshAgent agent;
+    private Rigidbody rb;
 
     public override void Awake()
     {
         base.Awake();
         agent = GetComponent<NavMeshAgent>();
+        rb = GetComponent<Rigidbody>();
     }
 
     public NavMeshAgent GetAgent() { return agent; }
@@ -32,6 +34,8 @@ public class ZedShadow : ShotSkill
     private IEnumerator CoSpawnShadow(Zed zed)
     {
         Vector3 point = Raycast.GetMousePointVec();
+
+        agent.enabled = false;
         transform.forward = new Vector3(point.x, transform.position.y, point.z);
 
         yield return new WaitForSeconds(data.useDelay);
@@ -44,6 +48,7 @@ public class ZedShadow : ShotSkill
 
         zed.RemoveShadow(objectID);
         isReady = false;
+        agent.enabled = true;
         pool.Release(this);
     }
 

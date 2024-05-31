@@ -8,6 +8,7 @@ public class Skill : MonoBehaviour, IDamageable
     protected IObjectPool<Skill> pool;
     protected bool isComplated = true;
     protected bool isCoolTime;
+    protected bool isUsed;
 
     protected WaitForSeconds waitUseDelay;
     protected WaitForSeconds waitduration;
@@ -23,6 +24,7 @@ public class Skill : MonoBehaviour, IDamageable
     public virtual void Use(GameObject character)
     {
         isComplated = false;
+        isUsed = true;
         StartCoroutine(CoCoolDown());
     }
 
@@ -35,21 +37,20 @@ public class Skill : MonoBehaviour, IDamageable
 
     public void OnCollisionEnter(Collision collision)
     {
-        if (data.isShadow)
-            return;
-
-        if (gameObject.TryGetComponent(out ZedShadow shadow))
-        {
-            if (!shadow.isReady)
-                return;
-        }
-
-        TryDealDamage(collision.gameObject);
+        Collide(collision.gameObject);
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        Collide(other.gameObject);
+    }
+
+    private void Collide(GameObject obj)
+    {
         if (data.isShadow)
+            return;
+
+        if (!isUsed)
             return;
 
         if (gameObject.TryGetComponent(out ZedShadow shadow))
@@ -58,10 +59,10 @@ public class Skill : MonoBehaviour, IDamageable
                 return;
         }
 
-        TryDealDamage(other.gameObject);
+        DealDamage(obj);
     }
 
-    private void TryDealDamage(GameObject target)
+    private void DealDamage(GameObject target)
     {
         if (target.TryGetComponent(out DemoChampion champion))
         {
@@ -95,6 +96,7 @@ public class Skill : MonoBehaviour, IDamageable
 
     protected void OnComplate()
     {
+        isUsed = false;
         isComplated = true;
     }
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum TypingType
 {
@@ -33,7 +34,8 @@ public class DialogueManager : Singleton<DialogueManager>
 
     public string csvFileName;
 
-    public TextMeshProUGUI tmp;
+    public TextMeshProUGUI dialogueTMP;
+    public TextMeshProUGUI nameTMP;
     public GameObject dialoguePanel;
     public float blinkTime;
     private WaitForSeconds blinkWait;
@@ -48,6 +50,11 @@ public class DialogueManager : Singleton<DialogueManager>
 
     public bool isTalking = false;
     private TypingType currentTypingType;
+
+    public Image leftCharacterImage; // Zed
+    public Image rightCharacterImage;
+    public Color shadowColor;
+    public Color originalColor;
 
     protected override void Awake()
     {
@@ -116,15 +123,6 @@ public class DialogueManager : Singleton<DialogueManager>
                 allTalkData[currentEventName].Add(data);
             }
         }
-
-        //////
-        //foreach (var item in allTalkData)
-        //{
-        //    foreach (var value in item.Value)
-        //    {
-        //        tempTMP.text += $"{value.talk}{Environment.NewLine}";
-        //    }
-        //}
     }
 
     private void ChangeActiveDialoguePanel()
@@ -150,7 +148,7 @@ public class DialogueManager : Singleton<DialogueManager>
         {
             StopCoroutine(messageCoroutine);
             messageCoroutine = null;
-            tmp.text = currentText;
+            dialogueTMP.text = currentText;
             return;
         }
 
@@ -158,7 +156,7 @@ public class DialogueManager : Singleton<DialogueManager>
         {
             currentTalkIndex = 0;
             isTalking = false;
-            tmp.text = string.Empty;
+            dialogueTMP.text = string.Empty;
             dialoguePanel.SetActive(false);
             Zed.Instance.isMoved = true;
             return;
@@ -169,11 +167,23 @@ public class DialogueManager : Singleton<DialogueManager>
             ChangeActiveDialoguePanel();
         }
 
-        var message = currentTalkData[currentTalkIndex].talk;
+        var currentDialogue = currentTalkData[currentTalkIndex];
+
+        nameTMP.text = currentDialogue.name;
+        if (currentDialogue.name == "제드")
+        {
+            AdjustImageColor(leftCharacterImage, rightCharacterImage);
+        }
+        else
+        {
+            AdjustImageColor(rightCharacterImage, leftCharacterImage);
+        }
+
+        var message = currentDialogue.talk;
         currentText = message;
         currentTalkIndex++;
 
-        messageCoroutine = StartCoroutine(CoDoText(tmp, message, type));
+        messageCoroutine = StartCoroutine(CoDoText(dialogueTMP, message, type));
     }
 
     private IEnumerator CoDoText(TextMeshProUGUI text, string endValue, TypingType type)
@@ -196,7 +206,7 @@ public class DialogueManager : Singleton<DialogueManager>
         if (timer == null)
             yield break;
 
-        StartCoroutine(CoBlinkDialoguePanel());
+        //StartCoroutine(CoBlinkDialoguePanel());
 
         text.text = string.Empty;
         for (int i = 0; i < endValue.Length; i++)
@@ -222,6 +232,22 @@ public class DialogueManager : Singleton<DialogueManager>
     public void SetTypingType(TypingType type)
     {
         currentTypingType = type;
+    }
+    
+    private void AdjustImageColor(Image currentTalkCharacterImage, Image notTalkingCharacterImage)
+    {
+        SetShadowImage(notTalkingCharacterImage);
+        SetImageOriginalColor(currentTalkCharacterImage, originalColor);
+    }
+
+    private void SetShadowImage(Image image)
+    {
+        image.color = shadowColor;
+    }
+
+    private void SetImageOriginalColor(Image image, Color originalColor)
+    {
+        image.color = originalColor;
     }
 
     public void Update()
