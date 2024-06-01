@@ -1830,6 +1830,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 317074681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1555543118
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1555543120}
+  - component: {fileID: 1555543119}
+  m_Layer: 0
+  m_Name: AddressableManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1555543119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1555543118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87d518b2ad63a244ca2d83f02d44b91c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1555543120
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1555543118}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5, y: 0.5, z: 5.57}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1605765777
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2507,6 +2551,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DialoguePanel
       objectReference: {fileID: 0}
+    - target: {fileID: 548443156807182980, guid: 8cc85257a56b99442b4a8aef70338419, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8954224853349421648, guid: 8cc85257a56b99442b4a8aef70338419, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2646,11 +2694,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6973040777812442837, guid: ae0261589c0f2014493ad5b915a6b880, type: 3}
       propertyPath: eventName
-      value: "\uB09C \uCF00\uC778\uC774\uB2F9"
+      value: "\uC9C4 \uC7A1\uAE30 \uC2E4\uD328"
       objectReference: {fileID: 0}
     - target: {fileID: 6973040777812442837, guid: ae0261589c0f2014493ad5b915a6b880, type: 3}
       propertyPath: typingType
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2825,7 +2873,7 @@ PrefabInstance:
       objectReference: {fileID: 620534935}
     - target: {fileID: 8893990465812019085, guid: bc9d908d9ca2c8d46acc6b65b8e5bfde, type: 3}
       propertyPath: csvFileName
-      value: TestCSV
+      value: Chapter_2
       objectReference: {fileID: 0}
     - target: {fileID: 8893990465812019085, guid: bc9d908d9ca2c8d46acc6b65b8e5bfde, type: 3}
       propertyPath: dialogueTMP
@@ -2833,7 +2881,7 @@ PrefabInstance:
       objectReference: {fileID: 1330068676}
     - target: {fileID: 8893990465812019085, guid: bc9d908d9ca2c8d46acc6b65b8e5bfde, type: 3}
       propertyPath: typingSpeed
-      value: 0.1
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 8893990465812019085, guid: bc9d908d9ca2c8d46acc6b65b8e5bfde, type: 3}
       propertyPath: dialoguePanel
@@ -2873,3 +2921,4 @@ SceneRoots:
   - {fileID: 8901482916835194892}
   - {fileID: 3038927532178315504}
   - {fileID: 139703160}
+  - {fileID: 1555543120}

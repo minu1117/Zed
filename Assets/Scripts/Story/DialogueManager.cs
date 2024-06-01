@@ -19,6 +19,7 @@ public struct TalkData
 {
     public string name;
     public string talk;
+    public string address;
 }
 
 public class DialogueManager : Singleton<DialogueManager>
@@ -43,6 +44,7 @@ public class DialogueManager : Singleton<DialogueManager>
     private string eventNameColumnStr;
     private string characterNameColumnStr;
     private string textColumnStr;
+    private string addressColumnStr;
 
     private string endStr;
     private string lineSplitStr;
@@ -63,6 +65,7 @@ public class DialogueManager : Singleton<DialogueManager>
         eventNameColumnStr = "EventName";
         characterNameColumnStr = "CharacterName";
         textColumnStr = "Text";
+        addressColumnStr = "Address";
         endStr = "End";
         lineSplitStr = "\\n";
         emptySellStr = "-";
@@ -97,7 +100,8 @@ public class DialogueManager : Singleton<DialogueManager>
                 var data = new TalkData
                 {
                     name = textData[characterNameColumnStr].ToString(),
-                    talk = textData[textColumnStr].ToString()
+                    talk = textData[textColumnStr].ToString(),
+                    address = textData[addressColumnStr].ToString()
                 };
 
                 // 저장한 대화에서 개행 처리를 해야 할 경우
@@ -136,13 +140,24 @@ public class DialogueManager : Singleton<DialogueManager>
             return;
 
         currentTalkData = allTalkData[eventName];
+
+        TalkData firstZedData = currentTalkData.Find(data => data.name == "제드");
+        TalkData firstOtherData = currentTalkData.Find(data => data.name != "제드");
+
+        AddressableManager.Instance.ApplyImage(firstZedData.address, leftCharacterImage);
+        AddressableManager.Instance.ApplyImage(firstOtherData.address, rightCharacterImage);
+
         currentTalkIndex = 0;
     }
 
     public void GetMessage(TypingType type)
     {
         if (currentTalkData == null || currentTalkData.Count == 0)
+        {
+            isTalking = false;
+            Zed.Instance.isMoved = true;
             return;
+        }
 
         if (messageCoroutine != null)
         {
@@ -172,10 +187,12 @@ public class DialogueManager : Singleton<DialogueManager>
         nameTMP.text = currentDialogue.name;
         if (currentDialogue.name == "제드")
         {
+            AddressableManager.Instance.ApplyImage(currentDialogue.address, leftCharacterImage);
             AdjustImageColor(leftCharacterImage, rightCharacterImage);
         }
         else
         {
+            AddressableManager.Instance.ApplyImage(currentDialogue.address, rightCharacterImage);
             AdjustImageColor(rightCharacterImage, leftCharacterImage);
         }
 
