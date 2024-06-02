@@ -334,6 +334,7 @@
 "Assets/Scripts/Skill/ZedShadow.cs"
 "Assets/Scripts/Story/Dialogue.cs"
 "Assets/Scripts/Story/DialogueManager.cs"
+"Assets/Scripts/Utility/AddressableManager.cs"
 "Assets/Scripts/Utility/CSVReader.cs"
 "Assets/Scripts/Utility/Singleton.cs"
 "Assets/Scripts/Zed.cs"
