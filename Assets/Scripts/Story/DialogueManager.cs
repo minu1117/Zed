@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -57,10 +58,8 @@ public class DialogueManager : Singleton<DialogueManager>
     public bool isTalking = false;
     private TypingType currentTypingType;
 
-    public Image leftCharacterImage; // Zed
-    public Image rightCharacterImage;
-    public Color shadowColor;
-    public Color originalColor;
+    public CharacterImageController leftCharacterImage; // Zed
+    public CharacterImageController rightCharacterImage;
 
     private List<string> zedNameStrList;
 
@@ -156,8 +155,29 @@ public class DialogueManager : Singleton<DialogueManager>
 
     private string SetDefalutAddress(string address)
     {
+        if (address == null || address == emptySellStr || address == string.Empty)
+            return string.Empty;
+
         string[] parts = address.Split(addressWhiteSpaceStr);
         return parts[0];
+    }
+
+    private async Task ApplyImage(TalkData data, Image image)
+    {
+        if (data.name == null || data.name == string.Empty || data.name == emptySellStr)
+        {
+            image.gameObject.SetActive(false);
+            return;
+        }
+        else
+        {
+            await AddressableManager.Instance.ApplyImage(data.address, image);
+        }
+    }
+
+    private bool IsValidName(string name)
+    {
+        return name != null && name != emptySellStr && name != string.Empty;
     }
 
     // 현재 대화에 사용할 데이터들 미리 담아두기
@@ -174,22 +194,25 @@ public class DialogueManager : Singleton<DialogueManager>
 
         TalkData firstZedData = FindFirstMatchingElement(currentTalkData, zedNameStrList);
         TalkData firstOtherData = FindFirstNotMatchingElement(currentTalkData, zedNameStrList);
+        string zedName = firstZedData.name;
+        string otherName = firstOtherData.name;
 
         // 첫 시작 이미지는 일반 표정의 이미지로 변경
-        firstZedData.address = $"{SetDefalutAddress(firstZedData.address)}{addressWhiteSpaceStr}{addressNormalImageStr}";
-        firstOtherData.address = $"{SetDefalutAddress(firstOtherData.address)}{addressWhiteSpaceStr}{addressNormalImageStr}";
+        if (IsValidName(zedName))
+        {
+            firstZedData.address = $"{SetDefalutAddress(firstZedData.address)}{addressWhiteSpaceStr}{addressNormalImageStr}";
+        }
+        if (IsValidName(otherName))
+        {
+            firstOtherData.address = $"{SetDefalutAddress(firstOtherData.address)}{addressWhiteSpaceStr}{addressNormalImageStr}";
+        }
 
         // TalkData가 할당 되지 않았을 경우 캐릭터가 없는 것으로 판단, 이미지 오브젝트 비활성화
-        if (firstZedData.name == null || firstZedData.name == string.Empty)
-            leftCharacterImage.gameObject.SetActive(false);
-        else
-            await AddressableManager.Instance.ApplyImage(firstZedData.address, leftCharacterImage);
-        
-        if (firstOtherData.name == null || firstOtherData.name == string.Empty)
-            rightCharacterImage.gameObject.SetActive(false);
-        else
-            await AddressableManager.Instance.ApplyImage(firstOtherData.address, rightCharacterImage);
+        await ApplyImage(firstZedData, leftCharacterImage.image);
+        await ApplyImage(firstOtherData, rightCharacterImage.image);
 
+        if (!IsValidName(zedName) && !IsValidName(otherName))
+            return;
 
         // 사용할 이미지들의 Address 모두 담아두기
         List<string> addresses = new List<string>();
@@ -230,7 +253,6 @@ public class DialogueManager : Singleton<DialogueManager>
             dialogueTMP.text = string.Empty;
             dialoguePanel.SetActive(false);
             Zed.Instance.isMoved = true;
-            //currentTalkData.Clear();
             return;
         }
 
@@ -245,7 +267,10 @@ public class DialogueManager : Singleton<DialogueManager>
         currentText = message;
         currentTalkIndex++;
 
-        nameTMP.text = currentDialogue.name;
+        if (currentDialogue.name != string.Empty || currentDialogue.name != emptySellStr)
+            nameTMP.text = currentDialogue.name;
+        else
+            nameTMP.text = string.Empty;
 
         // 현재 대사의 캐릭터 이름 비교, zedNameStrList 안에 캐릭터 이름이 있을 때 isZed = true
         bool isZed = false;
@@ -260,15 +285,18 @@ public class DialogueManager : Singleton<DialogueManager>
 
         // true : 왼쪽 이미지(주인공 자리)의 sprite 변경, 오른쪽 이미지의 색상 변경 (그림자 진 느낌의 색상으로)
         // false : true의 반대
-        if (isZed)
+        if (currentDialogue.name != string.Empty || currentDialogue.name != emptySellStr)
         {
-            SetCurrentTalkImage(leftCharacterImage, currentDialogue.address);
-            AdjustImageColor(leftCharacterImage, rightCharacterImage);
-        }
-        else
-        {
-            SetCurrentTalkImage(rightCharacterImage, currentDialogue.address);
-            AdjustImageColor(rightCharacterImage, leftCharacterImage);
+            if (isZed)
+            {
+                leftCharacterImage.SetImage(FindImage(currentDialogue.address));
+                leftCharacterImage.AdjustImageColor(rightCharacterImage.image);
+            }
+            else
+            {
+                rightCharacterImage.SetImage(FindImage(currentDialogue.address));
+                rightCharacterImage.AdjustImageColor(leftCharacterImage.image);
+            }
         }
 
         messageCoroutine = StartCoroutine(CoDoText(dialogueTMP, message, type));
@@ -322,32 +350,40 @@ public class DialogueManager : Singleton<DialogueManager>
         currentTypingType = type;
     }
 
-    private void SetCurrentTalkImage(Image image, string address)
+    private Sprite FindImage(string address)
     {
         if (currentTalkImages == null || currentTalkImages.Count == 0)
-            return;
+            return null;
 
-        image.sprite = currentTalkImages[address];
+        return currentTalkImages[address];
     }
 
-    private void AdjustImageColor(Image currentTalkCharacterImage, Image notTalkingCharacterImage)
-    {
-        SetShadowImage(notTalkingCharacterImage);
-        SetImageOriginalColor(currentTalkCharacterImage, originalColor);
-    }
+    //private void SetCurrentTalkImage(Image image, string address)
+    //{
+    //    if (currentTalkImages == null || currentTalkImages.Count == 0)
+    //        return;
 
-    private void SetShadowImage(Image image)
-    {
-        if (image.gameObject.activeSelf == false)
-            return;
+    //    image.sprite = currentTalkImages[address];
+    //}
 
-        image.color = shadowColor;
-    }
+    //private void AdjustImageColor(Image currentTalkCharacterImage, Image notTalkingCharacterImage)
+    //{
+    //    SetShadowImage(notTalkingCharacterImage);
+    //    SetImageOriginalColor(currentTalkCharacterImage, originalColor);
+    //}
 
-    private void SetImageOriginalColor(Image image, Color originalColor)
-    {
-        image.color = originalColor;
-    }
+    //private void SetShadowImage(Image image)
+    //{
+    //    if (image.gameObject.activeSelf == false)
+    //        return;
+
+    //    image.color = shadowColor;
+    //}
+
+    //private void SetImageOriginalColor(Image image, Color originalColor)
+    //{
+    //    image.color = originalColor;
+    //}
 
     public void Update()
     {

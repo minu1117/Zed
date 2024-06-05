@@ -63,6 +63,7 @@
     <Compile Include="Assets\Scripts\IDamageable.cs" />
     <Compile Include="Assets\Scripts\Utility\Singleton.cs" />
     <Compile Include="Assets\Scripts\Zed.cs" />
+    <Compile Include="Assets\Scripts\Story\CharacterImageController.cs" />
     <Compile Include="Assets\unity-chan!\Unity-chan! Model\SplashScreen\Scripts\SplashScreen.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillButton.cs" />
     <Compile Include="Assets\Scripts\Story\Dialogue.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Assets\Scripts\Story\DialogueManager.cs" />
     <Compile Include="Assets\Scripts\Skill\RotationShotSkill.cs" />
     <Compile Include="Assets\Scripts\Camera\TargetFallow.cs" />
+    <Compile Include="Assets\Scripts\Camera\CameraShakeController.cs" />
     <Compile Include="Assets\Scripts\Skill\Skill.cs" />
     <Compile Include="Assets\Scripts\Skill\MeleeSkill.cs" />
     <Compile Include="Assets\Scripts\Utility\AddressableManager.cs" />

@@ -10,7 +10,7 @@ public class AddressableManager : Singleton<AddressableManager>
 {
     public async Task ApplyImage(string address, Image applyImage)
     {
-        if (applyImage == null)
+        if (applyImage == null || address == null)
             return;
 
         if (applyImage.sprite.name == GetAddressName(address))
