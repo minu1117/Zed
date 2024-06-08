@@ -23,11 +23,12 @@ public class RotationShotSkill : ShotSkill
             return;
 
         base.Use(charactor);
-        Rotate(charactor.transform.position, RotateType.Y);
+        Rotate(RotateType.Y);
     }
 
-    private void Rotate(Vector3 rotateVec, RotateType rotateType)
+    private void Rotate(RotateType rotateType)
     {
+        Vector3 rotateVec = Vector3.zero;
         float rotate = 360 * rotateSpeed;
         switch (rotateType)
         {

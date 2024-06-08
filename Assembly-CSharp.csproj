@@ -70,12 +70,14 @@
     <Compile Include="Assets\Scripts\Skill\BuffSkill.cs" />
     <Compile Include="Assets\Scripts\Raycast.cs" />
     <Compile Include="Assets\Scripts\Utility\CSVReader.cs" />
+    <Compile Include="Assets\Prefabs\DemoSkillData\MultipleShadow.cs" />
     <Compile Include="Assets\Scripts\Skill\CharacterData.cs" />
     <Compile Include="Assets\Scripts\Skill\ZedShadow.cs" />
     <Compile Include="Assets\Scripts\SingletonChampion.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillType.cs" />
     <Compile Include="Assets\Scripts\DemoChampion.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillData.cs" />
+    <Compile Include="Assets\Scripts\CharacterMoveController.cs" />
     <Compile Include="Assets\Scripts\Skill\DashSkill.cs" />
     <Compile Include="Assets\Scripts\Story\DialogueManager.cs" />
     <Compile Include="Assets\Scripts\Skill\RotationShotSkill.cs" />

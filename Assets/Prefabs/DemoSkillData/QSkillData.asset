@@ -20,7 +20,7 @@ MonoBehaviour:
   damage: 10
   coolDown: 0
   duration: 1
-  useDelay: 1
+  useDelay: 0.1
   speed: 20
   immobilityTime: 0
   isShadow: 0

@@ -1,24 +1,32 @@
 using DG.Tweening;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
 
 public class ZedShadow : ShotSkill
 {
-    public bool isReady = false;
     private readonly float moveTime = 0.5f;
-    public Transform shotStartTransform;
     private int objectID;
+
+    public bool isReady = false;
+    public Transform shotStartTransform;
     public DashSkill dashSkill;
+
     private NavMeshAgent agent;
     private Rigidbody rb;
+    private Vector3 usePoint;
+
+    private Dictionary<string, List<KeyValuePair<IObjectPool<Skill>, Skill>>> useSkills;
+    private Coroutine useCoroutine;
 
     public override void Awake()
     {
         base.Awake();
         agent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
+        useSkills = new();
     }
 
     public NavMeshAgent GetAgent() { return agent; }
@@ -33,26 +41,90 @@ public class ZedShadow : ShotSkill
 
     private IEnumerator CoSpawnShadow(Zed zed)
     {
-        Vector3 point = Raycast.GetMousePointVec();
+        if (usePoint == null || usePoint == Vector3.zero)
+            usePoint = Raycast.GetMousePointVec();
 
         agent.enabled = false;
-        transform.forward = new Vector3(point.x, transform.position.y, point.z);
+        transform.forward = new Vector3(usePoint.x, transform.position.y, usePoint.z);
 
         yield return new WaitForSeconds(data.useDelay);
 
-        transform.DOMove(point, moveTime)
+        transform.DOMove(usePoint, moveTime)
                  .SetEase(Ease.OutQuad)
-                 .OnComplete(() => isReady = true);
+                 .OnComplete(() => useCoroutine = StartCoroutine(UseAllSkills()));
 
         yield return new WaitForSeconds(data.duration);
 
+        if (useCoroutine != null)
+            StopCoroutine(useCoroutine);
+
         zed.RemoveShadow(objectID);
-        isReady = false;
-        agent.enabled = true;
-        pool.Release(this);
+        useSkills.Clear();
+
+        if (pool != null)
+        {
+            isReady = false;
+            agent.enabled = true;
+            useCoroutine = null;
+            ReleaseFunc();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    public void UseCopySkill(Skill skill, IObjectPool<Skill> skillPool)
+    public IEnumerator UseAllSkills()
+    {
+        isReady = true;
+        usePoint = GetUsePoint();
+
+        foreach (var skillPairList in useSkills)
+        {
+            foreach (var skillObject in skillPairList.Value)
+            {
+                var skill = skillObject.Key.Get();
+                if (skill.data.isShadow || skill == null)
+                    continue;
+
+                transform.LookAt(usePoint);
+
+                yield return new WaitForSeconds(skill.data.useDelay);
+
+                skill.SetPool(skillObject.Key);
+                skill.SetPosition(shotStartTransform.position);
+                skillObject.Value.SetRotation(transform.rotation);
+                skill.Use(gameObject);
+            }
+        }
+
+        useCoroutine = null;
+        useSkills.Clear();
+    }
+
+    public void AddSkill(string name, Skill skill, IObjectPool<Skill> skillPool)
+    {
+        if (!isReady)
+        {
+            KeyValuePair<IObjectPool<Skill>, Skill> pair = new KeyValuePair<IObjectPool<Skill>, Skill>(skillPool, skill);
+
+            if (!useSkills.ContainsKey(name))
+            {
+                List<KeyValuePair<IObjectPool<Skill>, Skill>> pairList = new() { pair };
+                useSkills.Add(name, pairList);
+            }
+            else
+            {
+                useSkills[name].Add(pair);
+            }
+        }
+        else
+        {
+            UseCopySkill(skill, skillPool);
+        }
+    }
+
+    private void UseCopySkill(Skill skill, IObjectPool<Skill> skillPool)
     {
         StartCoroutine(CoUseCopySkill(skill, skillPool));
     }
@@ -62,17 +134,17 @@ public class ZedShadow : ShotSkill
         if (skill.data.isShadow || skill == null)
             yield break;
 
-        Vector3 point = GetUsePoint();
+        usePoint = GetUsePoint();
 
         yield return new WaitForSeconds(skill.data.useDelay);
         yield return new WaitUntil(() => isReady == true);
 
-        transform.LookAt(point);
+        transform.LookAt(usePoint);
 
         var skillObject = skillPool.Get();
         skillObject.SetPool(skillPool);
-        skillObject.transform.position = shotStartTransform.position;
-        skillObject.transform.rotation = transform.rotation;
+        skillObject.SetPosition(shotStartTransform.position);
+        skillObject.SetRotation(transform.rotation);
 
         skillObject.Use(gameObject);
     }
@@ -84,10 +156,7 @@ public class ZedShadow : ShotSkill
 
     private IEnumerator CoUseCopyDash()
     {
-        Vector3 point = GetUsePoint();
-
         yield return new WaitUntil(() => isReady == true);
-
         dashSkill.Use(gameObject);
     }
 
@@ -98,6 +167,7 @@ public class ZedShadow : ShotSkill
         return point;
     }
 
+    public void SetPoint(Vector3 point) { usePoint = point; }
     public void SetID(int id) { objectID = id; }
     public int GetID() { return objectID; }
 }

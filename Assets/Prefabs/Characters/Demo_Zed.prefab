@@ -71,6 +71,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6536e51024be20d40aaf36d663270734, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8422515441910281470}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6536e51024be20d40aaf36d663270734, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5371093094640172177}
   m_SourcePrefab: {fileID: 100100000, guid: 6536e51024be20d40aaf36d663270734, type: 3}
 --- !u!4 &4904210131837255266 stripped
 Transform:
@@ -97,8 +100,6 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: eb883fbd557de9d47b60260619518020, type: 2}
   slot: {fileID: 0}
   shotStartTransform: {fileID: 4904210131837255266}
-  isMoved: 1
-  virtualCamera: {fileID: 0}
 --- !u!114 &5737682379417772846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,3 +183,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.6480474, y: 1.7682288, z: 0.4970617}
   m_Center: {x: -0.030031174, y: 0.89853394, z: 0.06604172}
+--- !u!114 &5371093094640172177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5610010211552498524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e76c139237fb51469e4ff52beacf424, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isMoved: 1
+  virtualCamera: {fileID: 0}

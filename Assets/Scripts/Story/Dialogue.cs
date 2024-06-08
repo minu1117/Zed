@@ -13,10 +13,11 @@ public class DialogueObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out Zed zed))
+        if (other.TryGetComponent(out CharacterMoveController character))
         {
-            zed.StopMove();
+            character.StopMove();
             manager.isTalking = true;
+            manager.SetCharacter(character);
             manager.SetTypingType(typingType);
             manager.SetCurrentTalk(eventName);
             manager.GetMessage(typingType);

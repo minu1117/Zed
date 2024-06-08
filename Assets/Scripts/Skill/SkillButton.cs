@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Drawing;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -8,8 +7,8 @@ public class SkillButton : MonoBehaviour
     public string skillKey;
     public Skill skill;
     private IObjectPool<Skill> skillPool;
-    private int shadowID = 0;
     private GameObject poolObject;
+    public static int shadowID = 0;
 
     public void Awake()
     {
@@ -42,19 +41,14 @@ public class SkillButton : MonoBehaviour
         point.y = character.transform.position.y;
 
         var useSkill = skillPool.Get();
-        useSkill.SetPool(skillPool);
-        //useSkill.transform.position = startPosition;
-        //useSkill.transform.rotation = character.transform.rotation;
-
         StartCoroutine(WaitUseSkill(useSkill, character, point));
 
-        //useSkill.Use(character);
         return useSkill;
     }
 
     private IEnumerator WaitUseSkill(Skill useSkill, GameObject character, Vector3 lookAtPoint)
     {
-        useSkill.gameObject.SetActive(false);
+        useSkill.SetActive(false);
 
         yield return new WaitForSeconds(useSkill.data.useDelay);
 
@@ -65,13 +59,13 @@ public class SkillButton : MonoBehaviour
         }
 
         character.transform.LookAt(lookAtPoint);
-        useSkill.gameObject.SetActive(true);
-        useSkill.transform.position = startPosition;
-        useSkill.transform.rotation = character.transform.rotation;
+        useSkill.SetActive(true);
+        useSkill.SetPosition(startPosition);
+        useSkill.SetRotation(character.transform.rotation);
 
         if (skill.data.isShadow && character.TryGetComponent(out Zed zed) && useSkill.TryGetComponent(out ZedShadow shadow))
         {
-            useSkill.transform.position = character.transform.position;
+            useSkill.SetPosition(character.transform.position);
 
             if (shadow.GetID() <= 0)
             {
@@ -88,6 +82,8 @@ public class SkillButton : MonoBehaviour
     private Skill CreateSkill()
     {
         var useSkill = Instantiate(skill, poolObject.transform);
+        useSkill.SetPool(skillPool);
+
         return useSkill;
     }
     private void GetSkill(Skill skill)

@@ -12,17 +12,17 @@ public class DashSkill : Skill
         StartCoroutine(CoDash(character, Raycast.GetMousePointVec()));
     }
 
-    private IEnumerator CoDash(GameObject character, Vector3 point)
+    private IEnumerator CoDash(GameObject obj, Vector3 point)
     {
-        var rb = character.GetComponent<Rigidbody>();
-        Zed zed = GetStopZed(character);
+        var rb = obj.GetComponent<Rigidbody>();
+        CharacterMoveController character = GetStopCharacter(obj);
 
         rb.velocity = Vector3.zero;
-        point.y = character.transform.position.y;
+        point.y = obj.transform.position.y;
 
         Vector3 LookAtDirection = (point == Vector3.zero) ? transform.forward : point;
         Vector3 dashDirection = (point - transform.position).normalized;
-        character.transform.LookAt(LookAtDirection);
+        obj.transform.LookAt(LookAtDirection);
 
         yield return waitUseDelay;
 
@@ -35,6 +35,6 @@ public class DashSkill : Skill
         yield return waitimmobilityTime;
 
         OnComplate();
-        OnMoveZed(zed);
+        OnMoveCharacter(character);
     }
 }

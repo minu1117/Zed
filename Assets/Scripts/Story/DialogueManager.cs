@@ -62,6 +62,7 @@ public class DialogueManager : Singleton<DialogueManager>
     public CharacterImageController rightCharacterImage;
 
     private List<string> zedNameStrList;
+    private CharacterMoveController character;
 
     protected override void Awake()
     {
@@ -232,7 +233,7 @@ public class DialogueManager : Singleton<DialogueManager>
         if (currentTalkData == null || currentTalkData.Count == 0)
         {
             isTalking = false;
-            Zed.Instance.isMoved = true;
+            character.isMoved = true;
             return;
         }
 
@@ -252,7 +253,7 @@ public class DialogueManager : Singleton<DialogueManager>
             isTalking = false;
             dialogueTMP.text = string.Empty;
             dialoguePanel.SetActive(false);
-            Zed.Instance.isMoved = true;
+            character.isMoved = true;
             return;
         }
 
@@ -358,6 +359,10 @@ public class DialogueManager : Singleton<DialogueManager>
         return currentTalkImages[address];
     }
 
+    public void SetCharacter(CharacterMoveController character)
+    {
+        this.character = character;
+    }
     //private void SetCurrentTalkImage(Image image, string address)
     //{
     //    if (currentTalkImages == null || currentTalkImages.Count == 0)

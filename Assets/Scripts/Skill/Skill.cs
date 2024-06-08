@@ -40,6 +40,21 @@ public class Skill : MonoBehaviour, IDamageable
         Collide(collision.gameObject);
     }
 
+    public void SetPosition(Vector3 pos)
+    {
+        transform.position = pos;
+    }
+
+    public void SetRotation(Quaternion rot)
+    {
+        transform.rotation = rot;
+    }
+
+    public void SetActive(bool active)
+    {
+        gameObject.SetActive(active);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         Collide(other.gameObject);
@@ -81,12 +96,12 @@ public class Skill : MonoBehaviour, IDamageable
         isCoolTime = false;
     }
 
-    protected Zed GetStopZed(GameObject character)
+    protected CharacterMoveController GetStopCharacter(GameObject obj)
     {
-        if (character.TryGetComponent(out Zed zed))
+        if (obj.TryGetComponent(out CharacterMoveController character))
         {
-            zed.StopMove();
-            return zed;
+            character.StopMove();
+            return character;
         }
         else
         {
@@ -100,10 +115,10 @@ public class Skill : MonoBehaviour, IDamageable
         isComplated = true;
     }
 
-    protected void OnMoveZed(Zed zed)
+    protected void OnMoveCharacter(CharacterMoveController character)
     {
-        if (zed != null)
-            zed.isMoved = true;
+        if (character != null)
+            character.isMoved = true;
     }
 
     protected void ReleaseFunc()
