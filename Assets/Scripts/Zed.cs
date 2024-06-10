@@ -74,13 +74,7 @@ public class Zed : SingletonChampion<Zed>
         {
             foreach (var shadow in shadows)
             {
-                if (useSkill.data.type != SkillType.Dash)
-                    //shadow.Value.UseCopySkill(useSkill, skillPool);
-                    shadow.Value.AddSkill(skillKeyStr, useSkill, skillPool);
-                else
-                {
-                    shadow.Value.UseCopyDash();
-                }
+                shadow.Value.AddSkill(skillKeyStr, useSkill, skillPool);
             }
         }
     }

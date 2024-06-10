@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
+using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class ZedShadow : ShotSkill
 {
@@ -19,7 +20,6 @@ public class ZedShadow : ShotSkill
     private Vector3 usePoint;
 
     private Dictionary<string, List<KeyValuePair<IObjectPool<Skill>, Skill>>> useSkills;
-    private Coroutine useCoroutine;
 
     public override void Awake()
     {
@@ -51,13 +51,11 @@ public class ZedShadow : ShotSkill
 
         transform.DOMove(usePoint, moveTime)
                  .SetEase(Ease.OutQuad)
-                 .OnComplete(() => useCoroutine = StartCoroutine(UseAllSkills()));
+                 .OnComplete(() => UseAllSkills());
 
         yield return new WaitForSeconds(data.duration);
 
-        if (useCoroutine != null)
-            StopCoroutine(useCoroutine);
-
+        usePoint = Vector3.zero;
         zed.RemoveShadow(objectID);
         useSkills.Clear();
 
@@ -65,7 +63,6 @@ public class ZedShadow : ShotSkill
         {
             isReady = false;
             agent.enabled = true;
-            useCoroutine = null;
             ReleaseFunc();
         }
         else
@@ -74,7 +71,7 @@ public class ZedShadow : ShotSkill
         }
     }
 
-    public IEnumerator UseAllSkills()
+    public void UseAllSkills()
     {
         isReady = true;
         usePoint = GetUsePoint();
@@ -83,61 +80,59 @@ public class ZedShadow : ShotSkill
         {
             foreach (var skillObject in skillPairList.Value)
             {
-                var skill = skillObject.Key.Get();
-                if (skill.data.isShadow || skill == null)
-                    continue;
-
-                transform.LookAt(usePoint);
-
-                yield return new WaitForSeconds(skill.data.useDelay);
-
-                skill.SetPool(skillObject.Key);
-                skill.SetPosition(shotStartTransform.position);
-                skillObject.Value.SetRotation(transform.rotation);
-                skill.Use(gameObject);
+                UseCopySkill(skillObject.Value, skillObject.Key);
             }
         }
 
-        useCoroutine = null;
         useSkills.Clear();
     }
 
     public void AddSkill(string name, Skill skill, IObjectPool<Skill> skillPool)
     {
-        if (!isReady)
-        {
-            KeyValuePair<IObjectPool<Skill>, Skill> pair = new KeyValuePair<IObjectPool<Skill>, Skill>(skillPool, skill);
+        if (skill == null)
+            return;
 
-            if (!useSkills.ContainsKey(name))
-            {
-                List<KeyValuePair<IObjectPool<Skill>, Skill>> pairList = new() { pair };
-                useSkills.Add(name, pairList);
-            }
-            else
-            {
-                useSkills[name].Add(pair);
-            }
+        if (isReady)
+        {
+            UseCopySkill(skill, skillPool);
+            return;
+        }
+
+        KeyValuePair<IObjectPool<Skill>, Skill> pair = new KeyValuePair<IObjectPool<Skill>, Skill>(skillPool, skill);
+        if (skill.data.type == SkillType.Dash)
+        {
+            Vector3 point = Raycast.GetMousePointVec();
+            dashSkill.SetPoint(point);
+        }
+
+        if (!useSkills.ContainsKey(name))
+        {
+            List<KeyValuePair<IObjectPool<Skill>, Skill>> pairList = new() { pair };
+            useSkills.Add(name, pairList);
         }
         else
         {
-            UseCopySkill(skill, skillPool);
+            useSkills[name].Add(pair);
         }
     }
 
     private void UseCopySkill(Skill skill, IObjectPool<Skill> skillPool)
     {
+        if (skill.data.type == SkillType.Dash)
+        {
+            UseCopyDash();
+            return;
+        }
+
         StartCoroutine(CoUseCopySkill(skill, skillPool));
     }
 
     private IEnumerator CoUseCopySkill(Skill skill, IObjectPool<Skill> skillPool)
     {
-        if (skill.data.isShadow || skill == null)
+        if (skill.data.isShadow)
             yield break;
 
-        usePoint = GetUsePoint();
-
         yield return new WaitForSeconds(skill.data.useDelay);
-        yield return new WaitUntil(() => isReady == true);
 
         transform.LookAt(usePoint);
 

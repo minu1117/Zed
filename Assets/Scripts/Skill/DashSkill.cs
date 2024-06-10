@@ -3,13 +3,24 @@ using UnityEngine;
 
 public class DashSkill : Skill
 {
+    public Vector3 movePoint;
+
     public override void Use(GameObject character)
     {
         if (!isComplated || isCoolTime)
             return;
 
         base.Use(character);
-        StartCoroutine(CoDash(character, Raycast.GetMousePointVec()));
+
+        if (movePoint == null || movePoint == Vector3.zero)
+            movePoint = Raycast.GetMousePointVec();
+        
+        StartCoroutine(CoDash(character, movePoint));
+    }
+
+    public void SetPoint(Vector3 point)
+    {
+        movePoint = point;
     }
 
     private IEnumerator CoDash(GameObject obj, Vector3 point)
