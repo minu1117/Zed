@@ -84,6 +84,8 @@
     <Compile Include="Assets\Scripts\Camera\TargetFallow.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraShakeController.cs" />
     <Compile Include="Assets\Scripts\Skill\Skill.cs" />
+    <Compile Include="Assets\Scripts\CharacterAnimationController.cs" />
+    <Compile Include="Assets\Scripts\Skill\ZedSkillType.cs" />
     <Compile Include="Assets\Scripts\Skill\MeleeSkill.cs" />
     <Compile Include="Assets\Scripts\Utility\AddressableManager.cs" />
   </ItemGroup>

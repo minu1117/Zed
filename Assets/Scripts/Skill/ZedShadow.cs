@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
-using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class ZedShadow : ShotSkill
 {
@@ -19,13 +18,15 @@ public class ZedShadow : ShotSkill
     private Rigidbody rb;
     private Vector3 usePoint;
 
-    private Dictionary<string, List<KeyValuePair<IObjectPool<Skill>, Skill>>> useSkills;
+    private Dictionary<string, List<KeyValuePair<IObjectPool<Skill>, KeyValuePair<Skill, ZedSkillType>>>> useSkills;
+    private CharacterAnimationController animationController;
 
     public override void Awake()
     {
         base.Awake();
         agent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
+        animationController = GetComponent<CharacterAnimationController>();
         useSkills = new();
     }
 
@@ -80,14 +81,15 @@ public class ZedShadow : ShotSkill
         {
             foreach (var skillObject in skillPairList.Value)
             {
-                UseCopySkill(skillObject.Value, skillObject.Key);
+                UseCopySkill(skillObject.Value.Key, skillObject.Key);
+                StartAnimation(skillObject.Value.Value);
             }
         }
 
         useSkills.Clear();
     }
 
-    public void AddSkill(string name, Skill skill, IObjectPool<Skill> skillPool)
+    public void AddSkill(string name, Skill skill, ZedSkillType type, IObjectPool<Skill> skillPool)
     {
         if (skill == null)
             return;
@@ -95,10 +97,13 @@ public class ZedShadow : ShotSkill
         if (isReady)
         {
             UseCopySkill(skill, skillPool);
+            StartAnimation(type);
             return;
         }
 
-        KeyValuePair<IObjectPool<Skill>, Skill> pair = new KeyValuePair<IObjectPool<Skill>, Skill>(skillPool, skill);
+        KeyValuePair<IObjectPool<Skill>, KeyValuePair<Skill, ZedSkillType>> pair = 
+            new KeyValuePair<IObjectPool<Skill>, KeyValuePair<Skill, ZedSkillType>>(skillPool, new KeyValuePair<Skill, ZedSkillType>(skill, type));
+
         if (skill.data.type == SkillType.Dash)
         {
             Vector3 point = Raycast.GetMousePointVec();
@@ -107,13 +112,18 @@ public class ZedShadow : ShotSkill
 
         if (!useSkills.ContainsKey(name))
         {
-            List<KeyValuePair<IObjectPool<Skill>, Skill>> pairList = new() { pair };
+            List<KeyValuePair<IObjectPool<Skill>, KeyValuePair<Skill, ZedSkillType>>> pairList = new() { pair };
             useSkills.Add(name, pairList);
         }
         else
         {
             useSkills[name].Add(pair);
         }
+    }
+
+    private void StartAnimation(ZedSkillType type)
+    {
+        animationController.UseSkill((int)type);
     }
 
     private void UseCopySkill(Skill skill, IObjectPool<Skill> skillPool)

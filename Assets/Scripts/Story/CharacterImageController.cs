@@ -22,11 +22,20 @@ public class CharacterImageController : MonoBehaviour
         SetImageOriginalColor(image, originalColor);
     }
 
+    public void SetActive(bool active)
+    {
+        if (image.gameObject.activeSelf == active)
+            return;
+
+        image.gameObject.SetActive(active);
+    }
+
     public void SetImage(Sprite sp)
     {
         if (sp == null)
             return;
 
+        image.gameObject.SetActive(true);
         image.sprite = sp;
     }
 

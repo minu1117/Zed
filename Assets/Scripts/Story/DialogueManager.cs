@@ -22,6 +22,9 @@ public struct TalkData
     public string name;
     public string talk;
     public string address;
+    public bool isEnabled;
+    public bool shake;
+    public bool bounce;
 }
 
 public class DialogueManager : Singleton<DialogueManager>
@@ -47,6 +50,9 @@ public class DialogueManager : Singleton<DialogueManager>
     private string characterNameColumnStr;
     private string textColumnStr;
     private string addressColumnStr;
+    private string enabledColumnStr;
+    private string shakeColumnStr;
+    private string bounceColumnStr;
 
     private string endStr;
     private string lineSplitStr;
@@ -77,6 +83,9 @@ public class DialogueManager : Singleton<DialogueManager>
         emptySellStr = "-";
         addressWhiteSpaceStr = "_";
         addressNormalImageStr = "normal";
+        enabledColumnStr = "IsEnabled";
+        shakeColumnStr = "Shake";
+        bounceColumnStr = "Bounce";
 
         currentTalkImages = new Dictionary<string, Sprite>();
         blinkWait = new WaitForSeconds(blinkTime);
@@ -111,7 +120,10 @@ public class DialogueManager : Singleton<DialogueManager>
                 {
                     name = textData[characterNameColumnStr].ToString(),
                     talk = textData[textColumnStr].ToString(),
-                    address = textData[addressColumnStr].ToString()
+                    address = textData[addressColumnStr].ToString(),
+                    isEnabled = textData[enabledColumnStr].ToString() != string.Empty ? Convert.ToBoolean(textData[enabledColumnStr]) : true,
+                    shake = textData[shakeColumnStr].ToString() != string.Empty ? Convert.ToBoolean(textData[shakeColumnStr]) : false,
+                    bounce = textData[bounceColumnStr].ToString() != string.Empty ? Convert.ToBoolean(textData[bounceColumnStr]) : false
                 };
 
                 // 저장한 대화에서 개행 처리를 해야 할 경우
@@ -165,7 +177,7 @@ public class DialogueManager : Singleton<DialogueManager>
 
     private async Task ApplyImage(TalkData data, Image image)
     {
-        if (data.name == null || data.name == string.Empty || data.name == emptySellStr)
+        if (data.name == null || data.name == string.Empty || data.name == emptySellStr || !data.isEnabled)
         {
             image.gameObject.SetActive(false);
             return;
@@ -209,6 +221,8 @@ public class DialogueManager : Singleton<DialogueManager>
         }
 
         // TalkData가 할당 되지 않았을 경우 캐릭터가 없는 것으로 판단, 이미지 오브젝트 비활성화
+        leftCharacterImage.SetActive(false);
+        rightCharacterImage.SetActive(false);
         await ApplyImage(firstZedData, leftCharacterImage.image);
         await ApplyImage(firstOtherData, rightCharacterImage.image);
 
@@ -219,6 +233,9 @@ public class DialogueManager : Singleton<DialogueManager>
         List<string> addresses = new List<string>();
         foreach (var data in currentTalkData)
         {
+            if (data.isEnabled == false || data.address == emptySellStr)
+                continue;
+
             addresses.Add(data.address);
         }
 
@@ -286,21 +303,32 @@ public class DialogueManager : Singleton<DialogueManager>
 
         // true : 왼쪽 이미지(주인공 자리)의 sprite 변경, 오른쪽 이미지의 색상 변경 (그림자 진 느낌의 색상으로)
         // false : true의 반대
-        if (currentDialogue.name != string.Empty || currentDialogue.name != emptySellStr)
+        if (currentDialogue.name != string.Empty && currentDialogue.name != emptySellStr)
         {
             if (isZed)
             {
-                leftCharacterImage.SetImage(FindImage(currentDialogue.address));
-                leftCharacterImage.AdjustImageColor(rightCharacterImage.image);
+                ContorollCharacterImage(leftCharacterImage, rightCharacterImage, currentDialogue);
             }
             else
             {
-                rightCharacterImage.SetImage(FindImage(currentDialogue.address));
-                rightCharacterImage.AdjustImageColor(leftCharacterImage.image);
+                ContorollCharacterImage(rightCharacterImage, leftCharacterImage, currentDialogue);
             }
         }
 
         messageCoroutine = StartCoroutine(CoDoText(dialogueTMP, message, type));
+    }
+
+    private void ContorollCharacterImage(CharacterImageController image, CharacterImageController counterpartImage, TalkData currentDialogue)
+    {
+        image.SetImage(FindImage(currentDialogue.address));
+        image.AdjustImageColor(counterpartImage.image);
+        image.SetActive(currentDialogue.isEnabled);
+
+        if (currentDialogue.shake)
+            image.Shake();
+
+        if (currentDialogue.bounce)
+            image.JumpVertically();
     }
 
     private IEnumerator CoDoText(TextMeshProUGUI text, string endValue, TypingType type)
@@ -322,8 +350,6 @@ public class DialogueManager : Singleton<DialogueManager>
 
         if (timer == null)
             yield break;
-
-        //StartCoroutine(CoBlinkDialoguePanel());
 
         text.text = string.Empty;
         for (int i = 0; i < endValue.Length; i++)
@@ -353,7 +379,7 @@ public class DialogueManager : Singleton<DialogueManager>
 
     private Sprite FindImage(string address)
     {
-        if (currentTalkImages == null || currentTalkImages.Count == 0)
+        if (currentTalkImages == null || currentTalkImages.Count == 0 || address == emptySellStr)
             return null;
 
         return currentTalkImages[address];
@@ -363,32 +389,6 @@ public class DialogueManager : Singleton<DialogueManager>
     {
         this.character = character;
     }
-    //private void SetCurrentTalkImage(Image image, string address)
-    //{
-    //    if (currentTalkImages == null || currentTalkImages.Count == 0)
-    //        return;
-
-    //    image.sprite = currentTalkImages[address];
-    //}
-
-    //private void AdjustImageColor(Image currentTalkCharacterImage, Image notTalkingCharacterImage)
-    //{
-    //    SetShadowImage(notTalkingCharacterImage);
-    //    SetImageOriginalColor(currentTalkCharacterImage, originalColor);
-    //}
-
-    //private void SetShadowImage(Image image)
-    //{
-    //    if (image.gameObject.activeSelf == false)
-    //        return;
-
-    //    image.color = shadowColor;
-    //}
-
-    //private void SetImageOriginalColor(Image image, Color originalColor)
-    //{
-    //    image.color = originalColor;
-    //}
 
     public void Update()
     {

@@ -12,6 +12,9 @@ public class SkillButton : MonoBehaviour
 
     public void Awake()
     {
+        if (skill == null)
+            return;
+
         poolObject = new GameObject($"{skill.data.skillName}");
         skillPool = new ObjectPool<Skill>
                     (

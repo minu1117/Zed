@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DashSkill : Skill
 {
-    public Vector3 movePoint;
+    private Vector3 movePoint;
 
     public override void Use(GameObject character)
     {
@@ -46,6 +46,7 @@ public class DashSkill : Skill
         yield return waitimmobilityTime;
 
         OnComplate();
+        movePoint = Vector3.zero;
         OnMoveCharacter(character);
     }
 }
