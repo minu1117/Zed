@@ -340,6 +340,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skillParamName: SkillType
+  skillTriggerName: 
 --- !u!4 &8822124168629930503 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1132794777874286372, guid: 93973039f98db8940a7d8fb02dd4c4b1, type: 3}

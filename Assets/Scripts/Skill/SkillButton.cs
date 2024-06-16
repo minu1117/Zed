@@ -56,7 +56,7 @@ public class SkillButton : MonoBehaviour
         yield return new WaitForSeconds(useSkill.data.useDelay);
 
         Vector3 startPosition = character.gameObject.transform.position;
-        if (character.TryGetComponent(out DemoChampion champion))
+        if (character.TryGetComponent(out ChampBase champion))
         {
             startPosition = champion.shotStartTransform.position;
         }

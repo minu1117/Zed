@@ -30,7 +30,7 @@ public class Skill : MonoBehaviour, IDamageable
 
     public void SetPool(IObjectPool<Skill> pool) { this.pool = pool; }
 
-    public void DealDamage(DemoChampion target)
+    public void DealDamage(ChampBase target)
     {
         target.OnDamage(data.damage);
     }
@@ -79,13 +79,13 @@ public class Skill : MonoBehaviour, IDamageable
 
     private void DealDamage(GameObject target)
     {
-        if (target.TryGetComponent(out DemoChampion champion))
+        if (target.TryGetComponent(out ChampBase champion))
         {
             if (champion.data.charactorName == "Zed")
                 return;
 
             DealDamage(champion);
-            Debug.Log($"{champion.data.charactorName} : {champion.data.currentHp}/{champion.data.maxhp}, {data.damage} Damage, {data.skillName}");
+            //Debug.Log($"{champion.data.charactorName} : {champion.data.currentHp}/{champion.data.maxhp}, {data.damage} Damage, {data.skillName}");
         }
     }
 
