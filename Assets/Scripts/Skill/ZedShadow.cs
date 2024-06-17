@@ -96,6 +96,7 @@ public class ZedShadow : ShotSkill
 
         if (isReady)
         {
+            usePoint = GetUsePoint();
             UseCopySkill(skill, skillPool);
             StartAnimation(type);
             return;

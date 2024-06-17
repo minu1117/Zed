@@ -26,8 +26,14 @@ public class HPController : MonoBehaviour
         slider.value = data.currentHp / data.maxhp;
     }
 
+    public void SetMaxHP()
+    {
+        data.currentHp = data.maxhp;
+        SetCurrentHP(data.maxhp);
+    }
+
     public void Update()
     {
-        slider.gameObject.transform.localRotation = cam.transform.localRotation;
+        slider.gameObject.transform.rotation = cam.transform.rotation;
     }
 }

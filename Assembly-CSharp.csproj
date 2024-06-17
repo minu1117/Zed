@@ -69,11 +69,13 @@
     <Compile Include="Assets\Scripts\Skill\BuffSkill.cs" />
     <Compile Include="Assets\Scripts\Utility\CSVReader.cs" />
     <Compile Include="Assets\Scripts\Skill\CharacterData.cs" />
+    <Compile Include="Assets\Scripts\Enemy\EnemyGenerator.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterImageController.cs" />
     <Compile Include="Assets\Scripts\Skill\ZedShadow.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterAnimationController.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterMoveController.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillType.cs" />
+    <Compile Include="Assets\Scripts\Enemy\Enemy.cs" />
     <Compile Include="Assets\Scripts\Character\HPController.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillData.cs" />
     <Compile Include="Assets\Scripts\Character\ChampBase.cs" />

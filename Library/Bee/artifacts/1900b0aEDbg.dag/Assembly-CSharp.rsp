@@ -381,6 +381,8 @@
 "Assets/Scripts/Character/IDamageable.cs"
 "Assets/Scripts/Character/SingletonChampion.cs"
 "Assets/Scripts/Character/Zed.cs"
+"Assets/Scripts/Enemy/Enemy.cs"
+"Assets/Scripts/Enemy/EnemyGenerator.cs"
 "Assets/Scripts/Skill/BuffSkill.cs"
 "Assets/Scripts/Skill/CharacterData.cs"
 "Assets/Scripts/Skill/DashSkill.cs"

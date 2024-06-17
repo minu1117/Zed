@@ -5,12 +5,14 @@ public class ChampBase : MonoBehaviour
     public CharacterData data;
     public SkillSlot slot;
     public Transform shotStartTransform;
-    private HPController controller;
+    private HPController hpController;
 
     protected virtual void Awake() 
     {
-        controller = GetComponent<HPController>();
+        hpController = GetComponent<HPController>();
     }
+
+    public HPController GetHPController() { return hpController; }
 
     public Skill UseSkill(string key)
     {
@@ -39,8 +41,14 @@ public class ChampBase : MonoBehaviour
         else
         {
             data.currentHp = 0;
+            OnDead();
         }
 
-        controller.SetCurrentHP(data.currentHp);
+        hpController.SetCurrentHP(data.currentHp);
+    }
+
+    public virtual void OnDead()
+    {
+        Destroy(gameObject);
     }
 }
