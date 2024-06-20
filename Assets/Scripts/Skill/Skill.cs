@@ -30,9 +30,9 @@ public class Skill : MonoBehaviour, IDamageable
 
     public void SetPool(IObjectPool<Skill> pool) { this.pool = pool; }
 
-    public void DealDamage(ChampBase target)
+    public void DealDamage(ChampBase target, float damage)
     {
-        target.OnDamage(data.damage);
+        target.OnDamage(damage);
     }
 
     public void OnCollisionEnter(Collision collision)
@@ -84,7 +84,7 @@ public class Skill : MonoBehaviour, IDamageable
             if (champion.data.charactorName == "Zed")
                 return;
 
-            DealDamage(champion);
+            DealDamage(champion, data.damage);
             //Debug.Log($"{champion.data.charactorName} : {champion.data.currentHp}/{champion.data.maxhp}, {data.damage} Damage, {data.skillName}");
         }
     }
@@ -124,6 +124,8 @@ public class Skill : MonoBehaviour, IDamageable
     protected void ReleaseFunc()
     {
         OnComplate();
+
+        if (pool == null) return;
         pool.Release(this);
     }
 }

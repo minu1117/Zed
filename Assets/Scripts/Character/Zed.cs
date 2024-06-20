@@ -1,17 +1,22 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Pool;
 
 public class Zed : SingletonChampion<Zed>
 {
+    public Weapon L_Hand_Blade;
+    public Weapon R_Hand_Blade;
     public Dictionary<int, ZedShadow> shadows = new();
-    private CharacterAnimationController animationController;
     private ZedSkillType type;
 
     protected override void Awake()
     {
         base.Awake();
-        animationController = GetComponent<CharacterAnimationController>();
+        if (L_Hand_Blade != null)
+            L_Hand_Blade.SetDamage(autoAttack.data.damage);
+        if (R_Hand_Blade != null)
+            R_Hand_Blade.SetDamage(autoAttack.data.damage);
     }
 
     public void Update()
@@ -57,6 +62,12 @@ public class Zed : SingletonChampion<Zed>
         if (Input.GetKeyDown(KeyCode.T))
         {
             UseSkill("T");
+        }
+
+        if (Input.GetMouseButtonDown((int)MouseButton.Left))
+        {
+            FinishedAttack();
+            Attack();
         }
     }
 
@@ -104,5 +115,22 @@ public class Zed : SingletonChampion<Zed>
         shadow.transform.position = position;
         gameObject.transform.rotation = shadowRotation;
         shadow.transform.rotation = rotation;
+    }
+
+    // Animation Event
+    public void OnLeftAttack()
+    {
+        L_Hand_Blade.OnReady();
+    }
+
+    public void OnRightAttack()
+    {
+        R_Hand_Blade.OnReady();
+    }
+
+    public void FinishedAttack()
+    {
+        L_Hand_Blade.OnFinished();
+        R_Hand_Blade.OnFinished();
     }
 }

@@ -4,7 +4,9 @@ using UnityEngine.Pool;
 
 public class Enemy : ChampBase
 {
-    private CharacterAnimationController animationController;
+    public float attackRange;
+    public float skillRange;
+
     private Rigidbody rb;
     private NavMeshAgent agent;
     private GameObject target;
@@ -14,7 +16,6 @@ public class Enemy : ChampBase
     {
         base.Awake();
         slot = GetComponent<SkillSlot>();
-        animationController = GetComponent<CharacterAnimationController>();
         agent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
 
@@ -39,6 +40,11 @@ public class Enemy : ChampBase
 
     public void Update()
     {
-        agent.SetDestination(target.transform.position); 
+        agent.SetDestination(target.transform.position);
+
+        if (Vector3.Distance(gameObject.transform.position, target.transform.position) <= attackRange)
+        {
+
+        }
     }
 }

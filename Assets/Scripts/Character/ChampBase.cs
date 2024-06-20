@@ -3,16 +3,39 @@ using UnityEngine;
 public class ChampBase : MonoBehaviour
 {
     public CharacterData data;
+    public AutoAttack autoAttack;
     public SkillSlot slot;
     public Transform shotStartTransform;
+    //public Weapon weapon;
+    protected CharacterAnimationController animationController;
     private HPController hpController;
 
     protected virtual void Awake() 
     {
         hpController = GetComponent<HPController>();
+        animationController = GetComponent<CharacterAnimationController>();
+
+        //if (weapon != null)
+        //    weapon.SetDamage(autoAttack.data.damage);
     }
 
     public HPController GetHPController() { return hpController; }
+
+    public void Attack()
+    {
+        animationController.Attack(autoAttack.data.attackSpeed);
+        autoAttack.Attack(gameObject);
+    }
+
+    //public void OnAttack()
+    //{
+    //    weapon.OnReady();
+    //}
+
+    //public void FinishedAttack()
+    //{
+    //    weapon.OnFinished();
+    //}
 
     public Skill UseSkill(string key)
     {

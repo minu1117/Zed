@@ -4,6 +4,10 @@ public class CharacterAnimationController : MonoBehaviour
 {
     public string skillParamName;
     public string skillTriggerName;
+    public string autoAttackTriggerName;
+    public string attackSpeedParamName;
+    public string attackTypeParamName;
+    public AutoAttackEnum maxAutoAttackEnum;
     private Animator animator;
 
     private void Awake()
@@ -15,6 +19,13 @@ public class CharacterAnimationController : MonoBehaviour
     {
         SetFloat("Horizontal", movement.x);
         SetFloat("Vertical", movement.y);
+    }
+
+    public void Attack(float attackSpeed)
+    {
+        SetInteger(attackTypeParamName, Random.Range(0, (int)maxAutoAttackEnum + 1));
+        SetFloat(attackSpeedParamName, attackSpeed);
+        SetTrigger(autoAttackTriggerName);
     }
 
     public void UseSkill(int enumIndex)
@@ -39,5 +50,10 @@ public class CharacterAnimationController : MonoBehaviour
     public void SetBool(string name, bool value)
     {
         animator.SetBool(name, value);
+    }
+
+    public void SetInteger(string name, int value)
+    {
+        animator.SetInteger(name, value);
     }
 }
