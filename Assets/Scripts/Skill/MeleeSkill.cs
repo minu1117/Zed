@@ -5,7 +5,7 @@ public class MeleeSkill : Skill
 {
     public override void Use(GameObject character)
     {
-        if (!isComplated || isCoolTime)
+        if (!IsUsed())
             return;
 
         base.Use(character);

@@ -16,6 +16,10 @@ public class CharacterMoveController : MonoBehaviour
     private NavMeshAgent agent;
     private Vector2 movement = Vector2.zero;
 
+    private bool isRunning = false;
+    private Vector2 runVec = Vector2.zero;
+    private float sensitvity = 8.5f;
+
     public void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -40,6 +44,7 @@ public class CharacterMoveController : MonoBehaviour
         {
             movement.x = Input.GetAxis("Horizontal");
             movement.y = Input.GetAxis("Vertical");
+            Run();
 
             Vector3 moveDirection = (movement.y * normalizedCameraForward + movement.x * normalizedCameraRight).normalized;
             dir = moveDirection * moveSpeed;
@@ -59,13 +64,29 @@ public class CharacterMoveController : MonoBehaviour
 
     public void Update()
     {
-        animationController.UpdateMoveAnimation(movement);
+        animationController.UpdateMoveAnimation(movement + runVec);
+    }
+
+    private void Run()
+    {
+        isRunning = Input.GetKey(KeyCode.LeftShift);
+        if (isRunning)
+        {
+            runVec += movement * (sensitvity * Time.deltaTime);
+            runVec.x = Mathf.Clamp(runVec.x, -1, 1);
+            runVec.y = Mathf.Clamp(runVec.y, -1, 1);
+        }
+        else
+        {
+            runVec = Vector2.zero;
+        }
     }
 
     public void StopMove()
     {
         isMoved = false;
         movement = Vector2.zero;
+        runVec = Vector2.zero;
         dir = Vector3.zero;
         rb.velocity = dir;
     }

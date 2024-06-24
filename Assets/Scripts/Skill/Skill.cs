@@ -5,10 +5,13 @@ using UnityEngine.Pool;
 public class Skill : MonoBehaviour, IDamageable
 {
     public SkillData data;
+    public bool isTargeting;
     protected IObjectPool<Skill> pool;
     protected bool isComplated = true;
-    protected bool isCoolTime;
+    protected bool isCoolTime = false;
     protected bool isUsed;
+
+    protected Vector3 startPos;
 
     protected WaitForSeconds waitUseDelay;
     protected WaitForSeconds waitduration;
@@ -40,6 +43,11 @@ public class Skill : MonoBehaviour, IDamageable
         Collide(collision.gameObject);
     }
 
+    public void SetStartPos(Vector3 pos)
+    {
+        startPos = pos;
+    }
+
     public void SetPosition(Vector3 pos)
     {
         transform.position = pos;
@@ -55,12 +63,12 @@ public class Skill : MonoBehaviour, IDamageable
         gameObject.SetActive(active);
     }
 
-    private void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
         Collide(other.gameObject);
     }
 
-    private void Collide(GameObject obj)
+    protected virtual void Collide(GameObject obj)
     {
         if (data.isShadow)
             return;
@@ -127,5 +135,13 @@ public class Skill : MonoBehaviour, IDamageable
 
         if (pool == null) return;
         pool.Release(this);
+    }
+
+    public virtual bool IsUsed()
+    {
+        if (!isComplated || isCoolTime)
+            return false;
+
+        return true;
     }
 }

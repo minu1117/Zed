@@ -17,7 +17,7 @@ public class CharacterAnimationController : MonoBehaviour
 
     public void UpdateMoveAnimation(Vector2 movement)
     {
-        SetFloat("Horizontal", movement.x);
+        SetFloat("Horizontal",  movement.x);
         SetFloat("Vertical", movement.y);
     }
 

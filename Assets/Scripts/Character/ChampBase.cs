@@ -6,17 +6,13 @@ public class ChampBase : MonoBehaviour
     public AutoAttack autoAttack;
     public SkillSlot slot;
     public Transform shotStartTransform;
-    //public Weapon weapon;
     protected CharacterAnimationController animationController;
     private HPController hpController;
 
-    protected virtual void Awake() 
+    protected virtual void Awake()
     {
         hpController = GetComponent<HPController>();
         animationController = GetComponent<CharacterAnimationController>();
-
-        //if (weapon != null)
-        //    weapon.SetDamage(autoAttack.data.damage);
     }
 
     public HPController GetHPController() { return hpController; }
@@ -27,17 +23,7 @@ public class ChampBase : MonoBehaviour
         autoAttack.Attack(gameObject);
     }
 
-    //public void OnAttack()
-    //{
-    //    weapon.OnReady();
-    //}
-
-    //public void FinishedAttack()
-    //{
-    //    weapon.OnFinished();
-    //}
-
-    public Skill UseSkill(string key)
+    public Skill UseSkill(string key, string layerMask = "")
     {
         if (slot == null)
             return null;
@@ -48,7 +34,7 @@ public class ChampBase : MonoBehaviour
 
         Skill skill = null;
         if (skillDict[key].skill.data.type != SkillType.Dash)
-            skill = skillDict[key].StartSkill(gameObject);
+            skill = skillDict[key].StartSkill(gameObject, layerMask);
         else
             skill = skillDict[key].OnDash(gameObject);
 

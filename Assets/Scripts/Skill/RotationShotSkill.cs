@@ -19,7 +19,7 @@ public class RotationShotSkill : ShotSkill
 
     public override void Use(GameObject charactor)
     {
-        if (!isComplated || isCoolTime)
+        if (!IsUsed())
             return;
 
         base.Use(charactor);

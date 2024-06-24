@@ -18,7 +18,7 @@ public class ZedShadow : ShotSkill
     private Rigidbody rb;
     private Vector3 usePoint;
 
-    private Dictionary<string, List<KeyValuePair<IObjectPool<Skill>, KeyValuePair<Skill, ZedSkillType>>>> useSkills;
+    private Dictionary<string, List<KeyValuePair<IObjectPool<Skill>, KeyValuePair<KeyValuePair<Skill, ZedSkillType>, GameObject>>>> useSkills;
     private CharacterAnimationController animationController;
 
     public override void Awake()
@@ -81,15 +81,21 @@ public class ZedShadow : ShotSkill
         {
             foreach (var skillObject in skillPairList.Value)
             {
-                UseCopySkill(skillObject.Value.Key, skillObject.Key);
-                StartAnimation(skillObject.Value.Value);
+                var pool = skillObject.Key;
+
+                var skill = skillObject.Value.Key.Key;
+                var target = skillObject.Value.Value;
+                var animationSkillType = skillObject.Value.Key.Value;
+
+                UseCopySkill(skill, pool, target);
+                StartAnimation(animationSkillType);
             }
         }
 
         useSkills.Clear();
     }
 
-    public void AddSkill(string name, Skill skill, ZedSkillType type, IObjectPool<Skill> skillPool)
+    public void AddSkill(string name, Skill skill, ZedSkillType type, IObjectPool<Skill> skillPool, GameObject target = null)
     {
         if (skill == null)
             return;
@@ -97,13 +103,18 @@ public class ZedShadow : ShotSkill
         if (isReady)
         {
             usePoint = GetUsePoint();
-            UseCopySkill(skill, skillPool);
+            UseCopySkill(skill, skillPool, target);
             StartAnimation(type);
             return;
         }
 
-        KeyValuePair<IObjectPool<Skill>, KeyValuePair<Skill, ZedSkillType>> pair = 
-            new KeyValuePair<IObjectPool<Skill>, KeyValuePair<Skill, ZedSkillType>>(skillPool, new KeyValuePair<Skill, ZedSkillType>(skill, type));
+        //KeyValuePair<IObjectPool<Skill>, KeyValuePair<Skill, ZedSkillType>> pair = 
+        //    new KeyValuePair<IObjectPool<Skill>, KeyValuePair<Skill, ZedSkillType>>(skillPool, new KeyValuePair<Skill, ZedSkillType>(skill, type));
+
+        var pair =
+            new KeyValuePair<IObjectPool<Skill>, KeyValuePair<KeyValuePair<Skill, ZedSkillType>, GameObject>> (skillPool,
+            new KeyValuePair<KeyValuePair<Skill, ZedSkillType>, GameObject>(
+            new KeyValuePair<Skill, ZedSkillType>(skill, type), target));
 
         if (skill.data.type == SkillType.Dash)
         {
@@ -113,7 +124,8 @@ public class ZedShadow : ShotSkill
 
         if (!useSkills.ContainsKey(name))
         {
-            List<KeyValuePair<IObjectPool<Skill>, KeyValuePair<Skill, ZedSkillType>>> pairList = new() { pair };
+            //List<KeyValuePair<IObjectPool<Skill>, KeyValuePair<Skill, ZedSkillType>>> pairList = new() { pair };
+            List<KeyValuePair<IObjectPool<Skill>, KeyValuePair<KeyValuePair<Skill, ZedSkillType>, GameObject>>> pairList = new() { pair };
             useSkills.Add(name, pairList);
         }
         else
@@ -127,7 +139,7 @@ public class ZedShadow : ShotSkill
         animationController.UseSkill((int)type);
     }
 
-    private void UseCopySkill(Skill skill, IObjectPool<Skill> skillPool)
+    private void UseCopySkill(Skill skill, IObjectPool<Skill> skillPool, GameObject target = null)
     {
         if (skill.data.type == SkillType.Dash)
         {
@@ -135,10 +147,10 @@ public class ZedShadow : ShotSkill
             return;
         }
 
-        StartCoroutine(CoUseCopySkill(skill, skillPool));
+        StartCoroutine(CoUseCopySkill(skill, skillPool, target));
     }
 
-    private IEnumerator CoUseCopySkill(Skill skill, IObjectPool<Skill> skillPool)
+    private IEnumerator CoUseCopySkill(Skill skill, IObjectPool<Skill> skillPool, GameObject target = null)
     {
         if (skill.data.isShadow)
             yield break;
@@ -148,8 +160,22 @@ public class ZedShadow : ShotSkill
         transform.LookAt(usePoint);
 
         var skillObject = skillPool.Get();
+        if (skillObject.isTargeting)
+        {
+            if (target == null)
+            {
+                skillPool.Release(skillObject);
+            }
+            else
+            {
+                var targetingSkill = skillObject.GetComponent<TargetingSkill>();
+                targetingSkill.SetTarget(target);
+            }
+        }
+
         skillObject.SetPool(skillPool);
         skillObject.SetPosition(shotStartTransform.position);
+        skillObject.SetStartPos(shotStartTransform.position);
         skillObject.SetRotation(transform.rotation);
 
         skillObject.Use(gameObject);

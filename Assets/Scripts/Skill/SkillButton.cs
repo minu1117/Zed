@@ -37,14 +37,34 @@ public class SkillButton : MonoBehaviour
         return dash;
     }
 
-    public Skill StartSkill(GameObject character)
+    public Skill StartSkill(GameObject character, string layerMask)
     {
         Vector3 point = Raycast.GetMousePointVec();
-
         point.y = character.transform.position.y;
 
         var useSkill = skillPool.Get();
-        StartCoroutine(WaitUseSkill(useSkill, character, point));
+        if (useSkill.isTargeting)
+        {
+            var findTarget = Raycast.FindMousePosTarget(layerMask);
+            if (!findTarget.Item2)
+            {
+                skillPool.Release(useSkill);
+                return null;
+            }
+            else
+            {
+                var targetingSkill = useSkill.GetComponent<TargetingSkill>();
+                targetingSkill.SetTarget(findTarget.Item1);
+            }    
+        }
+
+        if (useSkill.IsUsed())
+            StartCoroutine(WaitUseSkill(useSkill, character, point));
+        else
+        {
+            skillPool.Release(useSkill);
+            return null;
+        }
 
         return useSkill;
     }
@@ -52,7 +72,6 @@ public class SkillButton : MonoBehaviour
     private IEnumerator WaitUseSkill(Skill useSkill, GameObject character, Vector3 lookAtPoint)
     {
         useSkill.SetActive(false);
-
         yield return new WaitForSeconds(useSkill.data.useDelay);
 
         Vector3 startPosition = character.gameObject.transform.position;
@@ -64,6 +83,7 @@ public class SkillButton : MonoBehaviour
         character.transform.LookAt(lookAtPoint);
         useSkill.SetActive(true);
         useSkill.SetPosition(startPosition);
+        useSkill.SetStartPos(startPosition);
         useSkill.SetRotation(character.transform.rotation);
 
         if (skill.data.isShadow && character.TryGetComponent(out Zed zed) && useSkill.TryGetComponent(out ZedShadow shadow))

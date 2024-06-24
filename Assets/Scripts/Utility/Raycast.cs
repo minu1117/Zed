@@ -4,15 +4,6 @@ public static class Raycast
 {
     public static Vector3 GetMousePointVec()
     {
-        //var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //RaycastHit hit;
-        //int layerMask = LayerMask.GetMask("Plane");
-
-        //if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
-        //{
-        //    return hit.point;
-        //}
-
         Vector3 point = Input.mousePosition;
         string layerMaskName = "Plane";
         var hit = GetHit(point, layerMaskName);
@@ -23,17 +14,28 @@ public static class Raycast
         return hit.point;
     }
 
-    public static RaycastHit GetHit(Vector3 point, string layerMaskName)
+    public static RaycastHit GetHit(Vector3 point, string layerMask)
     {
         var ray = Camera.main.ScreenPointToRay(point);
         RaycastHit hit;
-        int layerMask = LayerMask.GetMask(layerMaskName);
+        int mask = LayerMask.GetMask(layerMask);
 
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask))
         {
             return hit;
         }
 
         return default;
+    }
+
+    public static (GameObject, bool) FindMousePosTarget(string layerMask)
+    {
+        var hit = GetHit(Input.mousePosition, layerMask);
+        if (hit.collider != null)
+        {
+            return (hit.collider.gameObject, true);
+        }
+
+        return (null, false);
     }
 }

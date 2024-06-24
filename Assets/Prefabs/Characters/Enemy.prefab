@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 5190458302311898433}
   m_Layer: 8
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -166,8 +166,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 5d5de18e6f5a9fb438b35a6556ae5831, type: 2}
+  autoAttack: {fileID: 0}
   slot: {fileID: 0}
   shotStartTransform: {fileID: 0}
+  attackRange: 0
+  skillRange: 0
 --- !u!195 &5190458302311898433
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -201,6 +204,14 @@ PrefabInstance:
     - target: {fileID: 873376772109896961, guid: 67a35189f3cdcb547b304954f3d60155, type: 3}
       propertyPath: m_Name
       value: HPCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 873376772109896961, guid: 67a35189f3cdcb547b304954f3d60155, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2931287902923476518, guid: 67a35189f3cdcb547b304954f3d60155, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4378175763654570475, guid: 67a35189f3cdcb547b304954f3d60155, type: 3}
       propertyPath: m_PresetInfoIsWorld
@@ -286,13 +297,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6534804822029099134, guid: 67a35189f3cdcb547b304954f3d60155, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 8091350614268797807, guid: 67a35189f3cdcb547b304954f3d60155, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -31
       objectReference: {fileID: 0}
+    - target: {fileID: 8619470638673346738, guid: 67a35189f3cdcb547b304954f3d60155, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 8656114263242928124, guid: 67a35189f3cdcb547b304954f3d60155, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9031134013317966689, guid: 67a35189f3cdcb547b304954f3d60155, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -6,7 +6,7 @@ public class ShotSkill : Skill
 {
     public override void Use(GameObject character)
     {
-        if (!isComplated || isCoolTime)
+        if (!IsUsed())
             return;
 
         base.Use(character);
@@ -16,8 +16,9 @@ public class ShotSkill : Skill
     private IEnumerator CoShot(Vector3 startVec)
     {
         // 나아갈 거리 미리 계산
-        Vector3 totalMovement = startVec.normalized * data.duration * data.speed;
-        transform.DOMove(transform.position + totalMovement, data.duration)
+        Vector3 totalMovement = transform.position + (startVec.normalized * data.duration * data.speed);
+        //transform.DOMove(transform.position + totalMovement, data.duration)
+        transform.DOMove(totalMovement, data.duration)
                  .SetEase(Ease.Linear)
                  .OnComplete(() => ReleaseFunc());
 

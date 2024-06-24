@@ -13,20 +13,32 @@ public class Zed : SingletonChampion<Zed>
     protected override void Awake()
     {
         base.Awake();
-        if (L_Hand_Blade != null)
-            L_Hand_Blade.SetDamage(autoAttack.data.damage);
-        if (R_Hand_Blade != null)
-            R_Hand_Blade.SetDamage(autoAttack.data.damage);
+        if (L_Hand_Blade != null) L_Hand_Blade.SetDamage(autoAttack.data.damage);
+        if (R_Hand_Blade != null) R_Hand_Blade.SetDamage(autoAttack.data.damage);
     }
 
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            Skill useSkill = UseSkill("Q");
+            Skill useSkill = UseSkill("Q", "Enemy");
             type = ZedSkillType.RazorShuriken;
             CopySkill("Q", useSkill, type, slot.GetSlotDict()["Q"].GetPool());
-            animationController.UseSkill((int)type);
+
+            if (useSkill != null)
+                animationController.UseSkill((int)type);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            Skill useSkill = UseSkill("Y", "Enemy");
+            type = ZedSkillType.RazorShuriken;
+
+            var target = Raycast.FindMousePosTarget("Enemy");
+            CopySkill("Y", useSkill, type, slot.GetSlotDict()["Y"].GetPool(), target.Item1);
+
+            if (useSkill != null)
+                animationController.UseSkill((int)type);
         }
 
         if (Input.GetKeyDown(KeyCode.F)) 
@@ -34,7 +46,7 @@ public class Zed : SingletonChampion<Zed>
             var hit = Raycast.GetHit(Input.mousePosition, "Shadow");
             if (hit.collider == null)
             {
-                UseSkill("F");
+                UseSkill("F", "Enemy");
                 animationController.UseSkill((int)ZedSkillType.LivingShadow);
             }
             else
@@ -47,17 +59,21 @@ public class Zed : SingletonChampion<Zed>
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            Skill useSkill = UseSkill("E");
+            Skill useSkill = UseSkill("E", "Enemy");
             type = ZedSkillType.ShadowSlash;
             CopySkill("E", useSkill, type, slot.GetSlotDict()["E"].GetPool());
-            animationController.UseSkill((int)type);
+
+            if (useSkill != null)
+                animationController.UseSkill((int)type);
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Skill useSkill = UseSkill("R");
+            Skill useSkill = UseSkill("R", "Enemy");
             type = ZedSkillType.ShadowRush;
             CopySkill("R", useSkill, type, slot.GetSlotDict()["R"].GetPool());
-            animationController.UseSkill((int)type);
+
+            if (useSkill != null)
+                animationController.UseSkill((int)type);
         }
         if (Input.GetKeyDown(KeyCode.T))
         {
@@ -86,7 +102,7 @@ public class Zed : SingletonChampion<Zed>
         return shadows;
     }    
 
-    private void CopySkill(string skillKeyStr, Skill useSkill, ZedSkillType type, IObjectPool<Skill> skillPool)
+    private void CopySkill(string skillKeyStr, Skill useSkill, ZedSkillType type, IObjectPool<Skill> skillPool, GameObject target = null)
     {
         if (useSkill == null)
             return;
@@ -95,7 +111,7 @@ public class Zed : SingletonChampion<Zed>
         {
             foreach (var shadow in shadows)
             {
-                shadow.Value.AddSkill(skillKeyStr, useSkill, type, skillPool);
+                shadow.Value.AddSkill(skillKeyStr, useSkill, type, skillPool, target);
             }
         }
     }
