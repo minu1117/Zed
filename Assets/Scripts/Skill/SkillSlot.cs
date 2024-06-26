@@ -3,21 +3,41 @@ using UnityEngine;
 
 public class SkillSlot : Singleton<SkillSlot>
 {
-    [SerializeField] private List<SkillButton> buttons;
+    //[SerializeField] private List<SkillButton> buttons;
+    [SerializeField] private List<SkillButtonData> buttonDatas;
+    [SerializeField] private SkillButton buttonPrefab;
     private Dictionary<string, SkillButton> slotDict;
 
     protected override void Awake()
     {
         base.Awake();
 
+        if (buttonDatas == null || buttonDatas.Count == 0)
+            return;
+
+        if (buttonPrefab == null)
+            return;
+
         slotDict = new Dictionary<string, SkillButton>();
-        foreach (var button in buttons)
+        var slotObject = new GameObject("Skill_Slot");
+        slotObject.transform.SetParent(transform, false);
+
+        foreach (var buttonData in buttonDatas)
         {
-            slotDict.Add(button.skillKey, button);
+            var button = Instantiate(buttonPrefab);
+            button.transform.SetParent(slotObject.transform, false);
+            button.Init(buttonData);
+
+            slotDict.Add(buttonData.skillKey, button);
         }
+
+        //slotDict = new Dictionary<string, SkillButton>();
+        //foreach (var button in buttons)
+        //{
+        //    slotDict.Add(button.skillKey, button);
+        //}
     }
 
-    public List<SkillButton> GetButtons() { return buttons; }
     public Dictionary<string, SkillButton> GetSlotDict() { return slotDict; }
 
     //public void RenameKey(string currentKey, string newKey)

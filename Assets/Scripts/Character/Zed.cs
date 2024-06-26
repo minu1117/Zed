@@ -8,7 +8,6 @@ public class Zed : SingletonChampion<Zed>
     public Weapon L_Hand_Blade;
     public Weapon R_Hand_Blade;
     public Dictionary<int, ZedShadow> shadows = new();
-    private ZedSkillType type;
 
     protected override void Awake()
     {
@@ -19,35 +18,65 @@ public class Zed : SingletonChampion<Zed>
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        OnNoneTargetSkill(KeyCode.Q, ZedSkillType.RazorShuriken, "Q", true);
+        OnNoneTargetSkill(KeyCode.E, ZedSkillType.ShadowSlash, "E", true);
+        OnNoneTargetSkill(KeyCode.R, ZedSkillType.ShadowRush, "R", true);
+        OnNoneTargetSkill(KeyCode.T, ZedSkillType.LivingShadow, "T", false);
+
+        OnTargetingSkill(KeyCode.Y, ZedSkillType.RazorShuriken, "Y", true);
+
+        OnShadowSkill(KeyCode.F, ZedSkillType.LivingShadow, "F");
+
+        OnAutoAttack(MouseButton.Left);
+    }
+
+    private void OnAutoAttack(MouseButton mouseButton)
+    {
+        if (Input.GetMouseButtonDown((int)mouseButton))
         {
-            Skill useSkill = UseSkill("Q", "Enemy");
-            type = ZedSkillType.RazorShuriken;
-            CopySkill("Q", useSkill, type, slot.GetSlotDict()["Q"].GetPool());
+            FinishedAttack();
+            Attack();
+        }
+    }
+
+    private void OnNoneTargetSkill(KeyCode keyCode, ZedSkillType skillTypeEnum, string key, bool isCopy)
+    {
+        if (Input.GetKeyDown(keyCode))
+        {
+            Skill useSkill = UseSkill(key, EnumConverter.GetString(CharacterEnum.Enemy));
+
+            if (isCopy)
+                CopySkill(key, useSkill, skillTypeEnum, slot.GetSlotDict()[key].GetPool());
 
             if (useSkill != null)
-                animationController.UseSkill((int)type);
+                animationController.UseSkill((int)skillTypeEnum);
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.Y))
+    private void OnTargetingSkill(KeyCode keyCode, ZedSkillType skillTypeEnum, string key, bool isCopy)
+    {
+        if (Input.GetKeyDown(keyCode))
         {
-            Skill useSkill = UseSkill("Y", "Enemy");
-            type = ZedSkillType.RazorShuriken;
+            Skill useSkill = UseSkill(key, EnumConverter.GetString(CharacterEnum.Enemy));
+            var target = Raycast.FindMousePosTarget(EnumConverter.GetString(CharacterEnum.Enemy));
 
-            var target = Raycast.FindMousePosTarget("Enemy");
-            CopySkill("Y", useSkill, type, slot.GetSlotDict()["Y"].GetPool(), target.Item1);
+            if(isCopy)
+                CopySkill(key, useSkill, skillTypeEnum, slot.GetSlotDict()[key].GetPool(), target.Item1);
 
             if (useSkill != null)
-                animationController.UseSkill((int)type);
+                animationController.UseSkill((int)skillTypeEnum);
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.F)) 
+    private void OnShadowSkill(KeyCode keyCode, ZedSkillType skillTypeEnum, string key)
+    {
+        if (Input.GetKeyDown(keyCode))
         {
-            var hit = Raycast.GetHit(Input.mousePosition, "Shadow");
+            var hit = Raycast.GetHit(Input.mousePosition, EnumConverter.GetString(CharacterEnum.Shadow));
             if (hit.collider == null)
             {
-                UseSkill("F", "Enemy");
-                animationController.UseSkill((int)ZedSkillType.LivingShadow);
+                UseSkill(key, EnumConverter.GetString(CharacterEnum.Enemy));
+                animationController.UseSkill((int)skillTypeEnum);
             }
             else
             {
@@ -56,34 +85,6 @@ public class Zed : SingletonChampion<Zed>
                     TeleportShadow(shadow);
                 }
             }
-        }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Skill useSkill = UseSkill("E", "Enemy");
-            type = ZedSkillType.ShadowSlash;
-            CopySkill("E", useSkill, type, slot.GetSlotDict()["E"].GetPool());
-
-            if (useSkill != null)
-                animationController.UseSkill((int)type);
-        }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            Skill useSkill = UseSkill("R", "Enemy");
-            type = ZedSkillType.ShadowRush;
-            CopySkill("R", useSkill, type, slot.GetSlotDict()["R"].GetPool());
-
-            if (useSkill != null)
-                animationController.UseSkill((int)type);
-        }
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            UseSkill("T");
-        }
-
-        if (Input.GetMouseButtonDown((int)MouseButton.Left))
-        {
-            FinishedAttack();
-            Attack();
         }
     }
 
@@ -118,7 +119,7 @@ public class Zed : SingletonChampion<Zed>
 
     public void TeleportShadow(ZedShadow shadow)
     {
-        var hit = Raycast.GetHit(Input.mousePosition, "Shadow");
+        var hit = Raycast.GetHit(Input.mousePosition, EnumConverter.GetString(CharacterEnum.Shadow));
         if (hit.collider == null || !shadow.isReady)
             return;
 

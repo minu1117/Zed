@@ -108,9 +108,6 @@ public class ZedShadow : ShotSkill
             return;
         }
 
-        //KeyValuePair<IObjectPool<Skill>, KeyValuePair<Skill, ZedSkillType>> pair = 
-        //    new KeyValuePair<IObjectPool<Skill>, KeyValuePair<Skill, ZedSkillType>>(skillPool, new KeyValuePair<Skill, ZedSkillType>(skill, type));
-
         var pair =
             new KeyValuePair<IObjectPool<Skill>, KeyValuePair<KeyValuePair<Skill, ZedSkillType>, GameObject>> (skillPool,
             new KeyValuePair<KeyValuePair<Skill, ZedSkillType>, GameObject>(
@@ -119,12 +116,12 @@ public class ZedShadow : ShotSkill
         if (skill.data.type == SkillType.Dash)
         {
             Vector3 point = Raycast.GetMousePointVec();
-            dashSkill.SetPoint(point);
+            var dash = skill.GetComponent<DashSkill>();
+            dash.SetPoint(point);
         }
 
         if (!useSkills.ContainsKey(name))
         {
-            //List<KeyValuePair<IObjectPool<Skill>, KeyValuePair<Skill, ZedSkillType>>> pairList = new() { pair };
             List<KeyValuePair<IObjectPool<Skill>, KeyValuePair<KeyValuePair<Skill, ZedSkillType>, GameObject>>> pairList = new() { pair };
             useSkills.Add(name, pairList);
         }
@@ -141,12 +138,6 @@ public class ZedShadow : ShotSkill
 
     private void UseCopySkill(Skill skill, IObjectPool<Skill> skillPool, GameObject target = null)
     {
-        if (skill.data.type == SkillType.Dash)
-        {
-            UseCopyDash();
-            return;
-        }
-
         StartCoroutine(CoUseCopySkill(skill, skillPool, target));
     }
 
@@ -179,17 +170,6 @@ public class ZedShadow : ShotSkill
         skillObject.SetRotation(transform.rotation);
 
         skillObject.Use(gameObject);
-    }
-
-    public void UseCopyDash()
-    {
-        StartCoroutine(CoUseCopyDash());
-    }
-
-    private IEnumerator CoUseCopyDash()
-    {
-        yield return new WaitUntil(() => isReady == true);
-        dashSkill.Use(gameObject);
     }
 
     private Vector3 GetUsePoint()

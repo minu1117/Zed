@@ -26,27 +26,33 @@ public class DashSkill : Skill
     private IEnumerator CoDash(GameObject obj, Vector3 point)
     {
         var rb = obj.GetComponent<Rigidbody>();
-        CharacterMoveController character = GetStopCharacter(obj);
+        
+        if (obj.TryGetComponent<CharacterMoveController>(out var moveController))
+            moveController.isMoved = false;
 
         rb.velocity = Vector3.zero;
         point.y = obj.transform.position.y;
 
-        Vector3 LookAtDirection = (point == Vector3.zero) ? transform.forward : point;
-        Vector3 dashDirection = (point - transform.position).normalized;
+        Vector3 LookAtDirection = (point == Vector3.zero) ? obj.transform.forward : point;
+        Vector3 dashDirection = (point - obj.transform.position).normalized;
         obj.transform.LookAt(LookAtDirection);
 
         yield return waitUseDelay;
 
-        rb.velocity = dashDirection * data.speed;
+        if (rb != null)
+            rb.velocity = dashDirection * data.speed;
 
         yield return waitduration;
-        
-        rb.velocity = Vector3.zero;
+
+        if (rb != null)
+            rb.velocity = Vector3.zero;
 
         yield return waitimmobilityTime;
 
-        OnComplate();
         movePoint = Vector3.zero;
-        OnMoveCharacter(character);
+        if (moveController != null)
+            moveController.isMoved = true;
+
+        ReleaseFunc();
     }
 }

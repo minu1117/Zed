@@ -17,7 +17,7 @@ public class ShotSkill : Skill
     {
         // 나아갈 거리 미리 계산
         Vector3 totalMovement = transform.position + (startVec.normalized * data.duration * data.speed);
-        //transform.DOMove(transform.position + totalMovement, data.duration)
+
         transform.DOMove(totalMovement, data.duration)
                  .SetEase(Ease.Linear)
                  .OnComplete(() => ReleaseFunc());

@@ -1,6 +1,7 @@
 using UnityEngine.AI;
 using UnityEngine;
 using UnityEngine.Pool;
+using System.Collections.Generic;
 
 public class Enemy : ChampBase
 {
@@ -11,6 +12,8 @@ public class Enemy : ChampBase
     private NavMeshAgent agent;
     private GameObject target;
     private IObjectPool<Enemy> pool;
+
+    private List<string> skillKeys;
 
     protected override void Awake()
     {
@@ -44,7 +47,10 @@ public class Enemy : ChampBase
 
         if (Vector3.Distance(gameObject.transform.position, target.transform.position) <= attackRange)
         {
+            if (skillKeys == null || skillKeys.Count == 0)
+                return;
 
+            //UseSkill();
         }
     }
 }

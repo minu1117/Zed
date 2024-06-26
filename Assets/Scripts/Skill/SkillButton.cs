@@ -4,37 +4,26 @@ using UnityEngine.Pool;
 
 public class SkillButton : MonoBehaviour
 {
-    public string skillKey;
-    public Skill skill;
     private IObjectPool<Skill> skillPool;
     private GameObject poolObject;
+    private SkillButtonData buttonData;
     public static int shadowID = 0;
 
-    public void Awake()
+    public void Init(SkillButtonData data)
     {
-        if (skill == null)
+        if (data == null)
             return;
 
-        poolObject = new GameObject($"{skill.data.skillName}");
+        buttonData = data;
+        poolObject = new GameObject($"{buttonData.skill.data.skillName}");
         skillPool = new ObjectPool<Skill>
                     (
                         CreateSkill,
                         GetSkill,
                         ReleaseSkill,
-                        DestroySkill
+                        DestroySkill,
+                        maxSize : buttonData.maxPoolSize
                     );
-    }
-
-    public Skill OnDash(GameObject character)
-    {
-        DashSkill dash = null;
-        if (character.TryGetComponent(out DashSkill dashSkill))
-        {
-            dash = dashSkill;
-            dash.Use(character);
-        }
-
-        return dash;
     }
 
     public Skill StartSkill(GameObject character, string layerMask)
@@ -43,6 +32,17 @@ public class SkillButton : MonoBehaviour
         point.y = character.transform.position.y;
 
         var useSkill = skillPool.Get();
+        if (useSkill.data.type == SkillType.Dash)
+        {
+            var dashSkill = useSkill.GetComponent<DashSkill>();
+            if (dashSkill == null)
+                return null;
+
+            dashSkill.SetPoint(point);
+            dashSkill.Use(character);
+            return dashSkill;
+        }
+
         if (useSkill.isTargeting)
         {
             var findTarget = Raycast.FindMousePosTarget(layerMask);
@@ -86,7 +86,7 @@ public class SkillButton : MonoBehaviour
         useSkill.SetStartPos(startPosition);
         useSkill.SetRotation(character.transform.rotation);
 
-        if (skill.data.isShadow && character.TryGetComponent(out Zed zed) && useSkill.TryGetComponent(out ZedShadow shadow))
+        if (buttonData.skill.data.isShadow && character.TryGetComponent(out Zed zed) && useSkill.TryGetComponent(out ZedShadow shadow))
         {
             useSkill.SetPosition(character.transform.position);
 
@@ -104,7 +104,7 @@ public class SkillButton : MonoBehaviour
 
     private Skill CreateSkill()
     {
-        var useSkill = Instantiate(skill, poolObject.transform);
+        var useSkill = Instantiate(buttonData.skill, poolObject.transform);
         useSkill.SetPool(skillPool);
 
         return useSkill;
@@ -122,6 +122,10 @@ public class SkillButton : MonoBehaviour
         Destroy(skill.gameObject);
     }
 
+    public SkillButtonData GetData()
+    {
+        return buttonData;
+    }
+
     public IObjectPool<Skill> GetPool() { return skillPool; }
-    // Dont Destroy
 }

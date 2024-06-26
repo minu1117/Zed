@@ -39,6 +39,9 @@ public class SkillData : ScriptableObject
     [Header("그림자 스킬일 경우 체크")]
     public bool isShadow = false;
 
+    [Header("사거리")]
+    public float distance;
+
     // ... etc
     // Json Save & Load
 }

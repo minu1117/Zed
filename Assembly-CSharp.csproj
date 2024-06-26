@@ -58,17 +58,19 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.10f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Prefabs\SkillData\MultipleShadow.cs" />
     <Compile Include="Assets\Scripts\Skill\ShotSkill.cs" />
     <Compile Include="Assets\Scripts\Character\Zed.cs" />
     <Compile Include="Assets\Scripts\AutoAttack\AutoAttackData.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillSlot.cs" />
+    <Compile Include="Assets\Scripts\Utility\CharacterEnum.cs" />
+    <Compile Include="Assets\Scripts\Skill\SkillButtonData.cs" />
     <Compile Include="Assets\Scripts\Utility\Singleton.cs" />
     <Compile Include="Assets\unity-chan!\Unity-chan! Model\SplashScreen\Scripts\SplashScreen.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillButton.cs" />
     <Compile Include="Assets\Scripts\Story\Dialogue.cs" />
     <Compile Include="Assets\Scripts\AutoAttack\TargetingAutoAttack.cs" />
     <Compile Include="Assets\Scripts\Skill\BuffSkill.cs" />
+    <Compile Include="Assets\Scripts\Utility\EnumConverter.cs" />
     <Compile Include="Assets\Scripts\Skill\TargetingSkill.cs" />
     <Compile Include="Assets\Scripts\Interface\IDamageable.cs" />
     <Compile Include="Assets\Scripts\Utility\CSVReader.cs" />
@@ -96,6 +98,7 @@
     <Compile Include="Assets\Scripts\Skill\RotationShotSkill.cs" />
     <Compile Include="Assets\Scripts\Camera\TargetFallow.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraShakeController.cs" />
+    <Compile Include="Assets\Scripts\Skill\MultipleShadow.cs" />
     <Compile Include="Assets\Scripts\Skill\Skill.cs" />
     <Compile Include="Assets\Scripts\Skill\ZedSkillType.cs" />
     <Compile Include="Assets\Scripts\Skill\MeleeSkill.cs" />

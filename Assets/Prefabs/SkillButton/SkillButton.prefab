@@ -44,5 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b808a01d507d6a8428bf5c4224a029db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillKey: 
-  skill: {fileID: 0}
+  maxPoolSize: 20

@@ -193,9 +193,6 @@ PrefabInstance:
       addedObject: {fileID: 6859965597726614844}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 93973039f98db8940a7d8fb02dd4c4b1, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4216801850163620931}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 93973039f98db8940a7d8fb02dd4c4b1, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 328820110730113603}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 93973039f98db8940a7d8fb02dd4c4b1, type: 3}
       insertIndex: -1
@@ -225,22 +222,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 0f9b3fc01c37ac242b6190c315730826, type: 2}
+  isTargeting: 0
   isReady: 0
   shotStartTransform: {fileID: 8822124168629930503}
-  dashSkill: {fileID: 4216801850163620931}
---- !u!114 &4216801850163620931
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8725561791716995186}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 617f4695698ff1346b43af51335c63f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: b5d2a98723e397e4cb3d1e319cbf785f, type: 2}
+  dashSkill: {fileID: 0}
 --- !u!114 &328820110730113603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,6 +239,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skillParamName: SkillType
+  skillTriggerName: 
+  autoAttackTriggerName: 
+  attackSpeedParamName: 
+  attackTypeParamName: 
+  maxAutoAttackEnum: 0
 --- !u!54 &6639304510100191221
 Rigidbody:
   m_ObjectHideFlags: 0

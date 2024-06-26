@@ -24,3 +24,4 @@ MonoBehaviour:
   speed: 20
   immobilityTime: 0
   isShadow: 0
+  distance: 0

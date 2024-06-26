@@ -32,12 +32,7 @@ public class ChampBase : MonoBehaviour
         if (!skillDict.ContainsKey(key))
             return null;
 
-        Skill skill = null;
-        if (skillDict[key].skill.data.type != SkillType.Dash)
-            skill = skillDict[key].StartSkill(gameObject, layerMask);
-        else
-            skill = skillDict[key].OnDash(gameObject);
-
+        Skill skill = skillDict[key].StartSkill(gameObject, layerMask);
         return skill;
     }
 
@@ -50,10 +45,11 @@ public class ChampBase : MonoBehaviour
         else
         {
             data.currentHp = 0;
-            OnDead();
         }
 
         hpController.SetCurrentHP(data.currentHp);
+        if (data.currentHp <= 0)
+            OnDead();
     }
 
     public virtual void OnDead()

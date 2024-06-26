@@ -33,34 +33,9 @@ public class Skill : MonoBehaviour, IDamageable
 
     public void SetPool(IObjectPool<Skill> pool) { this.pool = pool; }
 
-    public void DealDamage(ChampBase target, float damage)
-    {
-        target.OnDamage(damage);
-    }
-
-    public void OnCollisionEnter(Collision collision)
+    protected virtual void OnCollisionEnter(Collision collision)
     {
         Collide(collision.gameObject);
-    }
-
-    public void SetStartPos(Vector3 pos)
-    {
-        startPos = pos;
-    }
-
-    public void SetPosition(Vector3 pos)
-    {
-        transform.position = pos;
-    }
-
-    public void SetRotation(Quaternion rot)
-    {
-        transform.rotation = rot;
-    }
-
-    public void SetActive(bool active)
-    {
-        gameObject.SetActive(active);
     }
 
     protected virtual void OnTriggerEnter(Collider other)
@@ -85,15 +60,40 @@ public class Skill : MonoBehaviour, IDamageable
         DealDamage(obj);
     }
 
+    public void SetStartPos(Vector3 pos)
+    {
+        startPos = pos;
+    }
+
+    public void SetPosition(Vector3 pos)
+    {
+        transform.position = pos;
+    }
+
+    public void SetRotation(Quaternion rot)
+    {
+        transform.rotation = rot;
+    }
+
+    public void SetActive(bool active)
+    {
+        gameObject.SetActive(active);
+    }
+
+    public void DealDamage(ChampBase target, float damage)
+    {
+        target.OnDamage(damage);
+    }
+
     private void DealDamage(GameObject target)
     {
         if (target.TryGetComponent(out ChampBase champion))
         {
-            if (champion.data.charactorName == "Zed")
+            //if (champion.data.charactorName == EnumConverter.GetString(CharacterLayerEnum.Player))
+            if (champion.gameObject.tag == EnumConverter.GetString(CharacterEnum.Player))
                 return;
 
             DealDamage(champion, data.damage);
-            //Debug.Log($"{champion.data.charactorName} : {champion.data.currentHp}/{champion.data.maxhp}, {data.damage} Damage, {data.skillName}");
         }
     }
 
@@ -104,29 +104,10 @@ public class Skill : MonoBehaviour, IDamageable
         isCoolTime = false;
     }
 
-    protected CharacterMoveController GetStopCharacter(GameObject obj)
-    {
-        if (obj.TryGetComponent(out CharacterMoveController character))
-        {
-            character.StopMove();
-            return character;
-        }
-        else
-        {
-            return null;
-        }
-    }
-
     protected void OnComplate()
     {
         isUsed = false;
         isComplated = true;
-    }
-
-    protected void OnMoveCharacter(CharacterMoveController character)
-    {
-        if (character != null)
-            character.isMoved = true;
     }
 
     protected void ReleaseFunc()
