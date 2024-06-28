@@ -5,9 +5,6 @@ public class MeleeSkill : Skill
 {
     public override void Use(GameObject character)
     {
-        if (!IsUsed())
-            return;
-
         base.Use(character);
         StartCoroutine(CoMelee());
     }
@@ -15,6 +12,6 @@ public class MeleeSkill : Skill
     private IEnumerator CoMelee()
     {
         yield return waitduration;
-        ReleaseFunc();
+        Release();
     }
 }

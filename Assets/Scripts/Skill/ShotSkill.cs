@@ -6,8 +6,8 @@ public class ShotSkill : Skill
 {
     public override void Use(GameObject character)
     {
-        if (!IsUsed())
-            return;
+        //if (!IsUsed())
+        //    return;
 
         base.Use(character);
         StartCoroutine(CoShot(character.transform.forward));
@@ -20,7 +20,7 @@ public class ShotSkill : Skill
 
         transform.DOMove(totalMovement, data.duration)
                  .SetEase(Ease.Linear)
-                 .OnComplete(() => ReleaseFunc());
+                 .OnComplete(() => Release());
 
         yield return waitimmobilityTime;
     }

@@ -44,6 +44,8 @@ public class Zed : SingletonChampion<Zed>
         if (Input.GetKeyDown(keyCode))
         {
             Skill useSkill = UseSkill(key, EnumConverter.GetString(CharacterEnum.Enemy));
+            if (useSkill != null)
+                useSkill.SetCaster(gameObject);
 
             if (isCopy)
                 CopySkill(key, useSkill, skillTypeEnum, slot.GetSlotDict()[key].GetPool());
@@ -58,6 +60,9 @@ public class Zed : SingletonChampion<Zed>
         if (Input.GetKeyDown(keyCode))
         {
             Skill useSkill = UseSkill(key, EnumConverter.GetString(CharacterEnum.Enemy));
+            if (useSkill != null)
+                useSkill.SetCaster(gameObject);
+
             var target = Raycast.FindMousePosTarget(EnumConverter.GetString(CharacterEnum.Enemy));
 
             if(isCopy)
@@ -112,6 +117,7 @@ public class Zed : SingletonChampion<Zed>
         {
             foreach (var shadow in shadows)
             {
+                useSkill.SetCaster(gameObject);
                 shadow.Value.AddSkill(skillKeyStr, useSkill, type, skillPool, target);
             }
         }

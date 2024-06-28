@@ -65,7 +65,7 @@ public class MultipleShadow : Skill
 
         yield return new WaitForSeconds(data.duration);
 
-        ReleaseFunc();
-        
+        Release();
+
     }
 }

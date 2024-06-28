@@ -8,7 +8,7 @@ public class TargetingShotSkill : TargetingSkill
 
     public override void Use(GameObject character)
     {
-        if (!IsUsed() || target == null)
+        if (target == null)
         {
             Release();
             return;
@@ -78,10 +78,10 @@ public class TargetingShotSkill : TargetingSkill
         return dir;
     }
 
-    private void Release()
+    protected override void Release()
     {
-        ReleaseFunc();
         target = null;
         isCollide = false;
+        base.Release();
     }
 }

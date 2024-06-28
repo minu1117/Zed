@@ -64,7 +64,7 @@ public class ZedShadow : ShotSkill
         {
             isReady = false;
             agent.enabled = true;
-            ReleaseFunc();
+            Release();
         }
         else
         {
@@ -117,6 +117,7 @@ public class ZedShadow : ShotSkill
         {
             Vector3 point = Raycast.GetMousePointVec();
             var dash = skill.GetComponent<DashSkill>();
+            dash.SetCaster(gameObject);
             dash.SetPoint(point);
         }
 
@@ -164,6 +165,7 @@ public class ZedShadow : ShotSkill
             }
         }
 
+        skillObject.SetCaster(gameObject);
         skillObject.SetPool(skillPool);
         skillObject.SetPosition(shotStartTransform.position);
         skillObject.SetStartPos(shotStartTransform.position);

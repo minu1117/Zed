@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -7,15 +6,13 @@ public class Skill : MonoBehaviour, IDamageable
     public SkillData data;
     public bool isTargeting;
     protected IObjectPool<Skill> pool;
-    protected bool isComplated = true;
-    protected bool isCoolTime = false;
-    protected bool isUsed;
-
     protected Vector3 startPos;
 
     protected WaitForSeconds waitUseDelay;
     protected WaitForSeconds waitduration;
     protected WaitForSeconds waitimmobilityTime;
+
+    private GameObject caster;
 
     public virtual void Awake()
     {
@@ -24,14 +21,10 @@ public class Skill : MonoBehaviour, IDamageable
         waitimmobilityTime = new WaitForSeconds(data.immobilityTime);
     }
 
-    public virtual void Use(GameObject character)
-    {
-        isComplated = false;
-        isUsed = true;
-        StartCoroutine(CoCoolDown());
-    }
+    public virtual void Use(GameObject character) { }
 
     public void SetPool(IObjectPool<Skill> pool) { this.pool = pool; }
+    public void SetCaster(GameObject obj) { caster = obj; }
 
     protected virtual void OnCollisionEnter(Collision collision)
     {
@@ -46,9 +39,6 @@ public class Skill : MonoBehaviour, IDamageable
     protected virtual void Collide(GameObject obj)
     {
         if (data.isShadow)
-            return;
-
-        if (!isUsed)
             return;
 
         if (gameObject.TryGetComponent(out ZedShadow shadow))
@@ -87,42 +77,20 @@ public class Skill : MonoBehaviour, IDamageable
 
     private void DealDamage(GameObject target)
     {
+        if (caster != null && ReferenceEquals(caster, target))
+            return;
+
         if (target.TryGetComponent(out ChampBase champion))
         {
-            //if (champion.data.charactorName == EnumConverter.GetString(CharacterLayerEnum.Player))
-            if (champion.gameObject.tag == EnumConverter.GetString(CharacterEnum.Player))
-                return;
-
             DealDamage(champion, data.damage);
         }
     }
 
-    protected IEnumerator CoCoolDown()
+    protected virtual void Release()
     {
-        isCoolTime = true;
-        yield return new WaitForSeconds(data.coolDown);
-        isCoolTime = false;
-    }
+        if (pool == null)
+            return;
 
-    protected void OnComplate()
-    {
-        isUsed = false;
-        isComplated = true;
-    }
-
-    protected void ReleaseFunc()
-    {
-        OnComplate();
-
-        if (pool == null) return;
         pool.Release(this);
-    }
-
-    public virtual bool IsUsed()
-    {
-        if (!isComplated || isCoolTime)
-            return false;
-
-        return true;
     }
 }

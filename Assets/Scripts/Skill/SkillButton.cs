@@ -8,6 +8,8 @@ public class SkillButton : MonoBehaviour
     private GameObject poolObject;
     private SkillButtonData buttonData;
     public static int shadowID = 0;
+    private Skill coolDownSkill;
+    private bool isAvailable = true;
 
     public void Init(SkillButtonData data)
     {
@@ -15,7 +17,7 @@ public class SkillButton : MonoBehaviour
             return;
 
         buttonData = data;
-        poolObject = new GameObject($"{buttonData.skill.data.skillName}");
+        poolObject = new GameObject($"{buttonData.skill.data.skillName}_Pool");
         skillPool = new ObjectPool<Skill>
                     (
                         CreateSkill,
@@ -28,18 +30,30 @@ public class SkillButton : MonoBehaviour
 
     public Skill StartSkill(GameObject character, string layerMask)
     {
-        Vector3 point = Raycast.GetMousePointVec();
+        if (!isAvailable)
+            return null;
+
+        Vector3 point = Vector3.zero;
+        if (character.tag == EnumConverter.GetString(CharacterEnum.Enemy))
+            point = Zed.Instance.gameObject.transform.position;
+        else
+            point = Raycast.GetMousePointVec();
+
         point.y = character.transform.position.y;
 
         var useSkill = skillPool.Get();
+        useSkill.SetCaster(character);
         if (useSkill.data.type == SkillType.Dash)
         {
             var dashSkill = useSkill.GetComponent<DashSkill>();
             if (dashSkill == null)
                 return null;
 
+            isAvailable = false;
             dashSkill.SetPoint(point);
             dashSkill.Use(character);
+            coolDownSkill = dashSkill;
+            StartCoroutine(CoCoolDown());
             return dashSkill;
         }
 
@@ -58,19 +72,13 @@ public class SkillButton : MonoBehaviour
             }    
         }
 
-        if (useSkill.IsUsed())
-            StartCoroutine(WaitUseSkill(useSkill, character, point));
-        else
-        {
-            skillPool.Release(useSkill);
-            return null;
-        }
-
+        StartCoroutine(WaitUseSkill(useSkill, character, point));
         return useSkill;
     }
 
     private IEnumerator WaitUseSkill(Skill useSkill, GameObject character, Vector3 lookAtPoint)
     {
+        isAvailable = false;
         useSkill.SetActive(false);
         yield return new WaitForSeconds(useSkill.data.useDelay);
 
@@ -100,6 +108,15 @@ public class SkillButton : MonoBehaviour
         }
 
         useSkill.Use(character);
+        coolDownSkill = useSkill;
+        StartCoroutine(CoCoolDown());
+    }
+
+    private IEnumerator CoCoolDown()
+    {
+        yield return new WaitForSeconds(coolDownSkill.data.coolDown);
+        coolDownSkill = null;
+        isAvailable = true;
     }
 
     private Skill CreateSkill()
@@ -127,5 +144,6 @@ public class SkillButton : MonoBehaviour
         return buttonData;
     }
 
+    public bool GetIsAvailable() { return isAvailable; }
     public IObjectPool<Skill> GetPool() { return skillPool; }
 }

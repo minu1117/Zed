@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum RotateType
@@ -19,9 +20,6 @@ public class RotationShotSkill : ShotSkill
 
     public override void Use(GameObject charactor)
     {
-        if (!IsUsed())
-            return;
-
         base.Use(charactor);
         Rotate(RotateType.Y);
     }

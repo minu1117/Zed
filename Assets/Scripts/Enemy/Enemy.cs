@@ -15,12 +15,17 @@ public class Enemy : ChampBase
 
     private List<string> skillKeys;
 
-    protected override void Awake()
+    public void Init()
     {
-        base.Awake();
         slot = GetComponent<SkillSlot>();
         agent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
+
+        skillKeys = new();
+        foreach (var skillButton in slot.GetSlotDict())
+        {
+            skillKeys.Add(skillButton.Key);
+        }
 
         agent.speed = data.moveSpeed;
         SetTarget(FindAnyObjectByType<Zed>().gameObject);
@@ -33,7 +38,10 @@ public class Enemy : ChampBase
 
     public override void OnDead()
     {
-        pool.Release(this);
+        if (pool != null)
+            pool.Release(this);
+        else
+            Destroy(gameObject);
     }
 
     public void SetPool(IObjectPool<Enemy> enemyPool)
@@ -43,14 +51,50 @@ public class Enemy : ChampBase
 
     public void Update()
     {
+        if (target == null)
+            return;
+            
         agent.SetDestination(target.transform.position);
-
-        if (Vector3.Distance(gameObject.transform.position, target.transform.position) <= attackRange)
+        if (Vector3.Distance(transform.position, target.transform.position) <= attackRange)
         {
             if (skillKeys == null || skillKeys.Count == 0)
                 return;
 
-            //UseSkill();
+            StartRandomSkill();
         }
+    }
+
+    private void StartRandomSkill()
+    {
+        var count = skillKeys.Count;
+        var randomIndex = Random.Range(0, count);
+        var key = skillKeys[randomIndex];
+
+        var slotDict = slot.GetSlotDict();
+        var skillDistance = GetSkillDistance(slotDict, key);
+        var distance = Vector3.Distance(transform.position, target.transform.position);
+
+        if (distance <= skillDistance)
+        {
+            slotDict[key].StartSkill(gameObject, EnumConverter.GetString(CharacterEnum.Player));
+        }
+        else
+        {
+            foreach (var skillButton in slot.GetSlotDict())
+            {
+                skillDistance = GetSkillDistance(slotDict, skillButton.Key);
+                if (distance <= skillDistance)
+                {
+                    key = skillButton.Key;
+                    slotDict[key].StartSkill(gameObject, EnumConverter.GetString(CharacterEnum.Player));
+                    break;
+                }
+            }
+        }
+    }
+
+    private float GetSkillDistance(Dictionary<string, SkillButton> dict, string key)
+    {
+        return dict[key].GetData().skill.data.distance;
     }
 }

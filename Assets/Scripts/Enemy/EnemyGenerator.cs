@@ -46,7 +46,12 @@ public class EnemyGenerator : MonoBehaviour
     {
         // Create Index = Count - 1
         int index = createIndex - 1;
-        var enemy = Instantiate(enemies[index], poolObjects[index].transform);
+        var enemyobj = Instantiate(enemies[index].gameObject, poolObjects[index].transform);
+        var enemy = enemyobj.GetComponent<Enemy>();
+        var hpController = enemy.GetHPController();
+
+        enemy.Init();
+        hpController.SetMaxHP();
         enemy.SetPool(enemyPools[index]);
         enemy.transform.position = Vector3.zero;
 

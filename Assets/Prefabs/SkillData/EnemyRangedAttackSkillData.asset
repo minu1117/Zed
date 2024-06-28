@@ -18,9 +18,10 @@ MonoBehaviour:
   skillLevel: 1
   levelRestriction: 0
   damage: 10
-  coolDown: 0
+  coolDown: 1
   duration: 1
   useDelay: 0.1
   speed: 20
   immobilityTime: 0
   isShadow: 0
+  distance: 10

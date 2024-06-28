@@ -11,9 +11,6 @@ public class TargetingSkill : Skill, ITargetable
 
     public override void Use(GameObject character)
     {
-        if (!IsUsed())
-            return;
-
         base.Use(character);
     }
 }

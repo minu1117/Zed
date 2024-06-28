@@ -1,17 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SkillSlot : Singleton<SkillSlot>
+public class SkillSlot : MonoBehaviour
 {
-    //[SerializeField] private List<SkillButton> buttons;
-    [SerializeField] private List<SkillButtonData> buttonDatas;
-    [SerializeField] private SkillButton buttonPrefab;
+    public List<SkillButtonData> buttonDatas;
+    public SkillButton buttonPrefab;
     private Dictionary<string, SkillButton> slotDict;
 
-    protected override void Awake()
+    public void Init()
     {
-        base.Awake();
-
         if (buttonDatas == null || buttonDatas.Count == 0)
             return;
 
@@ -30,14 +27,7 @@ public class SkillSlot : Singleton<SkillSlot>
 
             slotDict.Add(buttonData.skillKey, button);
         }
-
-        //slotDict = new Dictionary<string, SkillButton>();
-        //foreach (var button in buttons)
-        //{
-        //    slotDict.Add(button.skillKey, button);
-        //}
     }
-
     public Dictionary<string, SkillButton> GetSlotDict() { return slotDict; }
 
     //public void RenameKey(string currentKey, string newKey)

@@ -97,8 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 278c307a65dc5f145ad89e6484e6a9e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: 03e138cec824937469a1d22a35c34ab6, type: 2}
-  speed: 10
+  data: {fileID: 11400000, guid: f20e9bc369f401c4b932ed6575e8de90, type: 2}
+  isTargeting: 0
   rotateObject: {fileID: 4347198912833181179}
   rotateSpeed: 50
 --- !u!65 &2426658713010159134

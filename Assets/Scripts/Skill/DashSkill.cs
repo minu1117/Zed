@@ -7,9 +7,6 @@ public class DashSkill : Skill
 
     public override void Use(GameObject character)
     {
-        if (!IsUsed())
-            return;
-
         base.Use(character);
 
         if (movePoint == null || movePoint == Vector3.zero)
@@ -53,6 +50,6 @@ public class DashSkill : Skill
         if (moveController != null)
             moveController.isMoved = true;
 
-        ReleaseFunc();
+        Release();
     }
 }

@@ -13,6 +13,8 @@ public class ChampBase : MonoBehaviour
     {
         hpController = GetComponent<HPController>();
         animationController = GetComponent<CharacterAnimationController>();
+        if (slot != null)
+            slot.Init();
     }
 
     public HPController GetHPController() { return hpController; }
@@ -33,6 +35,9 @@ public class ChampBase : MonoBehaviour
             return null;
 
         Skill skill = skillDict[key].StartSkill(gameObject, layerMask);
+        if (skill != null)
+            skill.SetCaster(gameObject);
+
         return skill;
     }
 
@@ -46,6 +51,9 @@ public class ChampBase : MonoBehaviour
         {
             data.currentHp = 0;
         }
+
+        if (hpController == null)
+            return;
 
         hpController.SetCurrentHP(data.currentHp);
         if (data.currentHp <= 0)
