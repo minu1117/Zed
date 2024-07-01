@@ -406,6 +406,8 @@
 "Assets/Scripts/Skill/TargetingSkill.cs"
 "Assets/Scripts/Skill/ZedShadow.cs"
 "Assets/Scripts/Skill/ZedSkillType.cs"
+"Assets/Scripts/Sound/AudioMixerController.cs"
+"Assets/Scripts/Sound/SoundManager.cs"
 "Assets/Scripts/Story/Dialogue.cs"
 "Assets/Scripts/Story/DialogueManager.cs"
 "Assets/Scripts/Utility/AddressableManager.cs"

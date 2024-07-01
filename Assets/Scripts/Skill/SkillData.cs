@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "Skill Data", menuName = "Scriptable Objects/Skill Data")]
 public class SkillData : ScriptableObject
@@ -42,6 +43,14 @@ public class SkillData : ScriptableObject
     [Header("사거리")]
     public float distance;
 
+    [Header("시전 사운드")]
+    public List<AudioClip> useClips;
+
+    [Header("타격 사운드")]
+    public List<AudioClip> attackClips;
+
+    [Header("소멸 사운드")]
+    public List<AudioClip> disappearClips;
     // ... etc
     // Json Save & Load
 }

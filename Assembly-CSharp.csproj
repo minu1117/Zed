@@ -62,6 +62,7 @@
     <Compile Include="Assets\Scripts\Character\Zed.cs" />
     <Compile Include="Assets\Scripts\AutoAttack\AutoAttackData.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillSlot.cs" />
+    <Compile Include="Assets\Scripts\Sound\AudioMixerController.cs" />
     <Compile Include="Assets\Scripts\Utility\CharacterEnum.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillButtonData.cs" />
     <Compile Include="Assets\Scripts\Utility\Singleton.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Assets\Scripts\Skill\BuffSkill.cs" />
     <Compile Include="Assets\Scripts\Utility\EnumConverter.cs" />
     <Compile Include="Assets\Scripts\Skill\TargetingSkill.cs" />
+    <Compile Include="Assets\Scripts\Sound\SoundManager.cs" />
     <Compile Include="Assets\Scripts\Interface\IDamageable.cs" />
     <Compile Include="Assets\Scripts\Utility\CSVReader.cs" />
     <Compile Include="Assets\Scripts\Skill\CharacterData.cs" />

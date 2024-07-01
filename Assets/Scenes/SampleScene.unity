@@ -1075,6 +1075,68 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 870884658}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &878376206
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 878376208}
+  - component: {fileID: 878376207}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &878376207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878376206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1be221a0b92f2f8469f5774111aa753e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - {fileID: 8300000, guid: a3fd9e9120c2b95418e559fa35be6457, type: 3}
+  - {fileID: 8300000, guid: e0d21bb6cf429f04884c869602a4a173, type: 3}
+  - {fileID: 8300000, guid: 78ee9f94594384c4ea095136c029af53, type: 3}
+  - {fileID: 8300000, guid: 3ab9a5597947f0f4a9d7b8d3eb37fed6, type: 3}
+  - {fileID: 8300000, guid: 620c9f0ee48802a4695f5601ee3e3147, type: 3}
+  - {fileID: 8300000, guid: edcab2a2928156c4fb8da076e2a475ab, type: 3}
+  - {fileID: 8300000, guid: 2d8e6805fadf8724ea756799e873ee0b, type: 3}
+  - {fileID: 8300000, guid: dd125a22945626f41a86cf707c59b0ce, type: 3}
+  - {fileID: 8300000, guid: 2250138e2e4ee0b4cbd96d5d6d967532, type: 3}
+  - {fileID: 8300000, guid: 0a94495321f2a7d4ba12d86383f04268, type: 3}
+  - {fileID: 8300000, guid: 538c5f20f7f09ae4da3f27a05e4a4bd0, type: 3}
+  - {fileID: 8300000, guid: 631e6d457b6a3ea498aeded4ff820be9, type: 3}
+  - {fileID: 8300000, guid: b56d8da3af027c4409922b384a45144b, type: 3}
+  - {fileID: 8300000, guid: 73c1b35bd5b068449b871470c0c08f0c, type: 3}
+  - {fileID: 8300000, guid: 95d083fa1772b1146bb4d6180c8ffc9f, type: 3}
+  - {fileID: 8300000, guid: 7a0a342e816ee994698e164ee6d0d1ad, type: 3}
+  - {fileID: 8300000, guid: d7515d363f4d8e549863bffae4d3a86f, type: 3}
+--- !u!4 &878376208
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878376206}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &879866070
 GameObject:
   m_ObjectHideFlags: 0
@@ -2181,6 +2243,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 317074681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2018370962
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2018370963}
+  - component: {fileID: 2018370964}
+  m_Layer: 0
+  m_Name: AudioMixerController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2018370963
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2018370962}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2018370964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2018370962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbbbcccc4385dfb4faa5f06da75721e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mixer: {fileID: 24100000, guid: d34acfcfe44703047b7eee163ba888e1, type: 2}
+  MasterSlider: {fileID: 0}
+  BGMSlider: {fileID: 0}
+  SFXSlider: {fileID: 0}
+  MasterGroupName: Master
+  BGMGroupName: BGM
+  SFXGroupName: SFX
 --- !u!1001 &865328080346122644
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2742,3 +2855,5 @@ SceneRoots:
   - {fileID: 653259899}
   - {fileID: 5683426899591411365}
   - {fileID: 1016451687}
+  - {fileID: 878376208}
+  - {fileID: 2018370963}

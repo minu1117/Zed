@@ -21,10 +21,18 @@ public class Skill : MonoBehaviour, IDamageable
         waitimmobilityTime = new WaitForSeconds(data.immobilityTime);
     }
 
-    public virtual void Use(GameObject character) { }
+    public virtual void Use(GameObject character) 
+    {
+        if (data.useClips == null || data.useClips.Count == 0)
+            return;
+
+        int index = GetRandomIndex(0, data.useClips.Count);
+        SoundManager.Instance.PlayOneShot(data.useClips[index]);
+    }
 
     public void SetPool(IObjectPool<Skill> pool) { this.pool = pool; }
     public void SetCaster(GameObject obj) { caster = obj; }
+    public int GetRandomIndex(int min, int max) { return Random.Range(min, max); }
 
     protected virtual void OnCollisionEnter(Collision collision)
     {
@@ -83,6 +91,12 @@ public class Skill : MonoBehaviour, IDamageable
         if (target.TryGetComponent(out ChampBase champion))
         {
             DealDamage(champion, data.damage);
+
+            if (data.attackClips == null || data.attackClips.Count == 0)
+                return;
+
+            int index = GetRandomIndex(0, data.attackClips.Count);
+            SoundManager.Instance.PlayOneShot(data.attackClips[index]);
         }
     }
 
@@ -91,6 +105,8 @@ public class Skill : MonoBehaviour, IDamageable
         if (pool == null)
             return;
 
+        int index = GetRandomIndex(0, data.disappearClips.Count);
+        SoundManager.Instance.PlayOneShot(data.disappearClips[index]);
         pool.Release(this);
     }
 }

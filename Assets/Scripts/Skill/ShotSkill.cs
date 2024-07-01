@@ -6,9 +6,6 @@ public class ShotSkill : Skill
 {
     public override void Use(GameObject character)
     {
-        //if (!IsUsed())
-        //    return;
-
         base.Use(character);
         StartCoroutine(CoShot(character.transform.forward));
     }

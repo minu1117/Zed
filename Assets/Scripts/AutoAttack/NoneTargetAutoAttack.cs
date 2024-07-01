@@ -7,5 +7,6 @@ public class NoneTargetAutoAttack : AutoAttack
         Vector3 point = Raycast.GetMousePointVec();
         point.y = character.transform.position.y;
         character.transform.LookAt(point);
+        StartUseSound();
     }
 }
