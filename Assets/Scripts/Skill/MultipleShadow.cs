@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class MultipleShadow : Skill
 {
@@ -9,12 +10,22 @@ public class MultipleShadow : Skill
     public float interval;
     public float individualWaitDelay;
     private WaitForSeconds waitDelay;
+    private IObjectPool<Skill> shadowPool;
 
     public override void Awake()
     {
         base.Awake();
         data.duration = shadowSkill.data.duration + 1f;
         waitDelay = new WaitForSeconds(individualWaitDelay);
+
+        shadowPool = new ObjectPool<Skill>
+                    (
+                        CreateShadow,
+                        GetShadow,
+                        ReleaseShadow,
+                        DestroyShadow,
+                        maxSize : shadowCount
+                    );
     }
 
     public override void Use(GameObject character)
@@ -28,9 +39,11 @@ public class MultipleShadow : Skill
         List<ZedShadow> shadows = new List<ZedShadow>();
         for (int i = 0; i < shadowCount; i++)
         {
-            var shadow = Instantiate(shadowSkill, gameObject.transform);
-            shadow.SetActive(false);
-            shadows.Add(shadow);
+            //var shadow = Instantiate(shadowSkill, gameObject.transform);
+            //shadow.SetActive(false);
+            //shadows.Add(shadow);
+            var shadow = shadowPool.Get();
+            shadows.Add(shadow as ZedShadow);
         }
 
         yield return new WaitForSeconds(shadowSkill.data.useDelay);
@@ -42,8 +55,8 @@ public class MultipleShadow : Skill
 
             for (int i = 0; i < shadows.Count; i++)
             {
-                int id = ++SkillButton.shadowID;
-                shadows[i].SetID(id);
+                //int id = ++SkillButton.shadowID;
+                //shadows[i].SetID(id);
 
                 float angle = (360f / shadowCount) * i;
                 Vector3 rotatedDirection = Quaternion.AngleAxis(angle, Vector3.up) * startDirection;
@@ -66,6 +79,27 @@ public class MultipleShadow : Skill
         yield return new WaitForSeconds(data.duration);
 
         Release();
+    }
 
+    private Skill CreateShadow()
+    {
+        var shadow = Instantiate(shadowSkill, gameObject.transform);
+        int id = ++SkillButton.shadowID;
+        shadow.SetID(id);
+        shadow.SetPool(shadowPool);
+
+        return shadow;
+    }
+    private void GetShadow(Skill shadow)
+    {
+        shadow.gameObject.SetActive(false);
+    }
+    private void ReleaseShadow(Skill shadow)
+    {
+        shadow.gameObject.SetActive(false);
+    }
+    private void DestroyShadow(Skill shadow)
+    {
+        Destroy(shadow.gameObject);
     }
 }

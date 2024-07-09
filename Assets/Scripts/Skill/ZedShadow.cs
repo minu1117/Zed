@@ -12,7 +12,6 @@ public class ZedShadow : ShotSkill
 
     public bool isReady = false;
     public Transform shotStartTransform;
-    public DashSkill dashSkill;
 
     private NavMeshAgent agent;
     private Rigidbody rb;
@@ -36,6 +35,7 @@ public class ZedShadow : ShotSkill
     {
         if (charactor.TryGetComponent(out Zed zed))
         {
+            StartUseSound();
             StartCoroutine(CoSpawnShadow(zed));
         }
     }
@@ -68,6 +68,7 @@ public class ZedShadow : ShotSkill
         }
         else
         {
+            StartDisappearSound();
             Destroy(gameObject);
         }
     }

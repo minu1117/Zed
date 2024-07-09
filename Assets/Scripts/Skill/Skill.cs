@@ -12,7 +12,7 @@ public class Skill : MonoBehaviour, IDamageable
     protected WaitForSeconds waitduration;
     protected WaitForSeconds waitimmobilityTime;
 
-    private GameObject caster;
+    protected GameObject caster;
 
     public virtual void Awake()
     {
@@ -21,7 +21,12 @@ public class Skill : MonoBehaviour, IDamageable
         waitimmobilityTime = new WaitForSeconds(data.immobilityTime);
     }
 
-    public virtual void Use(GameObject character) 
+    public virtual void Use(GameObject character)
+    {
+        StartUseSound();
+    }
+
+    protected void StartUseSound()
     {
         if (data.useClips == null || data.useClips.Count == 0)
             return;
@@ -29,7 +34,6 @@ public class Skill : MonoBehaviour, IDamageable
         int index = GetRandomIndex(0, data.useClips.Count);
         SoundManager.Instance.PlayOneShot(data.useClips[index]);
     }
-
     public void SetPool(IObjectPool<Skill> pool) { this.pool = pool; }
     public void SetCaster(GameObject obj) { caster = obj; }
     public int GetRandomIndex(int min, int max) { return Random.Range(min, max); }
@@ -105,8 +109,17 @@ public class Skill : MonoBehaviour, IDamageable
         if (pool == null)
             return;
 
-        int index = GetRandomIndex(0, data.disappearClips.Count);
-        SoundManager.Instance.PlayOneShot(data.disappearClips[index]);
+        StartDisappearSound();
+        caster = null;
         pool.Release(this);
+    }
+
+    protected void StartDisappearSound()
+    {
+        if (data.disappearClips != null && data.disappearClips.Count > 0)
+        {
+            int index = GetRandomIndex(0, data.disappearClips.Count);
+            SoundManager.Instance.PlayOneShot(data.disappearClips[index]);
+        }
     }
 }

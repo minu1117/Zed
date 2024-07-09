@@ -25,3 +25,9 @@ MonoBehaviour:
   immobilityTime: 0
   isShadow: 0
   distance: 0
+  useClips:
+  - {fileID: 8300000, guid: 037d0d0e0d038924eb802c8c7d038fd5, type: 3}
+  attackClips:
+  - {fileID: 8300000, guid: 6a8fed72a154dc4498836cd8ab2ddd82, type: 3}
+  disappearClips: []
+  recastClips: []

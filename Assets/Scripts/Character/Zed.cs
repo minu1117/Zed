@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -138,6 +139,12 @@ public class Zed : SingletonChampion<Zed>
         shadow.transform.position = position;
         gameObject.transform.rotation = shadowRotation;
         shadow.transform.rotation = rotation;
+
+        var recastClips = shadow.data.recastClips;
+        if (recastClips == null || recastClips.Count == 0)
+            return;
+
+        SoundManager.Instance.PlayOneShot(recastClips[UnityEngine.Random.Range(0, recastClips.Count)]);
     }
 
     // Animation Event

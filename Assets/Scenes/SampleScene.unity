@@ -1104,24 +1104,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1be221a0b92f2f8469f5774111aa753e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sounds:
+  bgmSounds: []
+  sfxSounds:
   - {fileID: 8300000, guid: a3fd9e9120c2b95418e559fa35be6457, type: 3}
   - {fileID: 8300000, guid: e0d21bb6cf429f04884c869602a4a173, type: 3}
   - {fileID: 8300000, guid: 78ee9f94594384c4ea095136c029af53, type: 3}
-  - {fileID: 8300000, guid: 3ab9a5597947f0f4a9d7b8d3eb37fed6, type: 3}
-  - {fileID: 8300000, guid: 620c9f0ee48802a4695f5601ee3e3147, type: 3}
-  - {fileID: 8300000, guid: edcab2a2928156c4fb8da076e2a475ab, type: 3}
-  - {fileID: 8300000, guid: 2d8e6805fadf8724ea756799e873ee0b, type: 3}
-  - {fileID: 8300000, guid: dd125a22945626f41a86cf707c59b0ce, type: 3}
-  - {fileID: 8300000, guid: 2250138e2e4ee0b4cbd96d5d6d967532, type: 3}
-  - {fileID: 8300000, guid: 0a94495321f2a7d4ba12d86383f04268, type: 3}
-  - {fileID: 8300000, guid: 538c5f20f7f09ae4da3f27a05e4a4bd0, type: 3}
   - {fileID: 8300000, guid: 631e6d457b6a3ea498aeded4ff820be9, type: 3}
   - {fileID: 8300000, guid: b56d8da3af027c4409922b384a45144b, type: 3}
   - {fileID: 8300000, guid: 73c1b35bd5b068449b871470c0c08f0c, type: 3}
-  - {fileID: 8300000, guid: 95d083fa1772b1146bb4d6180c8ffc9f, type: 3}
   - {fileID: 8300000, guid: 7a0a342e816ee994698e164ee6d0d1ad, type: 3}
+  - {fileID: 8300000, guid: 95d083fa1772b1146bb4d6180c8ffc9f, type: 3}
+  - {fileID: 8300000, guid: 3ab9a5597947f0f4a9d7b8d3eb37fed6, type: 3}
+  - {fileID: 8300000, guid: 620c9f0ee48802a4695f5601ee3e3147, type: 3}
+  - {fileID: 8300000, guid: edcab2a2928156c4fb8da076e2a475ab, type: 3}
+  - {fileID: 8300000, guid: 0a94495321f2a7d4ba12d86383f04268, type: 3}
+  - {fileID: 8300000, guid: bde00c6463376b14d9e7d2359d60ae73, type: 3}
+  - {fileID: 8300000, guid: 037d0d0e0d038924eb802c8c7d038fd5, type: 3}
+  - {fileID: 8300000, guid: 6a8fed72a154dc4498836cd8ab2ddd82, type: 3}
+  - {fileID: 8300000, guid: 4657a8384a10ab04ca56de96a3657828, type: 3}
+  - {fileID: 8300000, guid: 6932202e5f7c4974987ba29b16bcbb39, type: 3}
+  - {fileID: 8300000, guid: 1d093ed6cf3d5894faa45858598cf4d7, type: 3}
+  - {fileID: 8300000, guid: 538c5f20f7f09ae4da3f27a05e4a4bd0, type: 3}
   - {fileID: 8300000, guid: d7515d363f4d8e549863bffae4d3a86f, type: 3}
+  - {fileID: 8300000, guid: 1c4d886ebe2c70f42a3288c2ab290fc4, type: 3}
+  - {fileID: 8300000, guid: 2d8e6805fadf8724ea756799e873ee0b, type: 3}
+  - {fileID: 8300000, guid: dd125a22945626f41a86cf707c59b0ce, type: 3}
+  - {fileID: 8300000, guid: 2250138e2e4ee0b4cbd96d5d6d967532, type: 3}
+  - {fileID: 8300000, guid: 699cea6b808882e4b9695966d445829f, type: 3}
+  - {fileID: 8300000, guid: 7cc19cdcfd9aa0645ba35a66246b943f, type: 3}
+  - {fileID: 8300000, guid: cd9030b649a0f64428caacbbc28d1cd2, type: 3}
+  - {fileID: 8300000, guid: d837bde18be9d79469923767f3c524d3, type: 3}
+  - {fileID: 8300000, guid: 6904aa6fd2f53e448b0e8de21902da99, type: 3}
+  - {fileID: 8300000, guid: 85d7068a345fb11428e8c7cb1a35e148, type: 3}
 --- !u!4 &878376208
 Transform:
   m_ObjectHideFlags: 0
@@ -1340,7 +1354,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.32210642, y: -0.3302487, z: 0.1210267, w: 0.87894017}
+  m_LocalRotation: {x: 0.32210642, y: -0.33024868, z: 0.121026695, w: 0.87894017}
   m_LocalPosition: {x: 7, y: 10, z: -8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1598,7 +1612,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1159973529}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.32210642, y: -0.3302487, z: 0.1210267, w: 0.87894017}
+  m_LocalRotation: {x: 0.32210642, y: -0.33024868, z: 0.121026695, w: 0.87894017}
   m_LocalPosition: {x: 7, y: 10, z: -8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2655,6 +2669,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1981062769573722123, guid: 43404936f3a346648a5a1ece8b73a143, type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 11400000, guid: a1a5b65260de7ea42b64cb8da8778da7, type: 2}
+    - target: {fileID: 2422746513429961512, guid: 43404936f3a346648a5a1ece8b73a143, type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 11400000, guid: a1a5b65260de7ea42b64cb8da8778da7, type: 2}
     - target: {fileID: 8240668764970117832, guid: 43404936f3a346648a5a1ece8b73a143, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.35

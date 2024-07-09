@@ -376,6 +376,7 @@
 "Assets/Scripts/AutoAttack/NoneTargetAutoAttack.cs"
 "Assets/Scripts/AutoAttack/TargetingAutoAttack.cs"
 "Assets/Scripts/AutoAttack/Weapon.cs"
+"Assets/Scripts/AutoAttack/WeaponData.cs"
 "Assets/Scripts/Camera/CameraShakeController.cs"
 "Assets/Scripts/Camera/TargetFallow.cs"
 "Assets/Scripts/Character/ChampBase.cs"

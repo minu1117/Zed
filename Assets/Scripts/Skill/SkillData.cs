@@ -51,6 +51,9 @@ public class SkillData : ScriptableObject
 
     [Header("소멸 사운드")]
     public List<AudioClip> disappearClips;
+
+    [Header("재시전 사운드")]
+    public List<AudioClip> recastClips;
     // ... etc
     // Json Save & Load
 }

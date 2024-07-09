@@ -35,8 +35,8 @@ public class ChampBase : MonoBehaviour
             return null;
 
         Skill skill = skillDict[key].StartSkill(gameObject, layerMask);
-        if (skill != null)
-            skill.SetCaster(gameObject);
+        //if (skill != null)
+        //    skill.SetCaster(gameObject);
 
         return skill;
     }

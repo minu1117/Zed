@@ -90,6 +90,7 @@
     <Compile Include="Assets\Scripts\Skill\TargetingShotSkill.cs" />
     <Compile Include="Assets\Scripts\Character\ChampBase.cs" />
     <Compile Include="Assets\Scripts\Utility\Raycast.cs" />
+    <Compile Include="Assets\Scripts\AutoAttack\WeaponData.cs" />
     <Compile Include="Assets\Scripts\AutoAttack\NoneTargetAutoAttack.cs" />
     <Compile Include="Assets\Scripts\AutoAttack\AutoAttackEnum.cs" />
     <Compile Include="Assets\Scripts\AutoAttack\AutoAttack.cs" />

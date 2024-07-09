@@ -1,22 +1,38 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static Unity.VisualScripting.Member;
 
 public class SoundManager : Singleton<SoundManager>
 {
-    public List<AudioClip> sounds;
+    public List<AudioClip> bgmSounds;
+    public List<AudioClip> sfxSounds;
     private Dictionary<string, AudioSource> createdClips = new();
 
     protected override void Awake()
     {
         base.Awake();
-        foreach (var clip in sounds)
+        CreateSound(sfxSounds, AudioType.SFX);
+        CreateSound(bgmSounds, AudioType.BGM);
+    }
+
+    private void CreateSound(List<AudioClip> clips, AudioType type)
+    {
+        if (clips == null || clips.Count == 0)
+            return;
+
+        var parentObj = new GameObject(EnumConverter.GetString(type));
+        parentObj.gameObject.transform.SetParent(transform, false);
+
+        foreach (var clip in clips)
         {
             GameObject audioObject = new GameObject(clip.name);
-            AudioSource audioSource = audioObject.AddComponent<AudioSource>();
-            audioSource.clip = clip;
+            AudioSource source = audioObject.AddComponent<AudioSource>();
+            source.clip = clip;
+            source.playOnAwake = false;
 
-            audioSource.gameObject.transform.SetParent(transform, false);
-            createdClips.Add(clip.name, audioSource);
+            source.gameObject.transform.SetParent(parentObj.transform, false);
+            source.outputAudioMixerGroup = AudioMixerController.Instance.GetAudioMixer(type);
+            createdClips.Add(clip.name, source);
         }
     }
 
@@ -66,7 +82,7 @@ public class SoundManager : Singleton<SoundManager>
         if (createdClips == null || createdClips.Count == 0)
             return false;
 
-        if (createdClips[name] == null)
+        if (!createdClips.ContainsKey(name))
             return false;
 
         return true;

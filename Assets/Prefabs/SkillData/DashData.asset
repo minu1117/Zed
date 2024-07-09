@@ -16,10 +16,18 @@ MonoBehaviour:
   skillName: Dash
   skillDescription: 1
   skillLevel: 1
+  levelRestriction: 0
   damage: 10
   coolDown: 0
   duration: 0.2
   useDelay: 0.3
-  isShadow: 0
-  levelRestriction: 0
   speed: 50
+  immobilityTime: 0
+  isShadow: 0
+  distance: 0
+  useClips:
+  - {fileID: 8300000, guid: 7cc19cdcfd9aa0645ba35a66246b943f, type: 3}
+  attackClips:
+  - {fileID: 8300000, guid: cd9030b649a0f64428caacbbc28d1cd2, type: 3}
+  disappearClips: []
+  recastClips: []

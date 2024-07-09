@@ -3,21 +3,54 @@ using UnityEngine;
 
 public class DashSkill : Skill
 {
+    private BoxCollider coll;
     private Vector3 movePoint;
 
     public override void Use(GameObject character)
     {
         base.Use(character);
 
+        if (coll == null)
+            coll = GetComponent<BoxCollider>();
+
         if (movePoint == null || movePoint == Vector3.zero)
             movePoint = Raycast.GetMousePointVec();
-        
+
+        SetColliderSize();
         StartCoroutine(CoDash(character, movePoint));
     }
 
     public void SetPoint(Vector3 point)
     {
         movePoint = point;
+    }
+
+    private void Update()
+    {
+        FollowCaster();
+    }
+
+    private void SetColliderSize()
+    {
+        if (caster == null)
+            return;
+
+        var casterCollider = caster.GetComponent<BoxCollider>();
+        coll.size = casterCollider.size;
+        coll.center = casterCollider.center;
+    }
+
+    private void FollowCaster()
+    {
+        if (caster != null)
+        {
+            gameObject.transform.position = caster.transform.position;
+        }
+    }
+
+    protected override void OnTriggerEnter(Collider other)
+    {
+        Collide(other.gameObject);
     }
 
     private IEnumerator CoDash(GameObject obj, Vector3 point)
