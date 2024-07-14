@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ChampBase : MonoBehaviour
@@ -6,15 +8,45 @@ public class ChampBase : MonoBehaviour
     public AutoAttack autoAttack;
     public SkillSlot slot;
     public Transform shotStartTransform;
+    public List<Weapon> weapons;
+    private Dictionary<string, Weapon> weaponDict;
     protected CharacterAnimationController animationController;
     private HPController hpController;
+    protected Coroutine coroutine;
 
     protected virtual void Awake()
     {
         hpController = GetComponent<HPController>();
         animationController = GetComponent<CharacterAnimationController>();
+        weaponDict = new();
+
+        if (weapons != null && weapons.Count > 0)
+        {
+            foreach (var weapon in weapons)
+            {
+                weapon.SetDamage(autoAttack.data.damage);
+                weaponDict.Add(weapon.name, weapon);
+            }
+        }
+
         if (slot != null)
             slot.Init();
+    }
+
+    public void FinishedAttack()
+    {
+        if (weaponDict.Count == 0)
+            return;
+
+        foreach (var weapon in weaponDict)
+        {
+            weapon.Value.OnFinished();
+        }
+    }
+
+    protected void OnAutoAttack(string name)
+    {
+        weaponDict[name].OnReady();
     }
 
     public HPController GetHPController() { return hpController; }
@@ -35,9 +67,6 @@ public class ChampBase : MonoBehaviour
             return null;
 
         Skill skill = skillDict[key].StartSkill(gameObject, layerMask);
-        //if (skill != null)
-        //    skill.SetCaster(gameObject);
-
         return skill;
     }
 

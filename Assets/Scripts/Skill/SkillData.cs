@@ -43,6 +43,9 @@ public class SkillData : ScriptableObject
     [Header("사거리")]
     public float distance;
 
+    [Header("이펙트")]
+    public Effect effect;
+
     [Header("시전 사운드")]
     public List<AudioClip> useClips;
 

@@ -13,6 +13,7 @@ public class Skill : MonoBehaviour, IDamageable
     protected WaitForSeconds waitimmobilityTime;
 
     protected GameObject caster;
+    protected Effect effect;
 
     public virtual void Awake()
     {
@@ -23,7 +24,33 @@ public class Skill : MonoBehaviour, IDamageable
 
     public virtual void Use(GameObject character)
     {
+        UseEffect(gameObject);
         StartUseSound();
+    }
+
+    protected void ReleaseEffect()
+    {
+        if (effect == null)
+            return;
+
+        EffectManager.Instance.ReleaseEffect(effect);
+        effect = null;
+    }
+
+    protected void UseEffect(GameObject obj)
+    {
+        if (data.effect == null)
+            return;
+
+        effect = EffectManager.Instance.GetEffect(data.effect.name);
+        effect.SetStartPos(obj.transform.position);
+
+        if (effect.TryGetComponent<TargetFollowEffect>(out var followEffect))
+        {
+            followEffect.SetTarget(obj);
+            effect = followEffect;
+        }
+        effect.Use();
     }
 
     protected void StartUseSound()
@@ -112,6 +139,7 @@ public class Skill : MonoBehaviour, IDamageable
         StartDisappearSound();
         caster = null;
         pool.Release(this);
+        ReleaseEffect();
     }
 
     protected void StartDisappearSound()

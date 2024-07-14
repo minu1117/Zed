@@ -4,10 +4,21 @@ using UnityEngine;
 
 public class ShotSkill : Skill
 {
+    public TrailRenderer trailRenderer;
     public override void Use(GameObject character)
     {
         base.Use(character);
+        SetActiveTrailRenderer(true);
         StartCoroutine(CoShot(character.transform.forward));
+    }
+
+    protected void SetActiveTrailRenderer(bool active)
+    {
+        if (trailRenderer == null)
+            return;
+
+        trailRenderer.Clear();
+        trailRenderer.enabled = active;
     }
 
     private IEnumerator CoShot(Vector3 startVec)
@@ -20,5 +31,18 @@ public class ShotSkill : Skill
                  .OnComplete(() => Release());
 
         yield return waitimmobilityTime;
+    }
+
+    protected override void Release()
+    {
+        SetActiveTrailRenderer(false);
+
+        if (pool == null)
+            return;
+
+        ReleaseEffect();
+        StartDisappearSound();
+        caster = null;
+        pool.Release(this);
     }
 }

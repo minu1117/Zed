@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class CharacterAnimationController : MonoBehaviour
@@ -7,8 +8,12 @@ public class CharacterAnimationController : MonoBehaviour
     public string autoAttackTriggerName;
     public string attackSpeedParamName;
     public string attackTypeParamName;
+    public string nextMotionTriggerParamName;
     public AutoAttackEnum maxAutoAttackEnum;
     private Animator animator;
+    private int currentLayerIndex;
+    private int upperLayerIndex = 1;
+    private int wholeBodyLayerIndex = 2;
 
     private void Awake()
     {
@@ -28,9 +33,15 @@ public class CharacterAnimationController : MonoBehaviour
         SetTrigger(autoAttackTriggerName);
     }
 
+    public void StartNextMotion()
+    {
+        SetTrigger(nextMotionTriggerParamName);
+    }
+
     public void UseSkill(int enumIndex)
     {
         bool isUpper = enumIndex != (int)ZedSkillType.ShadowRush ? true : false;
+        currentLayerIndex = isUpper ? upperLayerIndex : wholeBodyLayerIndex;
         animator.SetBool("IsUpper", isUpper);
 
         animator.SetInteger(skillParamName, enumIndex);
@@ -55,5 +66,11 @@ public class CharacterAnimationController : MonoBehaviour
     public void SetInteger(string name, int value)
     {
         animator.SetInteger(name, value);
+    }
+
+    public float GetCurrentAnimLength()
+    {
+        AnimatorStateInfo currentState = animator.GetCurrentAnimatorStateInfo(currentLayerIndex);
+        return currentState.length;
     }
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 public class Weapon : MonoBehaviour, IDamageable
 {
     public WeaponData data;
+    public TrailRenderer trailRenderer;
     private bool isReady = false;
     private Collider coll;
 
@@ -21,6 +22,11 @@ public class Weapon : MonoBehaviour, IDamageable
         {
             DealDamage(champ, data.damage);
         }
+    }
+
+    public void SetActiveTrailRenderer(bool active)
+    {
+        trailRenderer.gameObject.SetActive(active);
     }
 
     public void OnReady()

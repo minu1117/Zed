@@ -60,6 +60,11 @@ public class DashSkill : Skill
         if (obj.TryGetComponent<CharacterMoveController>(out var moveController))
             moveController.isMoved = false;
 
+        CharacterAnimationController animationController = null;
+        if (obj.TryGetComponent<CharacterAnimationController>(out var controller))
+            animationController = controller;
+
+
         rb.velocity = Vector3.zero;
         point.y = obj.transform.position.y;
 
@@ -68,6 +73,9 @@ public class DashSkill : Skill
         obj.transform.LookAt(LookAtDirection);
 
         yield return waitUseDelay;
+
+        if (animationController != null)
+            animationController.StartNextMotion();
 
         if (rb != null)
             rb.velocity = dashDirection * data.speed;

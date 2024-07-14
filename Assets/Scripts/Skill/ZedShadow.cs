@@ -12,6 +12,8 @@ public class ZedShadow : ShotSkill
 
     public bool isReady = false;
     public Transform shotStartTransform;
+    public SkinnedMeshRenderer meshRenderer;
+    public List<TrailRenderer> weapontrailRenderers;
 
     private NavMeshAgent agent;
     private Rigidbody rb;
@@ -19,6 +21,7 @@ public class ZedShadow : ShotSkill
 
     private Dictionary<string, List<KeyValuePair<IObjectPool<Skill>, KeyValuePair<KeyValuePair<Skill, ZedSkillType>, GameObject>>>> useSkills;
     private CharacterAnimationController animationController;
+    [SerializeField] private GameObject particleFollowObj;
 
     public override void Awake()
     {
@@ -35,8 +38,23 @@ public class ZedShadow : ShotSkill
     {
         if (charactor.TryGetComponent(out Zed zed))
         {
+            UseEffect(particleFollowObj);
             StartUseSound();
+            meshRenderer.enabled = false;
+            SetActiveTrailRenderer(true);
+            SetActiveWeaponTrailRenderers(false);
             StartCoroutine(CoSpawnShadow(zed));
+        }
+    }
+
+    private void SetActiveWeaponTrailRenderers(bool active)
+    {
+        if (weapontrailRenderers == null || weapontrailRenderers.Count == 0)
+            return;
+
+        foreach (var trailRenderer in weapontrailRenderers)
+        {
+            trailRenderer.enabled = active;
         }
     }
 
@@ -64,6 +82,7 @@ public class ZedShadow : ShotSkill
         {
             isReady = false;
             agent.enabled = true;
+            SetActiveWeaponTrailRenderers(false);
             Release();
         }
         else
@@ -75,6 +94,10 @@ public class ZedShadow : ShotSkill
 
     public void UseAllSkills()
     {
+        ReleaseEffect();
+        SetActiveWeaponTrailRenderers(true);
+
+        meshRenderer.enabled = true;
         isReady = true;
         usePoint = GetUsePoint();
 

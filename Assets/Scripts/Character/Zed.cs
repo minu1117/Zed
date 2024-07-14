@@ -1,4 +1,4 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -6,15 +6,13 @@ using UnityEngine.Pool;
 
 public class Zed : SingletonChampion<Zed>
 {
-    public Weapon L_Hand_Blade;
-    public Weapon R_Hand_Blade;
+    public GameObject L_Hand_Blade;
+    public GameObject R_Hand_Blade;
     public Dictionary<int, ZedShadow> shadows = new();
 
     protected override void Awake()
     {
         base.Awake();
-        if (L_Hand_Blade != null) L_Hand_Blade.SetDamage(autoAttack.data.damage);
-        if (R_Hand_Blade != null) R_Hand_Blade.SetDamage(autoAttack.data.damage);
     }
 
     public void Update()
@@ -45,14 +43,15 @@ public class Zed : SingletonChampion<Zed>
         if (Input.GetKeyDown(keyCode))
         {
             Skill useSkill = UseSkill(key, EnumConverter.GetString(CharacterEnum.Enemy));
-            if (useSkill != null)
-                useSkill.SetCaster(gameObject);
 
+            FinishedAttack();
             if (isCopy)
                 CopySkill(key, useSkill, skillTypeEnum, slot.GetSlotDict()[key].GetPool());
 
             if (useSkill != null)
+            {
                 animationController.UseSkill((int)skillTypeEnum);
+            }
         }
     }
 
@@ -64,13 +63,17 @@ public class Zed : SingletonChampion<Zed>
             if (useSkill != null)
                 useSkill.SetCaster(gameObject);
 
+            FinishedAttack();
             var target = Raycast.FindMousePosTarget(EnumConverter.GetString(CharacterEnum.Enemy));
 
             if(isCopy)
                 CopySkill(key, useSkill, skillTypeEnum, slot.GetSlotDict()[key].GetPool(), target.Item1);
 
             if (useSkill != null)
+            {
                 animationController.UseSkill((int)skillTypeEnum);
+            }
+
         }
     }
 
@@ -81,6 +84,7 @@ public class Zed : SingletonChampion<Zed>
             var hit = Raycast.GetHit(Input.mousePosition, EnumConverter.GetString(CharacterEnum.Shadow));
             if (hit.collider == null)
             {
+                FinishedAttack();
                 UseSkill(key, EnumConverter.GetString(CharacterEnum.Enemy));
                 animationController.UseSkill((int)skillTypeEnum);
             }
@@ -150,17 +154,11 @@ public class Zed : SingletonChampion<Zed>
     // Animation Event
     public void OnLeftAttack()
     {
-        L_Hand_Blade.OnReady();
+        OnAutoAttack(L_Hand_Blade.name);
     }
 
     public void OnRightAttack()
     {
-        R_Hand_Blade.OnReady();
-    }
-
-    public void FinishedAttack()
-    {
-        L_Hand_Blade.OnFinished();
-        R_Hand_Blade.OnFinished();
+        OnAutoAttack(R_Hand_Blade.name);
     }
 }

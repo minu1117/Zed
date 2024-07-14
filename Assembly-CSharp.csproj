@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\Sound\AudioMixerController.cs" />
     <Compile Include="Assets\Scripts\Utility\CharacterEnum.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillButtonData.cs" />
+    <Compile Include="Assets\Scripts\Effect\EffectManager.cs" />
     <Compile Include="Assets\Scripts\Utility\Singleton.cs" />
     <Compile Include="Assets\unity-chan!\Unity-chan! Model\SplashScreen\Scripts\SplashScreen.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillButton.cs" />
@@ -75,7 +76,9 @@
     <Compile Include="Assets\Scripts\Skill\TargetingSkill.cs" />
     <Compile Include="Assets\Scripts\Sound\SoundManager.cs" />
     <Compile Include="Assets\Scripts\Interface\IDamageable.cs" />
+    <Compile Include="Assets\Scripts\Effect\Effect.cs" />
     <Compile Include="Assets\Scripts\Utility\CSVReader.cs" />
+    <Compile Include="Assets\Scripts\Effect\EffectPool.cs" />
     <Compile Include="Assets\Scripts\Skill\CharacterData.cs" />
     <Compile Include="Assets\Scripts\AutoAttack\Weapon.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyGenerator.cs" />
@@ -101,6 +104,7 @@
     <Compile Include="Assets\Scripts\Skill\RotationShotSkill.cs" />
     <Compile Include="Assets\Scripts\Camera\TargetFallow.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraShakeController.cs" />
+    <Compile Include="Assets\Scripts\Effect\TargetFollowEffect.cs" />
     <Compile Include="Assets\Scripts\Skill\MultipleShadow.cs" />
     <Compile Include="Assets\Scripts\Skill\Skill.cs" />
     <Compile Include="Assets\Scripts\Skill\ZedSkillType.cs" />
