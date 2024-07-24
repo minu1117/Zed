@@ -1,0 +1,12 @@
+
+=== Tue Jul 23 00:24:29 2024
+
+Packages were changed.
+Update Mode: mergeDefaultDependencies
+
+The following packages were added:
+  com.unity.render-pipelines.core@14.0.9
+  com.unity.shadergraph@14.0.9
+  com.unity.visualeffectgraph@14.0.9
+The following packages were updated:
+  com.unity.render-pipelines.universal from version 14.0.8 to 14.0.9
