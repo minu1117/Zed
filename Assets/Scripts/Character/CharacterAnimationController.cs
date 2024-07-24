@@ -40,6 +40,8 @@ public class CharacterAnimationController : MonoBehaviour
 
     public void UseSkill(int enumIndex)
     {
+        animator.ResetTrigger(nextMotionTriggerParamName);
+
         bool isUpper = enumIndex != (int)ZedSkillType.ShadowRush ? true : false;
         currentLayerIndex = isUpper ? upperLayerIndex : wholeBodyLayerIndex;
         animator.SetBool("IsUpper", isUpper);
