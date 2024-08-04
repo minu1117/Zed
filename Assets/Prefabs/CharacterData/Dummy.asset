@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ffee8199543ff747a5450e708a5fabf, type: 3}
   m_Name: Dummy
   m_EditorClassIdentifier: 
-  maxhp: 10000
-  currentHp: 0
+  maxHp: 10000
+  currentHp: 10000
+  maxMp: 100
+  currentMp: 100
   level: 1
   charactorName: Dummy
+  moveSpeed: 0
+  jumpSpeed: 0
+  gravity: 0

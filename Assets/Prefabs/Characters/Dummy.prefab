@@ -125,8 +125,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 520bec66e473f7c4c8a73187e4da32a3, type: 2}
   autoAttack: {fileID: 0}
-  slot: {fileID: 0}
   shotStartTransform: {fileID: 0}
+  weapons: []
 --- !u!54 &2804610108943843737
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -168,6 +168,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slider: {fileID: 3329749583410015638}
   canvas: {fileID: 6816088135989669013}
+  champ: {fileID: 6110907747098522788}
+  tmp: {fileID: 0}
+  canvasMode: 0
+  sliderMode: 0
 --- !u!1001 &8633548543098154522
 PrefabInstance:
   m_ObjectHideFlags: 0

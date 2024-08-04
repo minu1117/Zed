@@ -84,7 +84,7 @@ public class MultipleShadow : Skill
     private Skill CreateShadow()
     {
         var shadow = Instantiate(shadowSkill, gameObject.transform);
-        int id = ++SkillButton.shadowID;
+        int id = ++SkillExcutor.shadowID;
         shadow.SetID(id);
         shadow.SetPool(shadowPool);
 

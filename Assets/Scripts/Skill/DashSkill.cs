@@ -64,7 +64,6 @@ public class DashSkill : Skill
         if (obj.TryGetComponent<CharacterAnimationController>(out var controller))
             animationController = controller;
 
-
         rb.velocity = Vector3.zero;
         point.y = obj.transform.position.y;
 
@@ -86,6 +85,9 @@ public class DashSkill : Skill
             rb.velocity = Vector3.zero;
 
         yield return waitimmobilityTime;
+
+        if (animationController != null)
+            animationController.StartNextMotion();
 
         movePoint = Vector3.zero;
         if (moveController != null)

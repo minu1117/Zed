@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ffee8199543ff747a5450e708a5fabf, type: 3}
   m_Name: Zed
   m_EditorClassIdentifier: 
-  maxhp: 10000
+  maxHp: 10000
   currentHp: 10000
+  maxMp: 500
+  currentMp: 500
   level: 1
   charactorName: Zed
   moveSpeed: 10

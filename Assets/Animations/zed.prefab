@@ -837,9 +837,6 @@ PrefabInstance:
       addedObject: {fileID: 7620196312795948190}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 93973039f98db8940a7d8fb02dd4c4b1, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4830877625297026842}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 93973039f98db8940a7d8fb02dd4c4b1, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 404673645307437552}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 93973039f98db8940a7d8fb02dd4c4b1, type: 3}
       insertIndex: -1
@@ -938,33 +935,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: eb883fbd557de9d47b60260619518020, type: 2}
   autoAttack: {fileID: 8946404786609123661}
-  slot: {fileID: 4830877625297026842}
+  slot: {fileID: 0}
   shotStartTransform: {fileID: 8822124168629930503}
   weapons:
   - {fileID: 2422746513429961512}
   - {fileID: 1981062769573722123}
   L_Hand_Blade: {fileID: 8727625155686893211}
   R_Hand_Blade: {fileID: 8334939799168551849}
---- !u!114 &4830877625297026842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8725561791716995186}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cfbe2ebf7ab03144977e2aad9d22e61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buttonDatas:
-  - {fileID: 11400000, guid: c4d27c8f8cf98e442889dbc9d958529e, type: 2}
-  - {fileID: 11400000, guid: 53adc39b24bda7744bccc3487ea54a9f, type: 2}
-  - {fileID: 11400000, guid: 4340bd19e555f1343a081f1446492f5b, type: 2}
-  - {fileID: 11400000, guid: 1acdc12910ca71247822648da1a76cc9, type: 2}
-  - {fileID: 11400000, guid: e506dd8503309844eb0b4f1641f08e51, type: 2}
-  - {fileID: 11400000, guid: 9da6a164b9624d540afb796bd9ab31f0, type: 2}
-  buttonPrefab: {fileID: 5880283225972054831, guid: dccdc149b41420543bc7df91731797a7, type: 3}
 --- !u!195 &404673645307437552
 NavMeshAgent:
   m_ObjectHideFlags: 0

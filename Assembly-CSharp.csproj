@@ -71,6 +71,7 @@
     <Compile Include="Assets\Scripts\Effect\Effect.cs" />
     <Compile Include="Assets\Scripts\Effect\EffectPool.cs" />
     <Compile Include="Assets\Toby Fredson\The Toby Foliage Engine\(TTFE)_Core\Resources\(TTFE) GLOBAL CONTROLLER\Scripts\TobyShaderValuesModel.cs" />
+    <Compile Include="Assets\Scripts\UI\SkillButton.cs" />
     <Compile Include="Assets\Scripts\Skill\ZedShadow.cs" />
     <Compile Include="Assets\Samples\Universal RP\14.0.8\URP Package Samples\LensFlares\Scripts\ScreenSpacePlacement.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterAnimationController.cs" />
@@ -87,12 +88,14 @@
     <Compile Include="Assets\Scripts\Interface\ITargetable.cs" />
     <Compile Include="Assets\Toby Fredson\The Toby Foliage Engine\(TTFE)_Core\Resources\(TTFE) GLOBAL CONTROLLER\Scripts\TobyConstants.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraShakeController.cs" />
+    <Compile Include="Assets\Scripts\Skill\SkillExcutor.cs" />
     <Compile Include="Assets\Toby Fredson\The Toby Foliage Engine\(TTFE)_Demo\Scripts\ExtendedFlycam.cs" />
     <Compile Include="Assets\Scripts\Character\Zed.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillButtonData.cs" />
     <Compile Include="Assets\Scripts\Effect\EffectManager.cs" />
     <Compile Include="Assets\TwoUncleVFX\Common\Script\RotateAround.cs" />
-    <Compile Include="Assets\Scripts\Skill\SkillButton.cs" />
+    <Compile Include="Assets\Scripts\UI\HPController.cs" />
+    <Compile Include="Assets\Scripts\UI\SkillSlotManager.cs" />
     <Compile Include="Assets\Scripts\Story\Dialogue.cs" />
     <Compile Include="Assets\Scripts\AutoAttack\TargetingAutoAttack.cs" />
     <Compile Include="Assets\Scripts\Skill\BuffSkill.cs" />
@@ -104,7 +107,6 @@
     <Compile Include="Assets\Scripts\Enemy\EnemyGenerator.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterImageController.cs" />
     <Compile Include="Assets\Samples\Universal RP\14.0.8\URP Package Samples\CameraStacking\3D Skybox\Scripts\SkyboxCamera.cs" />
-    <Compile Include="Assets\Scripts\Character\HPController.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillData.cs" />
     <Compile Include="Assets\Scripts\Skill\TargetingShotSkill.cs" />
     <Compile Include="Assets\Scripts\Character\ChampBase.cs" />

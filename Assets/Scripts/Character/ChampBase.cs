@@ -5,9 +5,9 @@ public class ChampBase : MonoBehaviour
 {
     public CharacterData data;
     public AutoAttack autoAttack;
-    public SkillSlot slot;
     public Transform shotStartTransform;
     public List<Weapon> weapons;
+    protected SkillSlot slot;
     private Dictionary<string, Weapon> weaponDict;
     protected CharacterAnimationController animationController;
     private HPController hpController;
@@ -28,13 +28,16 @@ public class ChampBase : MonoBehaviour
             }
         }
 
-        if (slot != null)
+        if (gameObject.TryGetComponent(out SkillSlot skillSlot))
+        {
+            slot = skillSlot;
             slot.Init();
+        }
     }
 
     public void FinishedAttack()
     {
-        if (weaponDict.Count == 0)
+        if (weaponDict == null || weaponDict.Count == 0)
             return;
 
         foreach (var weapon in weaponDict)
@@ -56,7 +59,7 @@ public class ChampBase : MonoBehaviour
         autoAttack.Attack(gameObject);
     }
 
-    public Skill UseSkill(string key, string layerMask = "")
+    public virtual Skill UseSkill(string key, string layerMask = "")
     {
         if (slot == null)
             return null;
@@ -83,7 +86,7 @@ public class ChampBase : MonoBehaviour
         if (hpController == null)
             return;
 
-        hpController.SetCurrentHP(data.currentHp);
+        hpController.SetCurrentValue();
         if (data.currentHp <= 0)
             OnDead();
     }

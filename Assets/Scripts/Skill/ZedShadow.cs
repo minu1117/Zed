@@ -198,6 +198,25 @@ public class ZedShadow : ShotSkill
         skillObject.Use(gameObject);
     }
 
+    public void Teleport(GameObject obj)
+    {
+        Vector3 position = obj.transform.position;
+        Vector3 shadowPosition = transform.position;
+        Quaternion rotation = obj.transform.rotation;
+        Quaternion shadowRotation = transform.rotation;
+
+        obj.transform.position = shadowPosition;
+        transform.position = position;
+        obj.transform.rotation = shadowRotation;
+        transform.rotation = rotation;
+
+        var recastClips = data.recastClips;
+        if (recastClips == null || recastClips.Count == 0)
+            return;
+
+        SoundManager.Instance.PlayOneShot(recastClips[UnityEngine.Random.Range(0, recastClips.Count)]);
+    }
+
     private Vector3 GetUsePoint()
     {
         Vector3 point = Raycast.GetMousePointVec();

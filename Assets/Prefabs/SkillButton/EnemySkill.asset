@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cc22b36f744c8c4a9df50b75638bdab, type: 3}
   m_Name: EnemySkill
   m_EditorClassIdentifier: 
-  skillKey: 1
+  keycode: 887596962
   skill: {fileID: -3972660736254989899, guid: 9fcbb198488408942b2614d695bc5b15, type: 3}
   maxPoolSize: 20
+  sp: {fileID: 0}

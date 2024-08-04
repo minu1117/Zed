@@ -17,7 +17,9 @@ public class EnemyGenerator : MonoBehaviour
 
         for (int i = 0; i < enemies.Count; i++)
         {
-            poolObjects.Add(new GameObject($"{enemies[createIndex].data.charactorName} Pool"));
+            var poolObj = new GameObject($"{enemies[createIndex].data.charactorName} Pool");
+            poolObj.transform.position = transform.position;
+            poolObjects.Add(poolObj);
 
             IObjectPool<Enemy> pool;
             pool = new ObjectPool<Enemy>
@@ -47,21 +49,22 @@ public class EnemyGenerator : MonoBehaviour
         // Create Index = Count - 1
         int index = createIndex - 1;
         var enemyobj = Instantiate(enemies[index].gameObject, poolObjects[index].transform);
+        enemyobj.transform.position = transform.position;
+
         var enemy = enemyobj.GetComponent<Enemy>();
         var hpController = enemy.GetHPController();
 
         enemy.Init();
-        hpController.SetMaxHP();
+        hpController.SetMaxValue();
         enemy.SetPool(enemyPools[index]);
-        enemy.transform.position = Vector3.zero;
 
         return enemy;
     }
     private void GetEnemy(Enemy enemy)
     {
-        enemy.transform.position = Vector3.zero;
+        enemy.transform.position = transform.position;
         var hpController = enemy.GetHPController();
-        hpController.SetMaxHP();
+        hpController.SetMaxValue();
         enemy.gameObject.SetActive(true);
     }
     private void ReleaseEnemy(Enemy enemy)

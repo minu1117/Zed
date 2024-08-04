@@ -93,7 +93,7 @@ public class Enemy : ChampBase
         }
     }
 
-    private float GetSkillDistance(Dictionary<string, SkillButton> dict, string key)
+    private float GetSkillDistance(Dictionary<string, SkillExcutor> dict, string key)
     {
         return dict[key].GetData().skill.data.distance;
     }

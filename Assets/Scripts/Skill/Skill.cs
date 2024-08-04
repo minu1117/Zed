@@ -119,6 +119,12 @@ public class Skill : MonoBehaviour, IDamageable
         if (caster != null && ReferenceEquals(caster, target))
             return;
 
+        if (target == null || caster == null)
+            return;
+
+        if (caster.tag == EnumConverter.GetString(CharacterEnum.Shadow) && target.tag == EnumConverter.GetString(CharacterEnum.Player))
+            return;
+
         if (target.TryGetComponent(out ChampBase champion))
         {
             DealDamage(champion, data.damage);

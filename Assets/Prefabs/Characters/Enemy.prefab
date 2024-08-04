@@ -260,6 +260,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slider: {fileID: 5693855764433897882}
   canvas: {fileID: 4586522835029526681}
+  champ: {fileID: 3624376596820051478}
+  tmp: {fileID: 4250079100014913608}
+  canvasMode: 0
+  sliderMode: 0
 --- !u!195 &5190458302311898433
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -298,6 +302,7 @@ MonoBehaviour:
   autoAttack: {fileID: 0}
   slot: {fileID: 868789314871238894}
   shotStartTransform: {fileID: 24362614534959715}
+  weapons: []
   attackRange: 300
   skillRange: 0
 --- !u!114 &868789314871238894
@@ -314,7 +319,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonDatas:
   - {fileID: 11400000, guid: 19031af2e27dc014585f56f73a12dfa0, type: 2}
-  buttonPrefab: {fileID: 5880283225972054831, guid: dccdc149b41420543bc7df91731797a7, type: 3}
+  excutorPrefab: {fileID: 5880283225972054831, guid: 78c6415a02a1d2542ad5db4b20362697, type: 3}
 --- !u!1001 &1648740313771592214
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -444,6 +449,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67a35189f3cdcb547b304954f3d60155, type: 3}
+--- !u!114 &4250079100014913608 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3178082251012022878, guid: 67a35189f3cdcb547b304954f3d60155, type: 3}
+  m_PrefabInstance: {fileID: 1648740313771592214}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!223 &4586522835029526681 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 2974375369120924303, guid: 67a35189f3cdcb547b304954f3d60155, type: 3}
