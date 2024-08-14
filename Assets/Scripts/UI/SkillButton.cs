@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class SkillButton : MonoBehaviour
 {
-    public string keycode;
+    public KeyCode keycode;
     public TextMeshProUGUI tmp;
     private Image img;
     private SkillExcutor excutor;
@@ -13,10 +13,12 @@ public class SkillButton : MonoBehaviour
     public void Init()
     {
         img = GetComponent<Image>();
-        tmp.text = keycode.ToUpper();
+        tmp.text = EnumConverter.GetString(keycode).ToUpper();
         SetSprite(data.sp);
 
-        excutor = GetComponent<SkillExcutor>();
+        if (excutor == null)
+            excutor = GetComponent<SkillExcutor>();
+
         excutor.Init(SkillSlotManager.Instance.gameObject, data);
     }
 
@@ -26,6 +28,20 @@ public class SkillButton : MonoBehaviour
             return;
 
         img.sprite = sp;
+    }
+
+    public void SetData(SkillButtonData data)
+    {
+        this.data = data;
+    }
+
+    public ZedSkillType GetSkillType()
+    {
+        var zedSkillData = data as ZedSkillButtonData;
+        if (zedSkillData == null)
+            return ZedSkillType.None;
+
+        return zedSkillData.type;
     }
 
     public SkillExcutor GetExcutor()

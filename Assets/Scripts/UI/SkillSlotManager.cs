@@ -16,7 +16,7 @@ public class SkillSlotManager : Singleton<SkillSlotManager>
         foreach (var button in buttons)
         {
             button.Init();
-            buttonDict.Add(button.keycode, button);
+            buttonDict.Add(EnumConverter.GetString(button.keycode), button);
         }
     }
 
@@ -31,6 +31,14 @@ public class SkillSlotManager : Singleton<SkillSlotManager>
     public void CoolDown(float time)
     {
 
+    }
+
+    public ZedSkillType GetType(string key)
+    {
+        if (!buttonDict.ContainsKey(key))
+            return ZedSkillType.None;
+
+        return buttonDict[key].GetSkillType();
     }
 
     public Dictionary<string, SkillButton> GetSlotDict()

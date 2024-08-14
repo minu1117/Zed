@@ -59,16 +59,16 @@ public class ChampBase : MonoBehaviour
         autoAttack.Attack(gameObject);
     }
 
-    public virtual Skill UseSkill(string key, string layerMask = "")
+    public virtual Skill UseSkill(string keycode, string layerMask = "")
     {
         if (slot == null)
             return null;
 
         var skillDict = slot.GetSlotDict();
-        if (!skillDict.ContainsKey(key))
+        if (!skillDict.ContainsKey(keycode))
             return null;
 
-        Skill skill = skillDict[key].StartSkill(gameObject, layerMask);
+        Skill skill = skillDict[keycode].StartSkill(gameObject, layerMask);
         return skill;
     }
 

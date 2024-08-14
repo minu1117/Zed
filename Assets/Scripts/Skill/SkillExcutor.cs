@@ -19,6 +19,10 @@ public class SkillExcutor : MonoBehaviour
         this.data = data;
         poolObject = new GameObject($"{data.skill.data.skillName}_Pool");
         poolObject.transform.parent = parentObj.transform;
+
+        if (data.maxPoolSize <= 0)
+            return;
+
         skillPool = new ObjectPool<Skill>
                     (
                         CreateSkill,
@@ -143,6 +147,12 @@ public class SkillExcutor : MonoBehaviour
     public SkillButtonData GetData()
     {
         return data;
+    }
+
+    public void DestroyPool()
+    {
+        Destroy(poolObject);
+        poolObject = null;
     }
 
     public bool GetIsAvailable() { return isAvailable; }

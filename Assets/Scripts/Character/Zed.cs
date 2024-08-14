@@ -9,6 +9,7 @@ public class Zed : SingletonChampion<Zed>
     public GameObject R_Hand_Blade;
     public Dictionary<int, ZedShadow> shadows = new();
     private SkillSlotManager skillSlotMgr;
+    private List<KeyCode> keycodes;
 
     protected override void Awake()
     {
@@ -16,28 +17,37 @@ public class Zed : SingletonChampion<Zed>
         skillSlotMgr = SkillSlotManager.Instance;
     }
 
+    private void Start()
+    {
+        keycodes = new();
+        var slotDict = skillSlotMgr.GetSlotDict();
+        foreach (var item in slotDict)
+        {
+            KeyCode code = (KeyCode)System.Enum.Parse(typeof(KeyCode), item.Key, true);
+            keycodes.Add(code);
+        }
+    }
+
     public void Update()
     {
-        CheckUseSkill(KeyCode.Q, ZedSkillType.RazorShuriken, EnumConverter.GetString(KeyCode.Q));
-        CheckUseSkill(KeyCode.E, ZedSkillType.ShadowSlash, EnumConverter.GetString(KeyCode.E));
-        CheckUseSkill(KeyCode.R, ZedSkillType.ShadowRush, EnumConverter.GetString(KeyCode.R));
-        CheckUseSkill(KeyCode.T, ZedSkillType.LivingShadow, EnumConverter.GetString(KeyCode.T));
-        CheckUseSkill(KeyCode.G, ZedSkillType.RazorShuriken, EnumConverter.GetString(KeyCode.G));
-        CheckUseSkill(KeyCode.F, ZedSkillType.LivingShadow, EnumConverter.GetString(KeyCode.F));
+        foreach (var keycode in keycodes)
+        {
+            CheckUseSkill(keycode);
+        }
 
         CheckAutoAttack(MouseButton.Left);
     }
 
-    public override Skill UseSkill(string key, string layerMask = "")
+    public override Skill UseSkill(string keycode, string layerMask = "")
     {
         if (skillSlotMgr == null)
             return null;
 
         var skillDict = skillSlotMgr.GetSlotDict();
-        if (!skillDict.ContainsKey(key))
+        if (!skillDict.ContainsKey(keycode))
             return null;
 
-        Skill skill = skillDict[key].GetExcutor().StartSkill(gameObject, layerMask);
+        Skill skill = skillDict[keycode].GetExcutor().StartSkill(gameObject, layerMask);
         return skill;
     }
 
@@ -50,23 +60,25 @@ public class Zed : SingletonChampion<Zed>
         Attack();
     }
 
-    private void CheckUseSkill(KeyCode keyCode, ZedSkillType skillTypeEnum, string key)
+    private void CheckUseSkill(KeyCode keyCode)
     {
         if (!Input.GetKeyDown(keyCode))
             return;
 
-        UseZedSkill(skillTypeEnum, key);
+        string keycodeStr = EnumConverter.GetString(keyCode);
+        ZedSkillType type = skillSlotMgr.GetType(keycodeStr);
+        UseZedSkill(type, keycodeStr);
     }
 
-    private void UseZedSkill(ZedSkillType skillTypeEnum, string key)
+    private void UseZedSkill(ZedSkillType type, string keycode)
     {
-        if (skillTypeEnum == ZedSkillType.LivingShadow)
+        if (type == ZedSkillType.LivingShadow)
         {
-            UseShadowSkill(skillTypeEnum, key);
+            UseShadowSkill(type, keycode);
             return;
         }
 
-        Skill useSkill = UseSkill(key, EnumConverter.GetString(CharacterEnum.Enemy));
+        Skill useSkill = UseSkill(keycode, EnumConverter.GetString(CharacterEnum.Enemy));
         if (useSkill == null)
             return;
 
@@ -78,10 +90,9 @@ public class Zed : SingletonChampion<Zed>
             target = Raycast.FindMousePosTarget(EnumConverter.GetString(CharacterEnum.Enemy));
         }
 
-        //CopySkill(key, useSkill, skillTypeEnum, slot.GetSlotDict()[key].GetPool(), target.Item1);
-        CopySkill(key, useSkill, skillTypeEnum, skillSlotMgr.GetSlotDict()[key].GetExcutor().GetPool(), target.Item1);
+        CopySkill(keycode, useSkill, type, skillSlotMgr.GetSlotDict()[keycode].GetExcutor().GetPool(), target.Item1);
 
-        animationController.UseSkill((int)skillTypeEnum);
+        animationController.UseSkill((int)type);
         skillSlotMgr.CoolDown(useSkill.data.coolDown);
     }
 
