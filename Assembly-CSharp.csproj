@@ -77,7 +77,6 @@
     <Compile Include="Assets\Scripts\Character\CharacterAnimationController.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterMoveController.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillType.cs" />
-    <Compile Include="Assets\Scripts\Enemy\Enemy.cs" />
     <Compile Include="Assets\Scripts\UI\SkillDropZone.cs" />
     <Compile Include="Assets\Scripts\UI\SkillWindowController.cs" />
     <Compile Include="Assets\Scripts\UI\RaycastedCanvas.cs" />
@@ -126,7 +125,9 @@
     <Compile Include="Assets\Scripts\Skill\RotationShotSkill.cs" />
     <Compile Include="Assets\Scripts\Camera\TargetFallow.cs" />
     <Compile Include="Assets\Scripts\Effect\TargetFollowEffect.cs" />
+    <Compile Include="Assets\Scripts\Enemy\EnemyBase.cs" />
     <Compile Include="Assets\Scripts\Skill\MultipleShadow.cs" />
+    <Compile Include="Assets\Scripts\Enemy\NormalEnemy.cs" />
     <Compile Include="Assets\Scripts\Skill\Skill.cs" />
     <Compile Include="Assets\Scripts\Skill\ZedSkillType.cs" />
     <Compile Include="Assets\Scripts\Skill\MeleeSkill.cs" />

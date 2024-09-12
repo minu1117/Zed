@@ -9,6 +9,7 @@ public class CharacterMoveController : MonoBehaviour
     private CharacterAnimationController animationController;
 
     private float moveSpeed;
+    private float addRunSpeed;
     private Vector3 dir;
     private Vector3 normalizedCameraForward;
     private Vector3 normalizedCameraRight;
@@ -47,7 +48,7 @@ public class CharacterMoveController : MonoBehaviour
             Run();
 
             Vector3 moveDirection = (movement.y * normalizedCameraForward + movement.x * normalizedCameraRight).normalized;
-            dir = moveDirection * moveSpeed;
+            dir = moveDirection * (moveSpeed + addRunSpeed);
             if (moveDirection != Vector3.zero)
             {
                 rb.transform.rotation = Quaternion.LookRotation(moveDirection);
@@ -72,12 +73,14 @@ public class CharacterMoveController : MonoBehaviour
         isRunning = Input.GetKey(KeyCode.LeftShift);
         if (isRunning)
         {
+            addRunSpeed = moveSpeed * 0.5f;
             runVec += movement * (sensitvity * Time.deltaTime);
             runVec.x = Mathf.Clamp(runVec.x, -1, 1);
             runVec.y = Mathf.Clamp(runVec.y, -1, 1);
         }
         else
         {
+            addRunSpeed = 0;
             runVec = Vector2.zero;
         }
     }

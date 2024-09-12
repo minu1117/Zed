@@ -55,7 +55,9 @@ public class ChampBase : MonoBehaviour
 
     public void Attack()
     {
-        animationController.Attack(autoAttack.data.attackSpeed);
+        if (animationController != null)
+            animationController.Attack(autoAttack.data.attackSpeed);
+
         autoAttack.Attack(gameObject);
     }
 

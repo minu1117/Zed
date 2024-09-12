@@ -156,5 +156,6 @@ public class SkillExcutor : MonoBehaviour
     }
 
     public bool GetIsAvailable() { return isAvailable; }
+    public void SetIsAvailable(bool set) { isAvailable = set; }
     public IObjectPool<Skill> GetPool() { return skillPool; }
 }

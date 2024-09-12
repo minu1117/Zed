@@ -5505,7 +5505,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemies:
-  - {fileID: 3624376596820051478, guid: fa14dec6309916849b53e60a233ecafc, type: 3}
+  - {fileID: -7537476079758418899, guid: fa14dec6309916849b53e60a233ecafc, type: 3}
   poolSize: 5
 --- !u!4 &1016451687
 Transform:
@@ -9965,10 +9965,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7620196312795948190, guid: 43404936f3a346648a5a1ece8b73a143, type: 3}
-      propertyPath: slot
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 8240668764970117832, guid: 43404936f3a346648a5a1ece8b73a143, type: 3}
       propertyPath: m_LocalPosition.x
       value: 510

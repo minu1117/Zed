@@ -4,10 +4,10 @@ using UnityEngine.Pool;
 
 public class EnemyGenerator : MonoBehaviour
 {
-    public List<Enemy> enemies;
+    public List<EnemyBase> enemies;
     public int poolSize;
     private List<GameObject> poolObjects;
-    private List<IObjectPool<Enemy>> enemyPools;
+    private List<IObjectPool<EnemyBase>> enemyPools;
     private int createIndex = 0;
 
     public void Awake()
@@ -21,8 +21,8 @@ public class EnemyGenerator : MonoBehaviour
             poolObj.transform.position = transform.position;
             poolObjects.Add(poolObj);
 
-            IObjectPool<Enemy> pool;
-            pool = new ObjectPool<Enemy>
+            IObjectPool<EnemyBase> pool;
+            pool = new ObjectPool<EnemyBase>
             (
                 CreateEnemy,
                 GetEnemy,
@@ -44,14 +44,14 @@ public class EnemyGenerator : MonoBehaviour
         }
     }
 
-    private Enemy CreateEnemy()
+    private EnemyBase CreateEnemy()
     {
         // Create Index = Count - 1
         int index = createIndex - 1;
         var enemyobj = Instantiate(enemies[index].gameObject, poolObjects[index].transform);
         enemyobj.transform.position = transform.position;
 
-        var enemy = enemyobj.GetComponent<Enemy>();
+        var enemy = enemyobj.GetComponent<EnemyBase>();
         var hpController = enemy.GetHPController();
 
         enemy.Init();
@@ -60,18 +60,19 @@ public class EnemyGenerator : MonoBehaviour
 
         return enemy;
     }
-    private void GetEnemy(Enemy enemy)
+    private void GetEnemy(EnemyBase enemy)
     {
         enemy.transform.position = transform.position;
+        enemy.SetIsPatrol(true);
         var hpController = enemy.GetHPController();
         hpController.SetMaxValue();
         enemy.gameObject.SetActive(true);
     }
-    private void ReleaseEnemy(Enemy enemy)
+    private void ReleaseEnemy(EnemyBase enemy)
     {
         enemy.gameObject.SetActive(false);
     }
-    private void DestroyEnemy(Enemy enemy)
+    private void DestroyEnemy(EnemyBase enemy)
     {
         Destroy(enemy.gameObject);
     }

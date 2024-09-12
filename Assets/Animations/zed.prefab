@@ -935,7 +935,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: eb883fbd557de9d47b60260619518020, type: 2}
   autoAttack: {fileID: 8946404786609123661}
-  slot: {fileID: 0}
   shotStartTransform: {fileID: 8822124168629930503}
   weapons:
   - {fileID: 2422746513429961512}
@@ -1044,6 +1043,8 @@ MonoBehaviour:
   attackSpeedParamName: AttackSpeed
   attackTypeParamName: AttackType
   nextMotionTriggerParamName: NextMotion
+  upperLayerParamName: IsUpper
+  useSkillParamName: UseSkill
   maxAutoAttackEnum: 2
 --- !u!114 &8946404786609123661
 MonoBehaviour:

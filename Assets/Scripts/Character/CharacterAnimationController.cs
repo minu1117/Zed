@@ -8,6 +8,8 @@ public class CharacterAnimationController : MonoBehaviour
     public string attackSpeedParamName;
     public string attackTypeParamName;
     public string nextMotionTriggerParamName;
+    public string upperLayerParamName;
+    public string useSkillParamName;
     public AutoAttackEnum maxAutoAttackEnum;
     private Animator animator;
     private int currentLayerIndex;
@@ -43,10 +45,10 @@ public class CharacterAnimationController : MonoBehaviour
 
         bool isUpper = enumIndex != (int)ZedSkillType.ShadowRush ? true : false;
         currentLayerIndex = isUpper ? upperLayerIndex : wholeBodyLayerIndex;
-        animator.SetBool("IsUpper", isUpper);
+        animator.SetBool(upperLayerParamName, isUpper);
 
         animator.SetInteger(skillParamName, enumIndex);
-        animator.SetTrigger("UseSkill");
+        animator.SetTrigger(useSkillParamName);
     }
 
     public void SetTrigger(string triggerName)
