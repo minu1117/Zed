@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -10,11 +11,13 @@ public class Zed : SingletonChampion<Zed>
     public Dictionary<int, ZedShadow> shadows = new();
     private SkillSlotManager skillSlotMgr;
     private List<KeyCode> keycodes;
+    private RaycastedCanvas[] raycastedCanvases;
 
     protected override void Awake()
     {
         base.Awake();
         skillSlotMgr = SkillSlotManager.Instance;
+        raycastedCanvases = FindObjectsOfType<RaycastedCanvas>();
     }
 
     private void Start()
@@ -55,6 +58,12 @@ public class Zed : SingletonChampion<Zed>
     {
         if (!Input.GetMouseButtonDown((int)mouseButton))
             return;
+
+        foreach (var canvas in raycastedCanvases)
+        {
+            if (canvas.IsHit())
+                return;
+        }
 
         FinishedAttack();
         Attack();

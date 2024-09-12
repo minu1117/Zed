@@ -79,6 +79,8 @@
     <Compile Include="Assets\Scripts\Skill\SkillType.cs" />
     <Compile Include="Assets\Scripts\Enemy\Enemy.cs" />
     <Compile Include="Assets\Scripts\UI\SkillDropZone.cs" />
+    <Compile Include="Assets\Scripts\UI\SkillWindowController.cs" />
+    <Compile Include="Assets\Scripts\UI\RaycastedCanvas.cs" />
     <Compile Include="Assets\Scripts\Utility\Raycast.cs" />
     <Compile Include="Assets\TwoUncleVFX\Common\Script\ChangeFX.cs" />
     <Compile Include="Assets\Toby Fredson\The Toby Foliage Engine\(TTFE)_Demo\Scripts\FPSController.cs" />
@@ -97,14 +99,13 @@
     <Compile Include="Assets\Scripts\Skill\SkillButtonData.cs" />
     <Compile Include="Assets\Scripts\Effect\EffectManager.cs" />
     <Compile Include="Assets\TwoUncleVFX\Common\Script\RotateAround.cs" />
-    <Compile Include="Assets\Scripts\UI\SortingCanvasChilden.cs" />
     <Compile Include="Assets\Scripts\UI\HPController.cs" />
     <Compile Include="Assets\Scripts\UI\SkillSlotManager.cs" />
     <Compile Include="Assets\Scripts\Story\Dialogue.cs" />
     <Compile Include="Assets\Scripts\AutoAttack\TargetingAutoAttack.cs" />
-    <Compile Include="Assets\Scripts\UI\CanvasSoringOrderController.cs" />
     <Compile Include="Assets\Scripts\Skill\BuffSkill.cs" />
     <Compile Include="Assets\Scripts\Utility\EnumConverter.cs" />
+    <Compile Include="Assets\Scripts\UI\UIRaycaster.cs" />
     <Compile Include="Assets\Scripts\UI\DraggableSkill.cs" />
     <Compile Include="Assets\Scripts\Utility\CSVReader.cs" />
     <Compile Include="Assets\TwoUncleVFX\Common\Script\LineManager.cs" />

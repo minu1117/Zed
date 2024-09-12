@@ -1,40 +1,51 @@
-using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class DraggableSkillCreator : MonoBehaviour
+public class DraggableSkillCreator : MonoBehaviour, IPointerEnterHandler
 {
     public Canvas createdCanvas;
     public DraggableSkill draggableSkill;
     private Image img;
     private DraggableSkill createdDraggableSkill;
     private RectTransform rectTransform;
+    private Canvas parentCanvas;
 
     private void Start()
     {
         rectTransform = GetComponent<RectTransform>();
         img = GetComponent<Image>();
+        parentCanvas = GetComponentInParent<Canvas>();
 
-        createdDraggableSkill = Instantiate(draggableSkill);
-        StartCoroutine(CoWaitOneFrame());
+        Create();
     }
 
-    // Grid Layout Group의 위치를 가져오기 위해 1프레임 쉬기
-    private IEnumerator CoWaitOneFrame()
+    private void MoveCurrentPos()
     {
-        yield return null;
+        if (createdDraggableSkill == null)
+            return;
 
-        var gridLayoutGroup = GetComponentInParent<GridLayoutGroup>();
-        if (gridLayoutGroup != null)
-        {
-            createdDraggableSkill.transform.SetParent(createdCanvas.transform);
-            createdDraggableSkill.GetRectTransform().sizeDelta = gridLayoutGroup.cellSize;
-            createdDraggableSkill.GetRectTransform().position = rectTransform.position;
-        }
+        createdDraggableSkill.GetRectTransform().position = rectTransform.position;
+    }
 
-        var canvas = GetComponentInParent<Canvas>();
-        createdDraggableSkill.SetCanvas(canvas);
+    private void Create()
+    {
+        createdDraggableSkill = Instantiate(draggableSkill);
+        createdDraggableSkill.transform.SetParent(createdCanvas.transform);
+        createdDraggableSkill.GetRectTransform().sizeDelta = rectTransform.sizeDelta;
+        createdDraggableSkill.GetRectTransform().position = rectTransform.position;
+        createdDraggableSkill.GetRectTransform().localScale = Vector3.one;
+        createdDraggableSkill.SetCanvas(parentCanvas);
 
         img.sprite = createdDraggableSkill.GetImage().sprite;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (createdDraggableSkill.gameObject.activeSelf)
+            return;
+
+        MoveCurrentPos();
+        createdDraggableSkill.gameObject.SetActive(true);
     }
 }

@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public static class Raycast
 {
@@ -21,6 +23,19 @@ public static class Raycast
         int mask = LayerMask.GetMask(layerMask);
 
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask))
+        {
+            return hit;
+        }
+
+        return default;
+    }
+
+    public static RaycastHit GetHit(Vector3 point)
+    {
+        var ray = Camera.main.ScreenPointToRay(point);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
             return hit;
         }

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4726015346465107579}
   - component: {fileID: 6044292406422625451}
   - component: {fileID: 2008848807412204393}
+  - component: {fileID: -2579600083410210214}
   m_Layer: 5
   m_Name: E
   m_TagString: Untagged
@@ -102,3 +103,15 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!210 &-2579600083410210214
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7460428175211771034}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 1
+  m_SortAtRoot: 0
