@@ -999,12 +999,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skillParamName: SkillType
-  skillTriggerName: 
-  autoAttackTriggerName: 
-  attackSpeedParamName: 
-  attackTypeParamName: 
+  skillTriggerName: UseSkill
+  autoAttackTriggerName: Attack
+  attackSpeedParamName: AttackSpeed
+  attackTypeParamName: AttackType
   nextMotionTriggerParamName: NextMotion
-  maxAutoAttackEnum: 0
+  upperLayerParamName: IsUpper
+  useSkillParamName: UseSkill
+  maxAutoAttackEnum: 2
 --- !u!54 &6639304510100191221
 Rigidbody:
   m_ObjectHideFlags: 0

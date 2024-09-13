@@ -5,23 +5,30 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
 
+// 플레이어 전용 스킬
 public class ZedShadow : ShotSkill
 {
-    private readonly float moveTime = 0.5f;
-    private int objectID;
+    private readonly float moveTime = 0.5f;             // 목표 지점까지 이동하는 시간
+    private int objectID;                               // 그림자 스킬 고유 ID
 
-    public bool isReady = false;
-    public Transform shotStartTransform;
+    public bool isReady = false;                        // 스킬 사용 시작 가능 여부
+    public Transform shotStartTransform;                // 스킬 발사 위치
     public SkinnedMeshRenderer meshRenderer;
     public List<TrailRenderer> weapontrailRenderers;
 
     private NavMeshAgent agent;
     private Rigidbody rb;
-    private Vector3 usePoint;
+    private Vector3 usePoint;                           // 이동 목표 지점
 
+    // 플레이어가 사용 시 복제하여 사용할 스킬들
+    // string : 이름
+    // IObjectPool<Skill> : 스킬의 오브젝트 풀 (Release를 하기 위함)
+    // KeyValuePair<Skill, ZedSkillType> : 스킬과 스킬 타입
+    // GameObject : 타겟
+    // Dictionary<스킬 이름, List<Pair<오브젝트풀, Pair<Pair<스킬, 스킬타입>, 타겟>>>>
     private Dictionary<string, List<KeyValuePair<IObjectPool<Skill>, KeyValuePair<KeyValuePair<Skill, ZedSkillType>, GameObject>>>> useSkills;
     private CharacterAnimationController animationController;
-    [SerializeField] private GameObject particleFollowObj;
+    [SerializeField] private GameObject particleFollowObj;  // 이동 중 나올 파티클
 
     public override void Awake()
     {
@@ -34,73 +41,81 @@ public class ZedShadow : ShotSkill
 
     public NavMeshAgent GetAgent() { return agent; }
 
-    public override void Use(GameObject charactor)
+    // 외부에서 그림자 스킬(ZedShadow)을 사용하기 위한 메서드
+    public override void Use(GameObject character)
     {
-        if (charactor.TryGetComponent(out Zed zed))
-        {
-            UseEffect(particleFollowObj);
-            StartUseSound();
-            meshRenderer.enabled = false;
-            SetActiveTrailRenderer(true);
-            SetActiveWeaponTrailRenderers(false);
-            StartCoroutine(CoSpawnShadow(zed));
-        }
-    }
-
-    private void SetActiveWeaponTrailRenderers(bool active)
-    {
-        if (weapontrailRenderers == null || weapontrailRenderers.Count == 0)
+        if (!character.TryGetComponent(out Zed zed))    // character 오브젝트에서 플레이어 컴포넌트 추출 실패 시 (플레이어 전용 스킬)
             return;
 
+        UseEffect(particleFollowObj);           // 이펙트 실행
+        StartUseSound();                        // 스킬 사용 사운드 재생
+        meshRenderer.enabled = false;           // 이동 중 오브젝트가 보이지 않기 위해 비활성화
+        SetActiveTrailRenderer(true);           // TrailRenderer 활성화
+        SetActiveWeaponTrailRenderers(false);   // 무기 전용 TrailRenderer 활성화
+        StartCoroutine(CoSpawnShadow(zed));     // 이동 목표 지점까지 이동하는 코루틴 실행
+    }
+
+    // 무기 전용 TrailRenderer 활성화 메서드
+    private void SetActiveWeaponTrailRenderers(bool active)
+    {
+        if (weapontrailRenderers == null || weapontrailRenderers.Count == 0)    // TrailRenderer가 없을 경우 return
+            return;
+
+        // TrailRenderer List 순회
         foreach (var trailRenderer in weapontrailRenderers)
         {
-            trailRenderer.enabled = active;
+            trailRenderer.enabled = active; // 활성화
         }
     }
 
+    // 이동 목표 지점까지 이동하는 코루틴
+    // 이동 완료 후, 이동 중 플레이어가 사용한 모든 스킬 사용
     private IEnumerator CoSpawnShadow(Zed zed)
     {
-        if (usePoint == null || usePoint == Vector3.zero)
-            usePoint = Raycast.GetMousePointVec();
+        if (usePoint == null || usePoint == Vector3.zero)   // 이동 목표 지점이 null이거나 0,0,0일 경우
+            usePoint = Raycast.GetMousePointVec();          // 목표 지점을 현재 마우스 위치로 설정
 
-        agent.enabled = false;
-        transform.forward = new Vector3(usePoint.x, transform.position.y, usePoint.z);
+        agent.enabled = false;                              // 이동 중 벽에 부딪히지 않기 위해 비활성화
+        transform.forward = new Vector3(usePoint.x, transform.position.y, usePoint.z);  // 바라보는 위치 설정
 
-        yield return new WaitForSeconds(data.useDelay);
+        yield return new WaitForSeconds(data.useDelay);     // 시전 딜레이 만큼 대기
 
-        transform.DOMove(usePoint, moveTime)
-                 .SetEase(Ease.OutQuad)
-                 .OnComplete(() => UseAllSkills());
+        transform.DOMove(usePoint, moveTime)                // 목표 지점까지 moveTime 안에 도착
+                 .SetEase(Ease.OutQuad)                     // 속도가 빠르게 시작, 점차 감소
+                 .OnComplete(() => UseAllSkills());         // 이동 완료 후, 이동 중 플레이어가 사용한 모든 스킬을 사용하는 메서드 실행
 
-        yield return new WaitForSeconds(data.duration);
+        yield return new WaitForSeconds(data.duration);     // 지속시간 만큼 대기
 
-        usePoint = Vector3.zero;
-        zed.RemoveShadow(objectID);
-        useSkills.Clear();
+        usePoint = Vector3.zero;                            // 목표 지점 초기화
+        zed.RemoveShadow(objectID);                         // 플레이어에 담겨있는 그림자 스킬 제거 (본인)
+        useSkills.Clear();                                  // 담아둔 모든 스킬 제거
 
-        if (pool != null)
+        if (pool != null)                           // 그림자 스킬 오브젝트 풀이 있을 경우
         {
-            isReady = false;
-            agent.enabled = true;
-            SetActiveWeaponTrailRenderers(false);
-            Release();
+            isReady = false;                        // 준비 상태 초기화
+            agent.enabled = true;                   // NavMeshAgent 활성화
+            SetActiveWeaponTrailRenderers(false);   // 무기 TrailRenderer 비활성화
+            Release();                              // 오브젝트 풀에 Release 해주는 메서드 실행
         }
-        else
+        else                                        // 오브젝트 풀이 없을 경우
         {
-            StartDisappearSound();
-            Destroy(gameObject);
+            StartDisappearSound();                  // 사라지는 사운드 재생
+            Destroy(gameObject);                    // 삭제
         }
     }
 
+    // 이동 완료 후 실행
+    // 담아둔 모든 스킬을 사용하는 메서드
     public void UseAllSkills()
     {
-        ReleaseEffect();
-        SetActiveWeaponTrailRenderers(true);
+        ReleaseEffect();                        // 이동 중 나오는 파티클 Release
+        SetActiveWeaponTrailRenderers(true);    // 무기 TrailRenderer 활성화
 
-        meshRenderer.enabled = true;
-        isReady = true;
-        usePoint = GetUsePoint();
+        meshRenderer.enabled = true;            // 이동이 완료되어 오브젝트가 보여야 하니 활성화
+        isReady = true;                         // 스킬 사용 준비 완료
+        usePoint = GetUsePoint();               // 현재 마우스 위치 저장
 
+        // 이동 중 담아둔 사용될 스킬들 순회
         foreach (var skillPairList in useSkills)
         {
             foreach (var skillObject in skillPairList.Value)
@@ -111,93 +126,105 @@ public class ZedShadow : ShotSkill
                 var target = skillObject.Value.Value;
                 var animationSkillType = skillObject.Value.Key.Value;
 
-                UseCopySkill(skill, pool, target);
-                StartAnimation(animationSkillType);
+                UseCopySkill(skill, pool, target);  // 스킬 사용
+                StartAnimation(animationSkillType); // 애니메이션 실행
             }
         }
 
-        useSkills.Clear();
+        useSkills.Clear();  // 사용 완료, 담아둔 모든 스킬 삭제
     }
 
+    // 이동 중 사용된 스킬들을 담아주는 메서드
     public void AddSkill(string name, Skill skill, ZedSkillType type, IObjectPool<Skill> skillPool, GameObject target = null)
     {
-        if (skill == null)
+        if (skill == null)  // 스킬이 없을 경우 return
             return;
 
-        if (isReady)
+        if (isReady)        // 스킬 사용 준비가 됐을 경우 스킬 바로 사용
         {
-            usePoint = GetUsePoint();
-            UseCopySkill(skill, skillPool, target);
-            StartAnimation(type);
-            return;
+            usePoint = GetUsePoint();                   // 현재 마우스 위치 저장
+            UseCopySkill(skill, skillPool, target);     // 스킬 사용
+            StartAnimation(type);                       // 애니메이션 실행
+            return;                                     // 사용 후 return
         }
 
+        // 사용할 스킬 정보와 설정한 타겟 담기
         var pair =
             new KeyValuePair<IObjectPool<Skill>, KeyValuePair<KeyValuePair<Skill, ZedSkillType>, GameObject>> (skillPool,
             new KeyValuePair<KeyValuePair<Skill, ZedSkillType>, GameObject>(
             new KeyValuePair<Skill, ZedSkillType>(skill, type), target));
 
+        // 대쉬 스킬일 경우
         if (skill.data.type == SkillType.Dash)
         {
-            Vector3 point = Raycast.GetMousePointVec();
-            var dash = skill.GetComponent<DashSkill>();
-            dash.SetCaster(gameObject);
-            dash.SetPoint(point);
+            Vector3 point = Raycast.GetMousePointVec(); // 현재 마우스 위치 저장 (바닥 기준)
+            var dash = skill.GetComponent<DashSkill>(); // 스킬에서 대쉬 스킬 컴포넌트 추출
+            dash.SetCaster(gameObject);                 // 시전자 설정
+            dash.SetPoint(point);                       // 시전 지점 설정
         }
 
+        // 스킬들을 담아둔 곳에 같은 스킬이 없을 경우
         if (!useSkills.ContainsKey(name))
         {
+            // 새로운 스킬 정보 컨테이너 생성, 사용할 스킬 담기
             List<KeyValuePair<IObjectPool<Skill>, KeyValuePair<KeyValuePair<Skill, ZedSkillType>, GameObject>>> pairList = new() { pair };
-            useSkills.Add(name, pairList);
+            useSkills.Add(name, pairList);  // 새로 사용할 스킬 추가
         }
+
+        // 같은 스킬이 있을 경우
         else
         {
-            useSkills[name].Add(pair);
+            useSkills[name].Add(pair);  // 해당 컨테이너를 찾아 스킬 추가
         }
     }
 
+    // 애니메이션 실행 메서드
     private void StartAnimation(ZedSkillType type)
     {
         animationController.UseSkill((int)type);
     }
 
+    // 스킬 사용 메서드
     private void UseCopySkill(Skill skill, IObjectPool<Skill> skillPool, GameObject target = null)
     {
         StartCoroutine(CoUseCopySkill(skill, skillPool, target));
     }
 
+    // 스킬 사용 코루틴
     private IEnumerator CoUseCopySkill(Skill skill, IObjectPool<Skill> skillPool, GameObject target = null)
     {
-        if (skill.data.isShadow)
+        if (skill.data.isShadow)    // 그림자 스킬일 경우 중단
             yield break;
 
-        yield return new WaitForSeconds(skill.data.useDelay);
+        yield return new WaitForSeconds(skill.data.useDelay);   // 스킬의 선 딜레이 만큼 대기
 
-        transform.LookAt(usePoint);
+        transform.LookAt(usePoint);             // 시전 위치 바라보기
 
-        var skillObject = skillPool.Get();
-        if (skillObject.isTargeting)
+        var skillObject = skillPool.Get();      // 스킬 가져오기
+        if (skillObject.isTargeting)            // 타게팅 스킬일 경우
         {
-            if (target == null)
+            if (target == null)                 // 타겟이 없을 경우
             {
-                skillPool.Release(skillObject);
+                skillPool.Release(skillObject); // 스킬 제거 (Release)
             }
-            else
+            else                                // 타게팅 스킬이 아닐 경우
             {
-                var targetingSkill = skillObject.GetComponent<TargetingSkill>();
-                targetingSkill.SetTarget(target);
+                var targetingSkill = skillObject.GetComponent<TargetingSkill>();    // 스킬에서 타게팅 스킬 컴포넌트 추출
+                targetingSkill.SetTarget(target);                                   // 타겟 설정
             }
         }
 
-        skillObject.SetCaster(gameObject);
-        skillObject.SetPool(skillPool);
-        skillObject.SetPosition(shotStartTransform.position);
-        skillObject.SetStartPos(shotStartTransform.position);
-        skillObject.SetRotation(transform.rotation);
+        skillObject.SetCaster(gameObject);                      // 시전자 설정
+        skillObject.SetPool(skillPool);                         // 오브젝트 풀 설정 (Release 하기 위함)
+        skillObject.SetPosition(shotStartTransform.position);   // 스킬 위치 설정
+        skillObject.SetStartPos(shotStartTransform.position);   // 시작 위치 설정
+        skillObject.SetRotation(transform.rotation);            // 회전 값 설정
 
-        skillObject.Use(gameObject);
+        skillObject.Use(gameObject);                            // 스킬 사용
     }
 
+    // 순간이동
+    // 인자로 받는 GameObject와 위치, 회전 값을 서로 변경
     public void Teleport(GameObject obj)
     {
         Vector3 position = obj.transform.position;
@@ -210,11 +237,11 @@ public class ZedShadow : ShotSkill
         obj.transform.rotation = shadowRotation;
         transform.rotation = rotation;
 
-        var recastClips = data.recastClips;
-        if (recastClips == null || recastClips.Count == 0)
+        var recastClips = data.recastClips;                 // 재시전 사운드
+        if (recastClips == null || recastClips.Count == 0)  // 재시전 사운드가 없을 경우 return
             return;
 
-        SoundManager.Instance.PlayOneShot(recastClips[UnityEngine.Random.Range(0, recastClips.Count)]);
+        SoundManager.Instance.PlayOneShot(recastClips[UnityEngine.Random.Range(0, recastClips.Count)]); // 재시전 사운드 실행
     }
 
     private Vector3 GetUsePoint()

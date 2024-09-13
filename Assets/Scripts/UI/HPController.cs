@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public enum CanvasMode
 {
@@ -31,10 +32,10 @@ public class HPController : MonoBehaviour
         if (champ == null)
             champ = Zed.Instance;
 
-        data = champ.data;
         ChangeCanvasMode(canvasMode);
-        data.currentHp = data.maxHp;
-        data.currentMp = data.maxMp;
+        champ.data.currentHp = champ.data.maxHp;
+        champ.data.currentMp = champ.data.maxMp;
+        data = champ.data;
 
         SetMaxValue();
     }
@@ -68,6 +69,7 @@ public class HPController : MonoBehaviour
     public void SetCurrentHp()
     {
         data.currentHp = Math.Clamp(data.currentHp, 0, data.maxHp);
+        champ.data.currentHp = data.currentHp;
         slider.value = data.currentHp / data.maxHp;
         SetText($"{data.currentHp} / {data.maxHp}");
     }
@@ -82,6 +84,7 @@ public class HPController : MonoBehaviour
     public void SetCurrentMp()
     {
         data.currentMp = Math.Clamp(data.currentMp, 0, data.maxMp);
+        champ.data.currentMp = data.currentMp;
         slider.value = data.currentMp / data.maxMp;
         SetText($"{data.currentMp} / {data.maxMp}");
     }
