@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class TargetingShotSkill : TargetingSkill
 {
-    public bool isPenetrate;
+    public bool isPenetrate;        // 관통 여부
     private bool isCollide = false;
 
     public override void Use(GameObject character)
     {
-        if (target == null)
+        if (target == null) // 타게팅 스킬이기 때문에 타겟이 없을 경우 Release, return
         {
             Release();
             return;
@@ -20,15 +20,19 @@ public class TargetingShotSkill : TargetingSkill
 
     protected override void OnTriggerEnter(Collider other)
     {
+        if (other == null)
+            return;
+
         Collide(other.gameObject);
     }
 
+    // 충돌 처리
     protected override void Collide(GameObject obj)
     {
-        if (target == null || obj == null)
+        if (target == null || obj == null)  // 타겟이 없거나 부딪힌 대상이 없을 경우 return
             return;
 
-        // Target에 부딪혔을 경우 Target에 데미지 부여
+        // 타겟에 부딪혔을 경우 타겟에 데미지 부여
         if (!isCollide && ReferenceEquals(target, obj))
         {
             isCollide = true;
@@ -42,22 +46,24 @@ public class TargetingShotSkill : TargetingSkill
         }
     }
 
+    // 날리기 코루틴
     private IEnumerator CoShot()
     {
-        float useTime = data.duration;
+        float duration = data.duration;
         Vector3 usePos = startPos;
 
         // 이동 거리 미리 계산 (적이 있는 방향으로)
-        Vector3 totalMovement = usePos + (GetDir(usePos) * useTime * data.speed);
+        Vector3 totalMovement = usePos + (GetDir(usePos) * duration * data.speed);
         totalMovement.y = usePos.y;
 
+        // 지속 시간만큼 날아가기 (타겟을 향해)
         for (var timePassed = 0f; timePassed < data.duration; timePassed += Time.deltaTime)
         {
-            // Target에 부딪히지 않았을 경우 Target을 향해 이동 거리 및 방향 재계산
+            // 타겟에 부딪히지 않았을 경우 타겟을 향해 이동 거리 및 방향 재계산
             if (!isCollide)
             {
                 Vector3 dir = GetDir(usePos);
-                totalMovement = usePos + (dir * useTime * data.speed);
+                totalMovement = usePos + (dir * duration * data.speed);
                 totalMovement.y = usePos.y;
             }
 
@@ -69,6 +75,7 @@ public class TargetingShotSkill : TargetingSkill
         Release();
     }
 
+    // 방향 구하기
     private Vector3 GetDir(Vector3 usePosition)
     {
         Vector3 dir = target.transform.position - usePosition;

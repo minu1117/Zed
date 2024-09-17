@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class SkillSlotManager : Singleton<SkillSlotManager>
 {
-    [SerializeField] private List<SkillButton> buttons;
-    private Dictionary<string, SkillButton> buttonDict;
+    [SerializeField] private List<SkillButton> buttons;     // 스킬 버튼들
+    private Dictionary<string, SkillButton> buttonDict;     // 생성된 스킬 버튼 오브젝트들 저장용
 
     protected override void Awake()
     {
@@ -13,10 +13,12 @@ public class SkillSlotManager : Singleton<SkillSlotManager>
             return;
 
         buttonDict = new();
+
+        // 스킬 버튼 List 순회
         foreach (var button in buttons)
         {
-            button.Init();
-            buttonDict.Add(EnumConverter.GetString(button.keycode), button);
+            button.Init();  // 초기 설정 실행
+            buttonDict.Add(EnumConverter.GetString(button.keycode), button);    // Dictionary에 추가
         }
     }
 

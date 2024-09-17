@@ -4,11 +4,11 @@ using UnityEngine.UI;
 
 public class SkillButton : MonoBehaviour
 {
-    public KeyCode keycode;
-    public TextMeshProUGUI tmp;
-    private Image img;
-    private SkillExcutor excutor;
-    public SkillButtonData data;
+    public KeyCode keycode;         // 스킬을 사용할 키
+    public TextMeshProUGUI tmp;     // 스킬 키 텍스트
+    private Image img;              // 스킬 이미지
+    private SkillExcutor excutor;   // 스킬 생성기
+    public SkillButtonData data;    // 스킬 데이터
 
     public void Init()
     {
@@ -19,7 +19,7 @@ public class SkillButton : MonoBehaviour
         if (excutor == null)
             excutor = GetComponent<SkillExcutor>();
 
-        excutor.Init(SkillSlotManager.Instance.gameObject, data);
+        excutor.Init(SkillSlotManager.Instance.gameObject, data);   // 스킬 생성기 초기 설정 실행
     }
 
     public void SetSprite(Sprite sp)

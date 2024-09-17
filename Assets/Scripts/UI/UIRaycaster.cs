@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public static class UIRaycaster
 {
+    // 현재 마우스 위치 ray 쏘기, ray를 UI가 맞은 결과 return
     public static List<RaycastResult> GetHit(Canvas canvas)
     {
         var evSystem = canvas.GetComponent<EventSystem>();
@@ -19,7 +20,8 @@ public static class UIRaycaster
         return results;
     }
 
-    // false == not hit
+    // UI가 ray에 맞았는 지 확인
+    // false == 해당 위치에 UI 없음
     public static bool IsHit(Canvas canvas)
     {
         return GetHit(canvas).Count > 0;
