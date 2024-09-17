@@ -35,8 +35,8 @@ public class SkillExcutor : MonoBehaviour
                     );
     }
 
-    // 스킬 실행 메서드
-    // 실행한 스킬을 return (해당 메서드를 실행한 곳에서도 실행한 스킬의 정보를 알 수 있게)
+    // 스킬 실행 
+    // 실행한 스킬을 return (해당 를 실행한 곳에서도 실행한 스킬의 정보를 알 수 있게)
     public Skill StartSkill(GameObject character, string layerMask)
     {
         if (!isAvailable)   // 사용 불가 상태일 경우 null return
@@ -68,8 +68,9 @@ public class SkillExcutor : MonoBehaviour
 
         if (useSkill.isTargeting)                                   // 스킬이 타게팅 스킬일 경우
         {
-            var findTarget = Raycast.FindMousePosTarget(layerMask); // 현재 마우스 위치에 적이 있는지 검사
-            if (!findTarget.Item2)                                  // 적이 없을 경우
+            var hit = Raycast.GetHit(Input.mousePosition, layerMask);  // 현재 마우스 위치의 적 탐지, 타겟 정보 가져오기
+            bool isHit = hit.collider != null;
+            if (!isHit)                                  // 적이 없을 경우
             {
                 skillPool.Release(useSkill);                        // 스킬 사용 X, 생성된 스킬 바로 Release
                 return null;                                        // 스킬이 사용되지 않았으니 null return
@@ -77,7 +78,7 @@ public class SkillExcutor : MonoBehaviour
             else // 적이 있을 경우
             {
                 var targetingSkill = useSkill.GetComponent<TargetingSkill>();   // 가져온 스킬에서 타게팅 스킬 컴포넌트 추출
-                targetingSkill.SetTarget(findTarget.Item1);                     // 타겟 설정
+                targetingSkill.SetTarget(hit.collider.gameObject);                     // 타겟 설정
             }    
         }
 
@@ -134,7 +135,7 @@ public class SkillExcutor : MonoBehaviour
         isAvailable = true;     // 스킬 사용 가능 상태로 변경
     }
 
-    // 오브젝트 풀의 Create 메서드
+    // 오브젝트 풀의 Create 
     private Skill CreateSkill()
     {
         var useSkill = Instantiate(data.skill, poolObject.transform);   // 스킬 생성
@@ -143,19 +144,19 @@ public class SkillExcutor : MonoBehaviour
         return useSkill;
     }
 
-    // 오브젝트 풀의 Get 메서드
+    // 오브젝트 풀의 Get 
     private void GetSkill(Skill skill)
     {
         skill.gameObject.SetActive(true);
     }
 
-    // 오브젝트 풀의 Release 메서드
+    // 오브젝트 풀의 Release 
     private void ReleaseSkill(Skill skill)
     {
         skill.gameObject.SetActive(false);
     }
 
-    // 오브젝트 풀의 Destroy 메서드
+    // 오브젝트 풀의 Destroy 
     private void DestroySkill(Skill skill)
     {
         Destroy(skill.gameObject);

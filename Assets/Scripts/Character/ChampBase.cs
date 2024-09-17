@@ -31,11 +31,11 @@ public class ChampBase : MonoBehaviour
         if (gameObject.TryGetComponent(out SkillSlot skillSlot))    // 오브젝트에서 스킬 슬롯 컴포넌트 추출 성공 시
         {
             slot = skillSlot;   // 스킬 슬롯 설정
-            slot.Init();        // 스킬 슬롯 초기 설정 메서드 실행
+            slot.Init();        // 스킬 슬롯 초기 설정
         }
     }
 
-    // 평타 공격 완료 메서드
+    // 평타 공격 완료 
     public void FinishedAttack()
     {
         if (weaponDict == null || weaponDict.Count == 0)    // 무기 dictionary가 비었을 경우 return
@@ -48,7 +48,7 @@ public class ChampBase : MonoBehaviour
         }
     }
 
-    // 평타 준비 상태 변경 메서드
+    // 평타 준비 상태 변경 
     protected void OnAutoAttack(string name)
     {
         weaponDict[name].OnReady(); // 무기를 준비 완료 상태로 변경
@@ -56,7 +56,7 @@ public class ChampBase : MonoBehaviour
 
     public HPController GetHPController() { return hpController; }
 
-    // 평타 실행 메서드
+    // 평타 실행 
     public void Attack()
     {
         if (animationController != null)                                // 애니메이션 컨트롤러가 있을 경우
@@ -65,7 +65,7 @@ public class ChampBase : MonoBehaviour
         autoAttack.Attack(gameObject);  // 평타 실행
     }
 
-    // 스킬 사용 메서드
+    // 스킬 사용 
     // 실행하는 곳에서도 사용하는 스킬을 알 수 있게 스킬을 return
     public virtual Skill UseSkill(string keycode, string layerMask = "")
     {
@@ -80,7 +80,7 @@ public class ChampBase : MonoBehaviour
         return skill; // 사용한 스킬 return
     }
 
-    // 데미지 받는 메서드
+    // 데미지 받는 
     public void OnDamage(float damage)
     {
         if (data.currentHp - damage >= 0)   // 현재 HP - 받는 데미지가 0 이상일 경우

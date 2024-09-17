@@ -48,39 +48,39 @@ public class EnemyGenerator : MonoBehaviour
         }
     }
 
-    // 오브젝트 풀의 Create 메서드
+    // 오브젝트 풀의 Create 
     private EnemyBase CreateEnemy()
     {
-        var enemyobj = Instantiate(enemies[createIndex].gameObject, poolObjects[createIndex].transform);
-        enemyobj.transform.position = transform.position;
+        var enemyobj = Instantiate(enemies[createIndex].gameObject, poolObjects[createIndex].transform);    // 몬스터 생성
+        enemyobj.transform.position = transform.position;   // 몬스터 위치 이동 (생성기 위치로)
 
-        var enemy = enemyobj.GetComponent<EnemyBase>();
-        var hpController = enemy.GetHPController();
+        var enemy = enemyobj.GetComponent<EnemyBase>();     // 생성한 몬스터에서 EnemyBase 컴포넌트 가져오기
+        var hpController = enemy.GetHPController();         // 몬스터의 HP Controller 가져오기
 
-        enemy.Init();
-        hpController.SetMaxValue();
-        enemy.SetPool(enemyPools[createIndex]);
+        enemy.Init();                           // 몬스터 초기 설정 실행
+        hpController.SetMaxValue();             // 몬스터 최대 HP, MP로 설정
+        enemy.SetPool(enemyPools[createIndex]); // 몬스터에 오브젝트 풀 설정 (Release용)
 
         return enemy;
     }
 
-    // 오브젝트 풀의 Get 메서드
+    // 오브젝트 풀의 Get 
     private void GetEnemy(EnemyBase enemy)
     {
-        enemy.transform.position = transform.position;
-        enemy.SetIsPatrol(true);
-        var hpController = enemy.GetHPController();
-        hpController.SetMaxValue();
-        enemy.gameObject.SetActive(true);
+        enemy.transform.position = transform.position;  // 몬스터 위치 이동 (생성기 위치로)
+        enemy.SetIsPatrol(true);                        // 정찰 행동 활성화
+        var hpController = enemy.GetHPController();     // HP Controller 가져오기
+        hpController.SetMaxValue();                     // 최대 HP, MP로 설정
+        enemy.gameObject.SetActive(true);               // 몬스터 오브젝트 활성화
     }
 
-    // 오브젝트 풀의 Release 메서드
+    // 오브젝트 풀의 Release 
     private void ReleaseEnemy(EnemyBase enemy)
     {
         enemy.gameObject.SetActive(false);
     }
 
-    // 오브젝트 풀의 Destroy 메서드
+    // 오브젝트 풀의 Destroy 
     private void DestroyEnemy(EnemyBase enemy)
     {
         Destroy(enemy.gameObject);

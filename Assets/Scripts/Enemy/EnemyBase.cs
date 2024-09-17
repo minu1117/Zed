@@ -79,7 +79,7 @@ public class EnemyBase : ChampBase
         pool = enemyPool;
     }
 
-    // 랜덤 스킬 실행 메서드
+    // 랜덤 스킬 실행 
     protected void StartRandomSkill()
     {
         var count = skillKeys.Count;                            // 담아둔 key들의 개수
@@ -114,7 +114,7 @@ public class EnemyBase : ChampBase
         }
     }
 
-    // 랜덤 스킬 실행 여부 확인 메서드
+    // 랜덤 스킬 실행 여부 확인 
     protected void UseRandomSkill()
     {
         if (target == null)
@@ -141,7 +141,7 @@ public class EnemyBase : ChampBase
         return Vector3.Distance(transform.position, targetPos);
     }
 
-    // 추적 행동 메서드
+    // 추적 행동 
     protected void Chase()
     {
         if (target == null)
@@ -150,7 +150,7 @@ public class EnemyBase : ChampBase
         agent.SetDestination(target.transform.position);
     }
 
-    // 타겟 위치 재확인, 타겟 해제 메서드
+    // 타겟 위치 재확인, 타겟 해제 
     protected void CheackLoseTarget()
     {
         if (target == null)
@@ -171,7 +171,7 @@ public class EnemyBase : ChampBase
         loseTargetCoroutine = null;
     }
 
-    // 타겟 해제 메서드
+    // 타겟 해제 
     protected void LoseTarget()
     {
         if (target != null && GetDistance(target.transform.position) <= recognitionRange)   // 타겟 설정이 안 되어있고, 타겟이 인식 범위에 있을 경우
@@ -191,7 +191,7 @@ public class EnemyBase : ChampBase
         loseTargetCoroutine = StartCoroutine(CoLoseTarget());   // 타겟 해제 코루틴 시작
     }
 
-    // 정찰 행동 메서드
+    // 정찰 행동 
     protected void Patrol()
     {
         if (!isPatrol)

@@ -99,7 +99,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: f20e9bc369f401c4b932ed6575e8de90, type: 2}
   isTargeting: 0
+  trailRenderer: {fileID: 0}
   rotateObject: {fileID: 4347198912833181179}
+  rotateType: 1
   rotateSpeed: 50
 --- !u!65 &2426658713010159134
 BoxCollider:

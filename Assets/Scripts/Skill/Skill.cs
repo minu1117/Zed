@@ -3,68 +3,74 @@ using UnityEngine.Pool;
 
 public class Skill : MonoBehaviour, IDamageable
 {
-    public SkillData data;
-    public bool isTargeting;
+    public SkillData data;                          // 스킬 데이터
+    public bool isTargeting;                        // 타게팅 여부
     protected IObjectPool<Skill> pool;
-    protected Vector3 startPos;
+    protected Vector3 startPos;                     // 스킬 시작 위치
 
     protected WaitForSeconds waitUseDelay;
     protected WaitForSeconds waitduration;
     protected WaitForSeconds waitimmobilityTime;
 
-    protected GameObject caster;
-    protected Effect effect;
+    protected GameObject caster;                    // 시전자
+    protected Effect effect;                        // 이펙트
 
     public virtual void Awake()
     {
-        waitUseDelay = new WaitForSeconds(data.useDelay);
-        waitduration = new WaitForSeconds(data.duration);
-        waitimmobilityTime = new WaitForSeconds(data.immobilityTime);
+        waitUseDelay = new WaitForSeconds(data.useDelay);               // 시전 대기 시간 캐싱
+        waitduration = new WaitForSeconds(data.duration);               // 지속 시간 캐싱
+        waitimmobilityTime = new WaitForSeconds(data.immobilityTime);   // 스킬 종료 후 경직 시간 캐싱
     }
 
+    // 스킬 사용
     public virtual void Use(GameObject character)
     {
-        UseEffect(gameObject);
-        StartUseSound();
+        UseEffect(gameObject);  // 이펙트 사용
+        StartUseSound();        // 스킬 시전 사운드 재생
     }
 
+    // 이펙트 Release
     protected void ReleaseEffect()
     {
-        if (effect == null)
+        if (effect == null) // 이펙트가 없을 시 return
             return;
 
-        EffectManager.Instance.ReleaseEffect(effect);
+        EffectManager.Instance.ReleaseEffect(effect);   // 이펙트 매니저의 오브젝트 풀에 반납
         effect = null;
     }
 
+    // 이펙트 사용
     protected void UseEffect(GameObject obj)
     {
-        if (data.effect == null)
+        if (data.effect == null)    // 데이터에 이펙트가 없을 시 return
             return;
 
-        effect = EffectManager.Instance.GetEffect(data.effect.name);
-        effect.SetStartPos(obj.transform.position);
+        effect = EffectManager.Instance.GetEffect(data.effect.name);    // 이펙트 매니저에서 이펙트 가져오기
+        effect.SetStartPos(obj.transform.position);                     // 이펙트 시작 위치 지정
 
-        if (effect.TryGetComponent<TargetFollowEffect>(out var followEffect))
+        if (effect.TryGetComponent<TargetFollowEffect>(out var followEffect))   // 이펙트 오브젝트에서 TargetFollowEffect 컴포넌트 추출 성공 시
         {
-            followEffect.SetTarget(obj);
-            effect = followEffect;
+            followEffect.SetTarget(obj);    // 이펙트가 따라다닐 타겟 지정
+            effect = followEffect;          // 이펙트 할당
         }
-        effect.Use();
+        effect.Use();   // 이펙트 사용
     }
 
+    // 시전 사운드 재생
     protected void StartUseSound()
     {
-        if (data.useClips == null || data.useClips.Count == 0)
+        if (data.useClips == null || data.useClips.Count == 0)      // 데이터에 시전 사운드가 없을 경우 return
             return;
 
-        int index = GetRandomIndex(0, data.useClips.Count);
-        SoundManager.Instance.PlayOneShot(data.useClips[index]);
+        int index = GetRandomIndex(0, data.useClips.Count);         // 랜덤 인덱스 (사운드 클립들 중 하나를 재생하기 위함)
+        SoundManager.Instance.PlayOneShot(data.useClips[index]);    // 사운드 매니저에서 시전 사운드들 중 랜덤 인덱스에 위치한 사운드 재생
     }
     public void SetPool(IObjectPool<Skill> pool) { this.pool = pool; }
     public void SetCaster(GameObject obj) { caster = obj; }
     public int GetRandomIndex(int min, int max) { return Random.Range(min, max); }
 
+    // Collision, Trigger 둘 다 사용될 수 있으니 두 가지 메서드를 똑같이 구현
+    // 오브젝트 충돌 시 처리될 작업 실행
     protected virtual void OnCollisionEnter(Collision collision)
     {
         Collide(collision.gameObject);
@@ -75,18 +81,19 @@ public class Skill : MonoBehaviour, IDamageable
         Collide(other.gameObject);
     }
 
+    // 오브젝트 충돌 시 처리될 작업
     protected virtual void Collide(GameObject obj)
     {
-        if (data.isShadow)
+        if (data.isShadow)  // 그림자 스킬일 경우 return (그림자 스킬 스크립트에서 따로 처리)
             return;
 
-        if (gameObject.TryGetComponent(out ZedShadow shadow))
+        if (gameObject.TryGetComponent(out ZedShadow shadow))   // 해당 스킬이 그림자 스킬일 경우
         {
-            if (!shadow.isReady)
+            if (!shadow.isReady)    // 스킬 사용 준비가 되지 않았으면 return
                 return;
         }
 
-        DealDamage(obj);
+        DealDamage(obj);    // 데미지 처리
     }
 
     public void SetStartPos(Vector3 pos)
@@ -109,51 +116,59 @@ public class Skill : MonoBehaviour, IDamageable
         gameObject.SetActive(active);
     }
 
+    // 데미지 처리
     public void DealDamage(ChampBase target, float damage)
     {
-        target.OnDamage(damage);
+        target.OnDamage(damage);    // 타겟에 데미지 부여
     }
 
+    // 타겟에 데미지 부여
     private void DealDamage(GameObject target)
     {
-        if (caster != null && ReferenceEquals(caster, target))
+        if (caster != null && ReferenceEquals(caster, target))  // 타겟과 시전자가 같으면 return (본인은 맞지 않게)
             return;
 
-        if (target == null || caster == null)
+        if (target == null || caster == null)                   // 타겟 또는 시전자가 없으면 return
             return;
 
-        if (caster.tag == EnumConverter.GetString(CharacterEnum.Shadow) && target.tag == EnumConverter.GetString(CharacterEnum.Player))
+        // 시전자의 태그가 Shadow(그림자)거나, 타겟의 태그가 Player일 경우 return
+        //if (caster.tag == EnumConverter.GetString(CharacterEnum.Shadow) && target.tag == EnumConverter.GetString(CharacterEnum.Player))
+        //    return;
+
+        // 시전자의 태그가 Shadow(그림자)일 경우 return (그림자 스킬은 맞지 않음)
+        if (caster.tag == EnumConverter.GetString(CharacterEnum.Shadow))
             return;
 
-        if (target.TryGetComponent(out ChampBase champion))
+        if (target.TryGetComponent(out ChampBase champion))                 // 타겟에서 ChampBase 컴포넌트 추출 성공 시
         {
-            DealDamage(champion, data.damage);
+            DealDamage(champion, data.damage);                              // 타겟에게 데미지 부여
 
-            if (data.attackClips == null || data.attackClips.Count == 0)
+            if (data.attackClips == null || data.attackClips.Count == 0)    // 평타 사운드가 없을 경우 return
                 return;
 
-            int index = GetRandomIndex(0, data.attackClips.Count);
-            SoundManager.Instance.PlayOneShot(data.attackClips[index]);
+            int index = GetRandomIndex(0, data.attackClips.Count);          // 랜덤 인덱스 (평타 사운드 클립)
+            SoundManager.Instance.PlayOneShot(data.attackClips[index]);     // 사운드 매니저에서 평타 사운드 재생
         }
     }
 
     protected virtual void Release()
     {
-        if (pool == null)
+        if (pool == null)       // 오브젝트 풀이 설정되지 않았을 경우 return
             return;
 
-        StartDisappearSound();
-        caster = null;
-        pool.Release(this);
-        ReleaseEffect();
+        StartDisappearSound();  // 시전 해제 사운드 재생
+        caster = null;          // 시전자 초기화
+        pool.Release(this);     // 스킬 반납
+        ReleaseEffect();        // 이펙트 반납
     }
 
+    // 시전 해제 사운드 재생
     protected void StartDisappearSound()
     {
-        if (data.disappearClips != null && data.disappearClips.Count > 0)
-        {
-            int index = GetRandomIndex(0, data.disappearClips.Count);
-            SoundManager.Instance.PlayOneShot(data.disappearClips[index]);
-        }
+        if (data.disappearClips == null || data.disappearClips.Count <= 0)  // 시전 해제 사운드가 없을 경우 return
+            return;
+
+        int index = GetRandomIndex(0, data.disappearClips.Count);           // 랜덤 인덱스 (시전 해제 사운드 클립)
+        SoundManager.Instance.PlayOneShot(data.disappearClips[index]);      // 사운드 매니저에서 시전 해제 사운드 재생
     }
 }

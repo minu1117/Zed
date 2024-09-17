@@ -41,7 +41,7 @@ public class ZedShadow : ShotSkill
 
     public NavMeshAgent GetAgent() { return agent; }
 
-    // 외부에서 그림자 스킬(ZedShadow)을 사용하기 위한 메서드
+    // 외부에서 그림자 스킬(ZedShadow)을 사용하기 위한 
     public override void Use(GameObject character)
     {
         if (!character.TryGetComponent(out Zed zed))    // character 오브젝트에서 플레이어 컴포넌트 추출 실패 시 (플레이어 전용 스킬)
@@ -55,7 +55,7 @@ public class ZedShadow : ShotSkill
         StartCoroutine(CoSpawnShadow(zed));     // 이동 목표 지점까지 이동하는 코루틴 실행
     }
 
-    // 무기 전용 TrailRenderer 활성화 메서드
+    // 무기 전용 TrailRenderer 활성화 
     private void SetActiveWeaponTrailRenderers(bool active)
     {
         if (weapontrailRenderers == null || weapontrailRenderers.Count == 0)    // TrailRenderer가 없을 경우 return
@@ -82,7 +82,7 @@ public class ZedShadow : ShotSkill
 
         transform.DOMove(usePoint, moveTime)                // 목표 지점까지 moveTime 안에 도착
                  .SetEase(Ease.OutQuad)                     // 속도가 빠르게 시작, 점차 감소
-                 .OnComplete(() => UseAllSkills());         // 이동 완료 후, 이동 중 플레이어가 사용한 모든 스킬을 사용하는 메서드 실행
+                 .OnComplete(() => UseAllSkills());         // 이동 완료 후, 이동 중 플레이어가 사용한 모든 스킬 사용
 
         yield return new WaitForSeconds(data.duration);     // 지속시간 만큼 대기
 
@@ -95,7 +95,7 @@ public class ZedShadow : ShotSkill
             isReady = false;                        // 준비 상태 초기화
             agent.enabled = true;                   // NavMeshAgent 활성화
             SetActiveWeaponTrailRenderers(false);   // 무기 TrailRenderer 비활성화
-            Release();                              // 오브젝트 풀에 Release 해주는 메서드 실행
+            Release();                              // 오브젝트 풀에 Release
         }
         else                                        // 오브젝트 풀이 없을 경우
         {
@@ -105,7 +105,7 @@ public class ZedShadow : ShotSkill
     }
 
     // 이동 완료 후 실행
-    // 담아둔 모든 스킬을 사용하는 메서드
+    // 담아둔 모든 스킬 사용
     public void UseAllSkills()
     {
         ReleaseEffect();                        // 이동 중 나오는 파티클 Release
@@ -134,7 +134,7 @@ public class ZedShadow : ShotSkill
         useSkills.Clear();  // 사용 완료, 담아둔 모든 스킬 삭제
     }
 
-    // 이동 중 사용된 스킬들을 담아주는 메서드
+    // 이동 중 사용된 스킬들을 담아주는 
     public void AddSkill(string name, Skill skill, ZedSkillType type, IObjectPool<Skill> skillPool, GameObject target = null)
     {
         if (skill == null)  // 스킬이 없을 경우 return
@@ -178,13 +178,13 @@ public class ZedShadow : ShotSkill
         }
     }
 
-    // 애니메이션 실행 메서드
+    // 애니메이션 실행 
     private void StartAnimation(ZedSkillType type)
     {
         animationController.UseSkill((int)type);
     }
 
-    // 스킬 사용 메서드
+    // 스킬 사용 
     private void UseCopySkill(Skill skill, IObjectPool<Skill> skillPool, GameObject target = null)
     {
         StartCoroutine(CoUseCopySkill(skill, skillPool, target));

@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class DashSkill : Skill
 {
-    private BoxCollider coll;
-    private Vector3 movePoint;
+    private BoxCollider coll;   // 대쉬 스킬의 Collider
+    private Vector3 movePoint;  // 이동할 위치
 
     public override void Use(GameObject character)
     {
@@ -13,11 +13,11 @@ public class DashSkill : Skill
         if (coll == null)
             coll = GetComponent<BoxCollider>();
 
-        if (movePoint == null || movePoint == Vector3.zero)
-            movePoint = Raycast.GetMousePointVec();
+        if (movePoint == Vector3.zero)                  // 이동할 위치가 0,0,0일 경우
+            movePoint = Raycast.GetMousePointVec();     // 현재 마우스 위치로 설정
 
-        SetColliderSize();
-        StartCoroutine(CoDash(character, movePoint));
+        SetColliderSize();                              // Collider 사이즈 설정
+        StartCoroutine(CoDash(character, movePoint));   // 대쉬 스킬 사용 코루틴 실행
     }
 
     public void SetPoint(Vector3 point)
@@ -30,69 +30,74 @@ public class DashSkill : Skill
         FollowCaster();
     }
 
+    // Collider 사이즈 설정
     private void SetColliderSize()
     {
-        if (caster == null)
+        if (caster == null) // 시전자가 없을 시 return
             return;
 
-        var casterCollider = caster.GetComponent<BoxCollider>();
-        coll.size = casterCollider.size;
-        coll.center = casterCollider.center;
+        var casterCollider = caster.GetComponent<BoxCollider>();    // 시전자의 Collider 가져오기
+        coll.size = casterCollider.size;        // Collider Size를 시전자의 Collider Size로 변경 (시전자와 동일한 크기가 되게)
+        coll.center = casterCollider.center;    // Collider의 center를 시전자 Collider의 center값으로 변경 (시전자 Collider와 동일한 위치에 있게)
     }
 
+    // 시전자 따라가기
     private void FollowCaster()
     {
-        if (caster != null)
-        {
-            gameObject.transform.position = caster.transform.position;
-        }
-    }
+        if (caster == null) // 시전자가 없을 경우 return
+            return;
 
+        gameObject.transform.position = caster.transform.position;  // 시전자 따라다니기
+    }
+    
+    // 충돌 처리
     protected override void OnTriggerEnter(Collider other)
     {
         Collide(other.gameObject);
     }
 
+    // 대쉬 스킬 사용 코루틴
+    // obj = 사용자(시전자)
     private IEnumerator CoDash(GameObject obj, Vector3 point)
     {
-        var rb = obj.GetComponent<Rigidbody>();
+        var rb = obj.GetComponent<Rigidbody>(); // 시전자의 rigidBody
         
-        if (obj.TryGetComponent<CharacterMoveController>(out var moveController))
-            moveController.isMoved = false;
+        if (obj.TryGetComponent<CharacterMoveController>(out var moveController))   // 시전자에서 CharacterMoveController 컴포넌트 추출 성공 시
+            moveController.isMoved = false;                                         // 시전자 이동 제한
 
-        CharacterAnimationController animationController = null;
-        if (obj.TryGetComponent<CharacterAnimationController>(out var controller))
-            animationController = controller;
+        CharacterAnimationController animationController = null;                    // 시전자의 애니메이션 컨트롤러 저장용
+        if (obj.TryGetComponent<CharacterAnimationController>(out var controller))  // 시전자에서 애니메이션 컨트롤러 컴포넌트 추출 성공 시
+            animationController = controller;                                       // 애니메이션 컨트롤러 저장
 
-        rb.velocity = Vector3.zero;
-        point.y = obj.transform.position.y;
+        rb.velocity = Vector3.zero;                     // 시전자 rigidBody의 속도 초기화
+        point.y = obj.transform.position.y;             // 이동할 위치의 y값을 시전자의 y값으로 변경 (위, 아래로 돌진하지 않게)
 
-        Vector3 LookAtDirection = (point == Vector3.zero) ? obj.transform.forward : point;
-        Vector3 dashDirection = (point - obj.transform.position).normalized;
-        obj.transform.LookAt(LookAtDirection);
+        Vector3 LookAtDirection = (point == Vector3.zero) ? obj.transform.forward : point;  // 바라볼 방향 계산 -> 이동할 위치가 0,0,0일 시 forward 바라보기
+        Vector3 dashDirection = (point - obj.transform.position).normalized;                // 대쉬 방향 계산 -> (이동할 위치 - 시전자 위치) 정규화
+        obj.transform.LookAt(LookAtDirection);          // 시전자 회전 값 변경 (바라보기)
 
-        yield return waitUseDelay;
+        yield return waitUseDelay;                      // 시전 대기 시간동안 대기
 
-        if (animationController != null)
-            animationController.StartNextMotion();
+        if (animationController != null)                // 시전자의 애니메이션 컨트롤러가 있을 시
+            animationController.StartNextMotion();      // 다음 모션 재생 ([준비 -> 대쉬 -> 완료] 순으로 애니메이션을 재생하기 때문에 [준비] 모션에서 [대쉬] 모션으로 바꾸는 과정) 
 
-        if (rb != null)
-            rb.velocity = dashDirection * data.speed;
+        if (rb != null)                                 // 시전자의 rigidBody가 있을 시 (중간에 죽어서 사라질 수도 있기 때문에 계속 체크)
+            rb.velocity = dashDirection * data.speed;   // rigidBody의 속도 값 변경 -> 대쉬 방향 * 대쉬 속도
 
-        yield return waitduration;
+        yield return waitduration;                      // 지속 시간만큼 대기
 
-        if (rb != null)
-            rb.velocity = Vector3.zero;
+        if (rb != null)                                 // 시전자의 rigidBody가 있을 시 (중간에 죽어서 사라질 수도 있기 때문에 계속 체크)
+            rb.velocity = Vector3.zero;                 // rigidBody의 속도 값 초기화
 
-        yield return waitimmobilityTime;
+        yield return waitimmobilityTime;                // 끝난 후 경직 시간만큼 대기
 
-        if (animationController != null)
-            animationController.StartNextMotion();
+        if (animationController != null)                // 시전자의 애니메이션 컨트롤러가 있을 시
+            animationController.StartNextMotion();      // 다음 모션으로 변경 -> [완료] 모션
 
-        movePoint = Vector3.zero;
-        if (moveController != null)
-            moveController.isMoved = true;
+        movePoint = Vector3.zero;                       // 이동할 위치 초기화
+        if (moveController != null)                     // 시전자의 CharacterMoveController가 있을 시
+            moveController.isMoved = true;              // 시전자 이동 활성화
 
-        Release();
+        Release();  // 오브젝트 풀에 반납
     }
 }

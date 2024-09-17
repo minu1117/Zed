@@ -2,14 +2,15 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static Unity.Burst.Intrinsics.X86.Avx;
 
+// Canvas의 CanvasMode 설정
 public enum CanvasMode
 {
     WorldSpace,
     Overlay,
 }
 
+// Slider가 HP, MP 중 어떤 것을 조정할 지 설정
 public enum SliderMode
 {
     HP,
@@ -20,7 +21,7 @@ public class HPController : MonoBehaviour
 {
     public Slider slider;
     public Canvas canvas;
-    public ChampBase champ;
+    public ChampBase champ;         // HP 또는 MP 값을 조정할 캐릭터
     public TextMeshProUGUI tmp;
     public CanvasMode canvasMode;
     public SliderMode sliderMode;
@@ -29,17 +30,18 @@ public class HPController : MonoBehaviour
 
     private void Awake()
     {
-        if (champ == null)
-            champ = Zed.Instance;
+        if (champ == null)              // 캐릭터를 할당하지 않았을 경우
+            champ = Zed.Instance;       // 플레이어 할당 -> 플레이어는 별도의 UI로 조정할 거기 때문에 씬이 바뀌어도 가져올 수 있게
 
-        ChangeCanvasMode(canvasMode);
-        champ.data.currentHp = champ.data.maxHp;
-        champ.data.currentMp = champ.data.maxMp;
-        data = champ.data;
+        ChangeCanvasMode(canvasMode);               // 캔버스 모드 변경
+        //champ.data.currentHp = champ.data.maxHp;    // 캐릭터 데이터의 현재 체력을 최대 체력으로 설정
+        //champ.data.currentMp = champ.data.maxMp;    // 캐릭터 데이터의 현재 마나를 최대 마나로 설정
+        data = champ.data;                          // 조정할 데이터 할당
 
-        SetMaxValue();
+        SetMaxValue();      // 현재 체력 or 현재 마나를 최대 값으로 변경
     }
 
+    // 모드에 따라 현재 체력 or 마나 설정
     public void SetCurrentValue()
     {
         switch (sliderMode)
@@ -53,6 +55,7 @@ public class HPController : MonoBehaviour
         }
     }
 
+    // 모드에 따라 현재 체력 or 마나를 최대 값으로 설정
     public void SetMaxValue()
     {
         switch (sliderMode)
@@ -66,6 +69,7 @@ public class HPController : MonoBehaviour
         }
     }
 
+    // 현재 체력 변경
     public void SetCurrentHp()
     {
         data.currentHp = Math.Clamp(data.currentHp, 0, data.maxHp);
@@ -74,6 +78,7 @@ public class HPController : MonoBehaviour
         SetText($"{data.currentHp} / {data.maxHp}");
     }
 
+    // 최대 체력으로 설정
     public void SetMaxHp()
     {
         data.currentHp = data.maxHp;
@@ -81,6 +86,7 @@ public class HPController : MonoBehaviour
         SetText($"{data.currentHp} / {data.maxHp}");
     }
 
+    // 현재 마나 변경
     public void SetCurrentMp()
     {
         data.currentMp = Math.Clamp(data.currentMp, 0, data.maxMp);
@@ -89,6 +95,7 @@ public class HPController : MonoBehaviour
         SetText($"{data.currentMp} / {data.maxMp}");
     }
 
+    // 최대 마나로 설정
     public void SetMaxMp()
     {
         data.currentMp = data.maxMp;
@@ -106,25 +113,30 @@ public class HPController : MonoBehaviour
         LookCamera();
     }
 
+    // UI가 카메라를 바라보게 해줌
+    // 3D 화면 상 캐릭터 머리 위에 슬라이더 UI가 위치하기 때문
     private void LookCamera()
     {
-        if (canvasMode == CanvasMode.WorldSpace && cam != null)
-        {
-            slider.gameObject.transform.rotation = cam.transform.rotation;
-        }
+        if (canvasMode != CanvasMode.WorldSpace || cam == null)         // CanvasMode가 WorldSpace가 아니거나 카메라가 없을 경우 return
+            return;
+
+        slider.gameObject.transform.rotation = cam.transform.rotation;  // Slider의 회전 값을 카메라의 회전 값으로 변경
     }
 
+    // CanvasMode에 따라 화면에 어떻게 보여줄 지 설정
     private void ChangeCanvasMode(CanvasMode mode)
     {
         switch (mode)
         {
-            case CanvasMode.WorldSpace:
-                cam = Camera.main;
-                canvas.renderMode = RenderMode.WorldSpace;
-                canvas.worldCamera = cam;
+            case CanvasMode.WorldSpace: // 3D 화면에 보일 UI
+                cam = Camera.main;                              // 카메라 가져오기
+                canvas.renderMode = RenderMode.WorldSpace;      // canvas의 renderMode 변경 -> WorldSpace
+                canvas.worldCamera = cam;                       // canvas의 worldCamera 설정
+
+                // Slider 오브젝트 위치 조정 -> 해당 스크립트가 붙어 있는 오브젝트의 Collider보다 조금 위로
                 slider.gameObject.transform.position = gameObject.transform.position + Vector3.up * (gameObject.GetComponent<Collider>().bounds.size.y);
                 break;
-            case CanvasMode.Overlay:
+            case CanvasMode.Overlay:   // 2D 화면에 보일 UI
                 canvas.renderMode = RenderMode.ScreenSpaceOverlay;
                 break;
         }

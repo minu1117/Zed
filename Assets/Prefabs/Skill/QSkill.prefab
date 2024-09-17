@@ -103,6 +103,7 @@ MonoBehaviour:
   isTargeting: 0
   trailRenderer: {fileID: 1943976797970463694}
   rotateObject: {fileID: 4347198912833181179}
+  rotateType: 1
   rotateSpeed: 5
 --- !u!65 &2426658713010159134
 BoxCollider:
