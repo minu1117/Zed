@@ -1,7 +1,8 @@
 public class NormalEnemy : EnemyBase
 {
-    public void Update()
+    public override void Update()
     {
+        base.Update();
         Patrol();
         Chase();
         UseRandomSkill();

@@ -55,7 +55,7 @@ public class EnemyGenerator : MonoBehaviour
         enemyobj.transform.position = transform.position;   // 몬스터 위치 이동 (생성기 위치로)
 
         var enemy = enemyobj.GetComponent<EnemyBase>();     // 생성한 몬스터에서 EnemyBase 컴포넌트 가져오기
-        var hpController = enemy.GetHPController();         // 몬스터의 HP Controller 가져오기
+        var hpController = enemy.GetStatusController(SliderMode.HP);         // 몬스터의 HP Controller 가져오기
 
         enemy.Init();                           // 몬스터 초기 설정 실행
         hpController.SetMaxValue();             // 몬스터 최대 HP, MP로 설정
@@ -69,7 +69,7 @@ public class EnemyGenerator : MonoBehaviour
     {
         enemy.transform.position = transform.position;  // 몬스터 위치 이동 (생성기 위치로)
         enemy.SetIsPatrol(true);                        // 정찰 행동 활성화
-        var hpController = enemy.GetHPController();     // HP Controller 가져오기
+        var hpController = enemy.GetStatusController(SliderMode.HP);     // HP Controller 가져오기
         hpController.SetMaxValue();                     // 최대 HP, MP로 설정
         enemy.gameObject.SetActive(true);               // 몬스터 오브젝트 활성화
     }

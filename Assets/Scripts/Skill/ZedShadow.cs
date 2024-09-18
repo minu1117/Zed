@@ -181,7 +181,9 @@ public class ZedShadow : ShotSkill
     // 애니메이션 실행 
     private void StartAnimation(ZedSkillType type)
     {
-        animationController.UseSkill((int)type);
+        int typeToint = (int)type;
+        bool isUpperLayer = typeToint != (int)ZedSkillType.ShadowRush ? true : false;
+        animationController.UseSkill(typeToint, isUpperLayer);
     }
 
     // 스킬 사용 

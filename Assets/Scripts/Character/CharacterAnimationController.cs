@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CharacterAnimationController : MonoBehaviour
 {
-    public string skillParamName;               // 스킬 타입 파라미터
+    public string skillTypeParamName;               // 스킬 타입 파라미터
     public string useSkillParamName;            // 스킬 실행 트리거
     public string autoAttackTriggerName;        // 평타 실행 트리거
     public string attackSpeedParamName;         // 평타 속도 파라미터
@@ -12,8 +12,8 @@ public class CharacterAnimationController : MonoBehaviour
     public AutoAttackEnum maxAutoAttackEnum;    // 평타 종류 애니메이션 개수 (최대 개수)
     private Animator animator;
     private int currentLayerIndex;              // 현재 레이어 인덱스
-    private int upperLayerIndex = 1;            // 상체 레이어 인덱스
-    private int wholeBodyLayerIndex = 2;        // 전신 레이어 인덱스
+    public int upperLayerIndex = 1;            // 상체 레이어 인덱스
+    public int wholeBodyLayerIndex = 2;        // 전신 레이어 인덱스
 
     private void Awake()
     {
@@ -42,35 +42,47 @@ public class CharacterAnimationController : MonoBehaviour
     }
 
     // 스킬 사용 애니메이션
-    public void UseSkill(int enumIndex)
+    public void UseSkill(int enumIndex, bool isUpper = false)
     {
-        animator.ResetTrigger(nextMotionTriggerParamName);      // 다음 모션 연결 트리거 초기화 (오동작 방지)
+        if (nextMotionTriggerParamName != string.Empty)
+            animator.ResetTrigger(nextMotionTriggerParamName);      // 다음 모션 연결 트리거 초기화 (오동작 방지)
 
-        bool isUpper = enumIndex != (int)ZedSkillType.ShadowRush ? true : false;    // 상체 레이어 사용 여부
         currentLayerIndex = isUpper ? upperLayerIndex : wholeBodyLayerIndex;        // 사용할 애니메이션 레이어 변경
-        animator.SetBool(upperLayerParamName, isUpper);                             // 상체 레이어 사용 여부 설정
+        SetBool(upperLayerParamName, isUpper);                                      // 상체 레이어 사용 여부 설정
 
-        animator.SetInteger(skillParamName, enumIndex);         // 스킬 타입 파라미터 값 설정
-        animator.SetTrigger(useSkillParamName);                 // 스킬 사용 트리거 활성화
+        SetInteger(skillTypeParamName, enumIndex);                  // 스킬 타입 파라미터 값 설정
+        SetTrigger(useSkillParamName);                              // 스킬 사용 트리거 활성화
     }
 
     public void SetTrigger(string triggerName)
     {
+        if (triggerName == string.Empty)
+            return;
+
         animator.SetTrigger(triggerName);
     }
 
     public void SetFloat(string name, float value)
     {
+        if (name == string.Empty)
+            return;
+
         animator.SetFloat(name, value);
     }
 
     public void SetBool(string name, bool value)
     {
+        if (name == string.Empty)
+            return;
+
         animator.SetBool(name, value);
     }
 
     public void SetInteger(string name, int value)
     {
+        if (name == string.Empty)
+            return;
+
         animator.SetInteger(name, value);
     }
 
@@ -80,4 +92,6 @@ public class CharacterAnimationController : MonoBehaviour
         AnimatorStateInfo currentState = animator.GetCurrentAnimatorStateInfo(currentLayerIndex);
         return currentState.length;
     }
+
+    public Animator GetAnimator() { return animator; }
 }

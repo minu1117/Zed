@@ -10,11 +10,12 @@ public class ChampBase : MonoBehaviour
     protected SkillSlot slot;                                       // 스킬 슬롯
     private Dictionary<string, Weapon> weaponDict;                  // 무기들을 이름과 같이 담아두는 Dictionary
     protected CharacterAnimationController animationController;     // 애니메이션 컨트롤러
-    private HPController hpController;                              // hp 컨트롤러
+    private StatusController hpController;                              // hp 컨트롤러
+    private StatusController mpController;                              // mp 컨트롤러
 
     protected virtual void Awake()
     {
-        hpController = GetComponent<HPController>();
+        hpController = GetComponent<StatusController>();
         animationController = GetComponent<CharacterAnimationController>();
 
         weaponDict = new(); // 무기 dictionary 초기화
@@ -24,6 +25,7 @@ public class ChampBase : MonoBehaviour
             foreach (var weapon in weapons)
             {
                 weapon.SetDamage(autoAttack.data.damage);   // 데미지 설정
+                weapon.SetChamp(this);
                 weaponDict.Add(weapon.name, weapon);        // 무기 dictionary에 이름과 함께 추가
             }
         }
@@ -54,15 +56,37 @@ public class ChampBase : MonoBehaviour
         weaponDict[name].OnReady(); // 무기를 준비 완료 상태로 변경
     }
 
-    public HPController GetHPController() { return hpController; }
+    public StatusController GetStatusController(SliderMode mode)
+    {
+        return mode == SliderMode.HP ? hpController : mpController;
+    }
 
-    // 평타 실행 
+    public void SetStatusController(SliderMode mode, StatusController controller)
+    {
+        switch (mode)
+        {
+            case SliderMode.HP:
+                hpController = controller;
+                break;
+            case SliderMode.MP:
+                mpController = controller;
+                break;
+        }
+    }
+
+    // 평타 실행
     public void Attack()
     {
         if (animationController != null)                                // 애니메이션 컨트롤러가 있을 경우
             animationController.Attack(autoAttack.data.attackSpeed);    // 평타 애니메이션 실행
 
         autoAttack.Attack(gameObject);  // 평타 실행
+    }
+
+    protected void AutoAttack()
+    {
+        FinishedAttack();   // 무기 상태 초기화
+        Attack();           // 평타 실행
     }
 
     // 스킬 사용 
@@ -80,7 +104,7 @@ public class ChampBase : MonoBehaviour
         return skill; // 사용한 스킬 return
     }
 
-    // 데미지 받는 
+    // 데미지 받기
     public void OnDamage(float damage)
     {
         if (data.currentHp - damage >= 0)   // 현재 HP - 받는 데미지가 0 이상일 경우
@@ -103,5 +127,14 @@ public class ChampBase : MonoBehaviour
     public virtual void OnDead()
     {
         Destroy(gameObject);
+    }
+
+    /********************************************** Animation Event **********************************************/
+    public void OnAllWeaponsAttackReady()
+    {
+        foreach (var weapon in weaponDict)
+        {
+            weapon.Value.OnReady();
+        }
     }
 }

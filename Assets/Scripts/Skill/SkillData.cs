@@ -57,6 +57,4 @@ public class SkillData : ScriptableObject
 
     [Header("재시전 사운드")]
     public List<AudioClip> recastClips;
-    // ... etc
-    // Json Save & Load
 }

@@ -131,12 +131,13 @@ public class Skill : MonoBehaviour, IDamageable
         if (target == null || caster == null)                   // 타겟 또는 시전자가 없으면 return
             return;
 
-        // 시전자의 태그가 Shadow(그림자)거나, 타겟의 태그가 Player일 경우 return
-        //if (caster.tag == EnumConverter.GetString(CharacterEnum.Shadow) && target.tag == EnumConverter.GetString(CharacterEnum.Player))
-        //    return;
-
         // 시전자의 태그가 Shadow(그림자)일 경우 return (그림자 스킬은 맞지 않음)
         if (caster.tag == EnumConverter.GetString(CharacterEnum.Shadow))
+            return;
+
+        // 시전자가 몬스터이고, 타겟도 몬스터일 시 return (몬스터 팀킬 방지)
+        string enemyEnumConvert = EnumConverter.GetString(CharacterEnum.Enemy);
+        if (caster.tag == enemyEnumConvert && target.tag == enemyEnumConvert)
             return;
 
         if (target.TryGetComponent(out ChampBase champion))                 // 타겟에서 ChampBase 컴포넌트 추출 성공 시

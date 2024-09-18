@@ -7,6 +7,8 @@ public class Weapon : MonoBehaviour, IDamageable
     private bool isReady = false;           // 무기 준비 상태 (공격 가능, 불가능)
     private Collider coll;                  // 무기 Collider
 
+    private ChampBase champ;                // 무기 소지자
+
     public void Awake()
     {
         coll = GetComponent<Collider>();
@@ -18,11 +20,16 @@ public class Weapon : MonoBehaviour, IDamageable
         if (!isReady)   // 준비가 되지 않았을 경우 return
             return;
 
-        if (other.TryGetComponent(out ChampBase champ)) // 부딪힌 오브젝트에서 ChampBase 추출 성공 시
+        if (other.gameObject.tag == champ.tag)  // 같은 태그일 시 return (팀킬 방지)
+            return;
+
+        if (other.TryGetComponent(out ChampBase champion)) // 부딪힌 오브젝트에서 ChampBase 추출 성공 시
         {
-            DealDamage(champ, data.damage);             // 데미지 부여
+            DealDamage(champion, data.damage);             // 데미지 부여
         }
     }
+
+    public void SetChamp(ChampBase champion) { champ = champion; }
 
     public void SetActiveTrailRenderer(bool active)
     {

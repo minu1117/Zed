@@ -4,6 +4,19 @@ using UnityEngine.Pool;
 using System.Collections.Generic;
 using System.Collections;
 
+public enum EnemySkill
+{ 
+    None = -1,
+
+    Skill_1,
+    Skill_2,
+    Skill_3,
+    Skill_4,
+    Skill_5,
+
+    Count,
+}
+
 public class EnemyBase : ChampBase
 {
     public float recognitionRange;          // 타겟 인식 범위
@@ -22,6 +35,20 @@ public class EnemyBase : ChampBase
     private Coroutine loseTargetCoroutine;
     private Coroutine patrolCoroutine;
     private bool isPatrol;
+    private bool isChase;
+
+    private float addRunSpeed = 5f;
+    private float runSpeed;
+    private string moveAnimControllParam = "Speed";
+
+    private bool isSkillUsed;
+    private float waitSkillTimer = 1f;
+    private WaitForSeconds waitSkillTime;
+    private Coroutine useSkillCoroutine;
+
+    private float waitAutoAttackUseTimer = 1f;
+    private WaitForSeconds waitAutoAttackTime;
+    private Coroutine useAutoAttackCoroutine;
 
     // 초기 설정
     public void Init()
@@ -30,15 +57,34 @@ public class EnemyBase : ChampBase
         agent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
 
-        skillKeys = new();  // 스킬 키 List 초기화
-        foreach (var skillButton in slot.GetSlotDict()) // 스킬 슬롯 순회, 스킬 키 List에 key 추가
+        var skillSlot = slot.GetSlotDict();
+        if (skillSlot != null && skillSlot.Count > 0)
         {
-            skillKeys.Add(skillButton.Key);
+            skillKeys = new();  // 스킬 키 List 초기화
+            foreach (var skillButton in skillSlot) // 스킬 슬롯 순회, 스킬 키 List에 key 추가
+            {
+                skillKeys.Add(skillButton.Key);
+            }
         }
 
+        waitSkillTime = new WaitForSeconds(waitSkillTimer);
+        waitAutoAttackTime = new WaitForSeconds(waitAutoAttackUseTimer);
+
         agent.speed = data.moveSpeed;
+        runSpeed = data.moveSpeed + addRunSpeed;
         player = FindFirstObjectByType<Zed>().gameObject;   // 플레이어 오브젝트 미리 담아두기 (타겟 설정 시 사용)
         isPatrol = true;                                    // 정찰 행동 활성화
+    }
+
+    public virtual void Update()
+    {
+        MoveAnimation();
+    }
+
+    private void MoveAnimation()
+    {
+        float speed = agent.velocity.magnitude;
+        animationController.SetFloat(moveAnimControllParam, speed);
     }
 
     // 정찰 행동 여부 설정
@@ -58,10 +104,14 @@ public class EnemyBase : ChampBase
         // 오브젝트 풀이 설정된 경우
         if (pool != null)
         {
-            // 스킬 슬롯을 순회하며 모든 스킬을 사용 가능한 상태로 변경
-            foreach (var slot in slot.GetSlotDict())
+            var skillSlot = slot.GetSlotDict();
+            if (skillSlot != null && skillSlot.Count > 0)
             {
-                slot.Value.SetIsAvailable(true);
+                // 모든 스킬을 사용 가능한 상태로 변경
+                foreach (var slot in skillSlot)
+                {
+                    slot.Value.SetIsAvailable(true);
+                }
             }
 
             target = null;          // 타겟 해제
@@ -79,9 +129,36 @@ public class EnemyBase : ChampBase
         pool = enemyPool;
     }
 
-    // 랜덤 스킬 실행 
+    protected void UseAutoAttack()
+    {
+        if (useAutoAttackCoroutine != null)
+            return;
+
+        transform.LookAt(player.transform);
+        AutoAttack();
+        useAutoAttackCoroutine = StartCoroutine(CoUseAutoAttack());
+    }
+
+    protected IEnumerator CoUseAutoAttack()
+    {
+        yield return waitAutoAttackTime;
+        useAutoAttackCoroutine = null;
+    }
+
+    // 랜덤 스킬 실행
     protected void StartRandomSkill()
     {
+        if (!isSkillUsed)
+        {
+            if (useSkillCoroutine == null)
+                useSkillCoroutine = StartCoroutine(CoUsedSkill());
+
+            if (GetDistance(target.transform.position) <= attackRange)
+                UseAutoAttack();
+
+            return;
+        }
+
         var count = skillKeys.Count;                            // 담아둔 key들의 개수
         var randomIndex = Random.Range(0, count);               // 랜덤 인덱스
         var key = skillKeys[randomIndex];                       // key를 담아둔 List에서 랜덤 인덱스의 key 가져오기
@@ -94,7 +171,13 @@ public class EnemyBase : ChampBase
         // 타겟이 스킬 범위 안에 있을 경우
         if (distance <= skillDistance)
         {
-            slotDict[key].StartSkill(gameObject, EnumConverter.GetString(CharacterEnum.Player));    // 스킬 실행
+            var slot = slotDict[key];
+            var data = slot.GetData() as EnemySkillButtonData;
+            if (!slot.GetIsAvailable())
+                return;
+
+            slot.StartSkill(gameObject, EnumConverter.GetString(CharacterEnum.Player));    // 스킬 실행
+            animationController.UseSkill((int)data.type);
         }
 
         // 랜덤으로 가져온 스킬의 범위에 타겟이 없을 경우
@@ -107,23 +190,36 @@ public class EnemyBase : ChampBase
                 if (distance <= skillDistance)  // 가져온 스킬의 범위가 닿을 경우 스킬 실행, 반복문 중단
                 {
                     key = skillButton.Key;
-                    slotDict[key].StartSkill(gameObject, EnumConverter.GetString(CharacterEnum.Player));
+                    var slot = slotDict[key];
+                    if (!slot.GetIsAvailable())
+                        return;
+
+                    slot.StartSkill(gameObject, EnumConverter.GetString(CharacterEnum.Player));
+                    var data = slot.GetData() as EnemySkillButtonData;
+                    animationController.UseSkill((int)data.type);
                     break;
                 }
             }
         }
+
+        isSkillUsed = false;
     }
 
-    // 랜덤 스킬 실행 여부 확인 
+    // 랜덤 스킬 실행 여부 확인
     protected void UseRandomSkill()
     {
         if (target == null)
             return;
 
+        if (GetDistance(target.transform.position) <= attackRange)
+            UseAutoAttack();
+
         if (GetDistance(target.transform.position) <= skillRange)   // 타겟이 스킬 범위 안에 있을 경우
         {
             if (skillKeys == null || skillKeys.Count == 0)  // 스킬 슬롯이 비었을 경우 중지
+            {
                 return;
+            }
 
             StartRandomSkill(); // 가지고 있는 스킬 중 랜덤으로 골라 스킬 실행
         }
@@ -141,12 +237,26 @@ public class EnemyBase : ChampBase
         return Vector3.Distance(transform.position, targetPos);
     }
 
+    protected IEnumerator CoUsedSkill()
+    {
+        isSkillUsed = false;
+
+        yield return waitSkillTime;
+
+        isSkillUsed = true;
+        useSkillCoroutine = null;
+    }
     // 추적 행동 
     protected void Chase()
     {
         if (target == null)
             return;
 
+        if (!isChase)
+        {
+            isChase = true;
+            agent.speed = runSpeed;
+        }
         agent.SetDestination(target.transform.position);
     }
 
@@ -159,7 +269,9 @@ public class EnemyBase : ChampBase
         if (GetDistance(target.transform.position) <= recognitionRange) // 타겟이 인식 범위 밖에 있을 경우
             return;
 
-        target = null;  // 타겟 해제
+        agent.speed = data.moveSpeed;
+        target = null;      // 타겟 해제
+        isChase = false;    // 추적 해제
         isPatrol = true;    // 정찰 시작
     }
 
@@ -197,6 +309,12 @@ public class EnemyBase : ChampBase
         if (!isPatrol)
             return;
 
+        if (isChase)
+        {
+            isChase = false;
+            agent.speed = data.moveSpeed;
+        }
+
         if (patrolCoroutine == null)                                    // 코루틴이 실행되지 않았을 경우
             patrolCoroutine = StartCoroutine(CoPatrol());               // 코루틴 시작
 
@@ -227,6 +345,8 @@ public class EnemyBase : ChampBase
         patrolCoroutine = null;
     }
 
+    // 에디터 전용 코드
+    // 인식 범위 기즈모로 그리기 (테스트용)
 #if UNITY_EDITOR
 
     public void OnDrawGizmos()

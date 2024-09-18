@@ -28,6 +28,9 @@ public class CharacterMoveController : MonoBehaviour
         moveSpeed = GetComponent<ChampBase>().data.moveSpeed;
         animationController = GetComponent<CharacterAnimationController>();
 
+        if (virtualCamera == null)
+            return;
+
         // 카메라 forward, right 정규화 캐싱
         // 카메라의 forward와 right를 사용하여 방향 조정
         normalizedCameraForward = virtualCamera.transform.forward;

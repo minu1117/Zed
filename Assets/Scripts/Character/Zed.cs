@@ -72,8 +72,7 @@ public class Zed : SingletonChampion<Zed>
                 return;
         }
 
-        FinishedAttack();   // 무기 상태 초기화
-        Attack();           // 평타 실행
+        AutoAttack();
     }
 
     // 스킬 키 입력 체크, 스킬 사용
@@ -114,12 +113,14 @@ public class Zed : SingletonChampion<Zed>
 
         CopySkill(keycode, useSkill, type, skillSlotMgr.GetSlotDict()[keycode].GetExcutor().GetPool(), target.Item1);   // 그림자 스킬에 사용한 스킬 전달
 
-        animationController.UseSkill((int)type);        // 애니메이션 출력
+        int typeToint = (int)type;
+        bool isUpperLayer = typeToint != (int)ZedSkillType.ShadowRush ? true : false;   // 상체 레이어 사용 여부
+        animationController.UseSkill(typeToint, isUpperLayer);        // 애니메이션 출력
         skillSlotMgr.CoolDown(useSkill.data.coolDown);  // 쿨다운 시작
     }
 
     // 그림자 스킬 사용
-    private void UseShadowSkill(ZedSkillType skillTypeEnum, string key)
+    private void UseShadowSkill(ZedSkillType type, string key)
     {
         // 현재 마우스 위치에 그림자 스킬이 있는지 확인
         var hit = Raycast.GetHit(Input.mousePosition, EnumConverter.GetString(CharacterEnum.Shadow));
@@ -131,7 +132,9 @@ public class Zed : SingletonChampion<Zed>
 
             if (useSkill != null)   // 스킬 사용 성공 시
             {
-                animationController.UseSkill((int)skillTypeEnum);   // 애니메이션 출력
+                int typeToint = (int)type;
+                bool isUpperLayer = typeToint != (int)ZedSkillType.ShadowRush ? true : false;   // 상체 레이어 사용 여부
+                animationController.UseSkill(typeToint, isUpperLayer);   // 애니메이션 출력
                 skillSlotMgr.CoolDown(useSkill.data.coolDown);      // 쿨다운 시작
             }
         }

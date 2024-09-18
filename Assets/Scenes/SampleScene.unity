@@ -5435,7 +5435,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.32210642, y: -0.3302487, z: 0.1210267, w: 0.87894017}
+  m_LocalRotation: {x: 0.32210642, y: -0.33024868, z: 0.121026695, w: 0.87894017}
   m_LocalPosition: {x: 517, y: 10, z: 506}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5550,7 +5550,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemies:
-  - {fileID: -7537476079758418899, guid: fa14dec6309916849b53e60a233ecafc, type: 3}
+  - {fileID: 916653752485594672, guid: 62f6583a761e7a04f9d083c1e1b66c36, type: 3}
   poolSize: 5
 --- !u!4 &1016451687
 Transform:
@@ -6038,6 +6038,7 @@ GameObject:
   - component: {fileID: 1123324660}
   - component: {fileID: 1123324659}
   - component: {fileID: 1123324662}
+  - component: {fileID: 1123324663}
   m_Layer: 6
   m_Name: Terrain
   m_TagString: Untagged
@@ -6150,6 +6151,37 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: b43571892c2c91448b1ecaaa984d928a, type: 2}
   m_BuildHeightMesh: 0
+--- !u!114 &1123324663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123324658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 1479372276
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.06666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: 56729972e0378ca449d4d573e0d037d1, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1 &1159973529
 GameObject:
   m_ObjectHideFlags: 0
@@ -6214,7 +6246,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1159973529}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.32210642, y: -0.3302487, z: 0.1210267, w: 0.87894017}
+  m_LocalRotation: {x: 0.32210642, y: -0.33024868, z: 0.121026695, w: 0.87894017}
   m_LocalPosition: {x: 517, y: 10, z: 506}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -10010,6 +10042,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 328820110730113603, guid: 43404936f3a346648a5a1ece8b73a143, type: 3}
+      propertyPath: skillTypeParamName
+      value: SkillType
+      objectReference: {fileID: 0}
     - target: {fileID: 8240668764970117832, guid: 43404936f3a346648a5a1ece8b73a143, type: 3}
       propertyPath: m_LocalPosition.x
       value: 510
