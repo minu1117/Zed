@@ -15,6 +15,8 @@ public class CharacterImageController : MonoBehaviour
     public float shakeDuration;     // 이미지가 흔들리는 시간
     public float shakeStrength;     // 흔들리는 힘 (속도)
     public int shakeVibrato;        // 흔들리는 회수
+    private Sequence jumpSequence;
+    private Tweener shakeTweener;
 
     // 이미지 컬러 조정
     public void AdjustImageColor(Image notTalkingCharacterImage)
@@ -57,12 +59,19 @@ public class CharacterImageController : MonoBehaviour
     // 이미지 점프
     public void JumpVertically()
     {
-        image.transform.DOJump(transform.position, jumpPower, jumpCount, jumpDuration);
+        if (jumpSequence == null)
+            jumpSequence = image.transform.DOJump(transform.position, jumpPower, jumpCount, jumpDuration);
+        else
+            jumpSequence.Restart();
+
     }
 
     // 이미지 흔들림
     public void Shake()
     {
-        image.transform.DOShakePosition(shakeDuration, shakeStrength, shakeVibrato, 90, false, true);
+        if (shakeTweener == null)
+            shakeTweener = image.transform.DOShakePosition(shakeDuration, shakeStrength, shakeVibrato, 90, false, true);
+        else
+            shakeTweener.Restart();
     }
 }

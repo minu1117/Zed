@@ -47,6 +47,7 @@ public class DialogueManager : Singleton<DialogueManager>
     public TextMeshProUGUI nameTMP;                         // 캐릭터 이름이 나올 칸
     public GameObject dialoguePanel;                        // 대사 창
     public float blinkTime;                                 // 대사 창이 투명해지는 시간
+    public GameObject opacityPanel;                         // 투명 전체 창 (마우스 입력 방지용)
     private WaitForSeconds blinkWait;                       // 대사 창 투명 시간 캐싱용
     
     private string eventNameColumnStr;                      // CSV의 이벤트 이름 열
@@ -261,6 +262,7 @@ public class DialogueManager : Singleton<DialogueManager>
         // 현재 대화를 불러오지 못했거나, 대화가 없다면 대화를 중지하고 return
         if (currentTalkData == null || currentTalkData.Count == 0)
         {
+            opacityPanel.SetActive(false);
             isTalking = false;
             character.isMoved = true;
             return;
@@ -278,6 +280,7 @@ public class DialogueManager : Singleton<DialogueManager>
         // 대화가 끝났을 경우 모두 초기화 한 후 return
         if (currentTalkData.Count == currentTalkIndex)
         {
+            opacityPanel.SetActive(false);
             currentTalkIndex = 0;
             isTalking = false;
             dialogueTMP.text = string.Empty;
@@ -289,6 +292,7 @@ public class DialogueManager : Singleton<DialogueManager>
         // 현재 대화가 시작점일 경우 대화 창 Active 변경 (비활성화 -> 활성화)
         if (currentTalkIndex == 0)
         {
+            opacityPanel.SetActive(true);
             ChangeActiveDialoguePanel();
         }
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Pool;
 
 public class Zed : SingletonChampion<Zed>
@@ -10,13 +11,11 @@ public class Zed : SingletonChampion<Zed>
     public Dictionary<int, ZedShadow> shadows = new();  // 그림자 스킬 목록
     private SkillSlotManager skillSlotMgr;              // 스킬 슬롯 매니저
     private List<KeyCode> keycodes;                     // 인풋 키 목록
-    private RaycastedCanvas[] raycastedCanvases;        // 마우스 입력 시 사용될 캔버스들
 
     protected override void Awake()
     {
         base.Awake();
         skillSlotMgr = SkillSlotManager.Instance;
-        raycastedCanvases = FindObjectsOfType<RaycastedCanvas>();
     }
 
     private void Start()
@@ -65,12 +64,9 @@ public class Zed : SingletonChampion<Zed>
         if (!Input.GetMouseButtonDown((int)mouseButton))    // 키 입력이 없을 경우 return
             return;
 
-        // 캔버스 배열 순회
-        foreach (var canvas in raycastedCanvases)
-        {
-            if (canvas.IsHit()) // 입력 시 마우스가 캔버스 위에 존재할 경우 return
-                return;
-        }
+        // 입력 시 마우스가 UI 위에 존재할 경우 return
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
 
         AutoAttack();
     }

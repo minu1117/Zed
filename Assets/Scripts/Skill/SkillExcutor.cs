@@ -159,6 +159,7 @@ public class SkillExcutor : MonoBehaviour
     // 오브젝트 풀의 Destroy 
     private void DestroySkill(Skill skill)
     {
+        skill.KillTween();
         Destroy(skill.gameObject);
     }
 

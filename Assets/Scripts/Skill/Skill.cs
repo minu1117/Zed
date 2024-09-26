@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -14,6 +15,7 @@ public class Skill : MonoBehaviour, IDamageable
 
     protected GameObject caster;                    // 시전자
     protected Effect effect;                        // 이펙트
+    protected Tweener tweener;
 
     public virtual void Awake()
     {
@@ -131,8 +133,8 @@ public class Skill : MonoBehaviour, IDamageable
         if (target == null || caster == null)                   // 타겟 또는 시전자가 없으면 return
             return;
 
-        // 시전자의 태그가 Shadow(그림자)일 경우 return (그림자 스킬은 맞지 않음)
-        if (caster.tag == EnumConverter.GetString(CharacterEnum.Shadow))
+        // 타겟의 태그가 Shadow(그림자)일 경우 return (그림자 스킬은 맞지 않음)
+        if (target.tag == EnumConverter.GetString(CharacterEnum.Shadow))
             return;
 
         // 시전자가 몬스터이고, 타겟도 몬스터일 시 return (몬스터 팀킬 방지)
@@ -155,12 +157,15 @@ public class Skill : MonoBehaviour, IDamageable
     protected virtual void Release()
     {
         if (pool == null)       // 오브젝트 풀이 설정되지 않았을 경우 return
+        {
+            tweener.Kill();
             return;
+        }
 
+        ReleaseEffect();        // 이펙트 반납
         StartDisappearSound();  // 시전 해제 사운드 재생
         caster = null;          // 시전자 초기화
         pool.Release(this);     // 스킬 반납
-        ReleaseEffect();        // 이펙트 반납
     }
 
     // 시전 해제 사운드 재생
@@ -171,5 +176,17 @@ public class Skill : MonoBehaviour, IDamageable
 
         int index = GetRandomIndex(0, data.disappearClips.Count);           // 랜덤 인덱스 (시전 해제 사운드 클립)
         SoundManager.Instance.PlayOneShot(data.disappearClips[index]);      // 사운드 매니저에서 시전 해제 사운드 재생
+    }
+
+    protected void RestartTween(Vector3 startPos, Vector3 endPos)
+    {
+        tweener.ChangeStartValue(startPos);
+        tweener.ChangeEndValue(endPos);
+        tweener.Restart();
+    }
+
+    public void KillTween()
+    {
+        tweener.Kill();
     }
 }

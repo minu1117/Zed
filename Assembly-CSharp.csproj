@@ -81,7 +81,6 @@
     <Compile Include="Assets\Scripts\UI\SkillDropZone.cs" />
     <Compile Include="Assets\Scripts\UI\StatusController.cs" />
     <Compile Include="Assets\Scripts\UI\SkillWindowController.cs" />
-    <Compile Include="Assets\Scripts\UI\RaycastedCanvas.cs" />
     <Compile Include="Assets\Scripts\Utility\Raycast.cs" />
     <Compile Include="Assets\TwoUncleVFX\Common\Script\ChangeFX.cs" />
     <Compile Include="Assets\Toby Fredson\The Toby Foliage Engine\(TTFE)_Demo\Scripts\FPSController.cs" />

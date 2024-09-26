@@ -50,6 +50,8 @@ public class MultipleShadow : Skill
         // character 오브젝트에서 Zed 컴포넌트(플레이어) 추출을 성공했을 경우
         if (character.TryGetComponent(out Zed zed))
         {
+            var lookPos = zed.transform.position;
+
             Vector3 startPosition = character.gameObject.transform.position;    // 시작 위치
             Vector3 startDirection = character.gameObject.transform.forward;    // 시작 방향
 
@@ -66,6 +68,7 @@ public class MultipleShadow : Skill
 
             foreach (var shadow in shadows) // 그림자 목록 순회
             {
+                shadow.SetLookAtPoint(lookPos);
                 shadow.SetActive(true);     // 그림자 활성화
                 shadow.Use(character);      // 그림자 스킬 사용
 

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Pool;
 using System.Collections.Generic;
 using System.Collections;
+using Unity.VisualScripting;
 
 public enum EnemySkill
 { 
@@ -19,6 +20,13 @@ public enum EnemySkill
 
 public class EnemyBase : ChampBase
 {
+    public enum State
+    {
+        Patrol,
+        Chase,
+        Attack,
+    }
+
     public float recognitionRange;          // 타겟 인식 범위
     public float attackRange;               // 일반 공격 범위
     public float skillRange;                // 스킬 사용 범위
@@ -31,11 +39,13 @@ public class EnemyBase : ChampBase
     protected GameObject player;
     private IObjectPool<EnemyBase> pool;
 
+    protected State state;
+
     protected List<string> skillKeys;
     private Coroutine loseTargetCoroutine;
     private Coroutine patrolCoroutine;
-    private bool isPatrol;
-    private bool isChase;
+    //private bool isPatrol;
+    //private bool isChase;
 
     private float addRunSpeed = 5f;
     private float runSpeed;
@@ -73,7 +83,7 @@ public class EnemyBase : ChampBase
         agent.speed = data.moveSpeed;
         runSpeed = data.moveSpeed + addRunSpeed;
         player = FindFirstObjectByType<Zed>().gameObject;   // 플레이어 오브젝트 미리 담아두기 (타겟 설정 시 사용)
-        isPatrol = true;                                    // 정찰 행동 활성화
+        //isPatrol = true;                                    // 정찰 행동 활성화
     }
 
     public virtual void Update()
@@ -88,10 +98,10 @@ public class EnemyBase : ChampBase
     }
 
     // 정찰 행동 여부 설정
-    public void SetIsPatrol(bool set)
-    {
-        isPatrol = set;
-    }
+    //public void SetIsPatrol(bool set)
+    //{
+    //    isPatrol = set;
+    //}
 
     // 타겟 설정
     public void SetTarget(GameObject targetObj)
@@ -114,6 +124,8 @@ public class EnemyBase : ChampBase
                 }
             }
 
+            useSkillCoroutine = null;
+            useAutoAttackCoroutine = null;
             target = null;          // 타겟 해제
             pool.Release(this);     // 오브젝트 풀에 본인 반납
         }
@@ -152,9 +164,6 @@ public class EnemyBase : ChampBase
         {
             if (useSkillCoroutine == null)
                 useSkillCoroutine = StartCoroutine(CoUsedSkill());
-
-            if (GetDistance(target.transform.position) <= attackRange)
-                UseAutoAttack();
 
             return;
         }
@@ -209,20 +218,30 @@ public class EnemyBase : ChampBase
     protected void UseRandomSkill()
     {
         if (target == null)
+        {
+            state = State.Patrol;
             return;
+        }
 
         if (GetDistance(target.transform.position) <= attackRange)
+        {
             UseAutoAttack();
+            state = State.Chase;
+            return;
+        }
 
         if (GetDistance(target.transform.position) <= skillRange)   // 타겟이 스킬 범위 안에 있을 경우
         {
             if (skillKeys == null || skillKeys.Count == 0)  // 스킬 슬롯이 비었을 경우 중지
             {
+                state = State.Chase;
                 return;
             }
 
             StartRandomSkill(); // 가지고 있는 스킬 중 랜덤으로 골라 스킬 실행
         }
+
+        state = State.Chase;
     }
 
     // 가지고 있는 스킬의 거리 return
@@ -252,12 +271,25 @@ public class EnemyBase : ChampBase
         if (target == null)
             return;
 
-        if (!isChase)
+        //if (!isChase)
+        //{
+        //    isChase = true;
+        //    agent.speed = runSpeed;
+        //}
+
+        var targetPos = target.transform.position;
+        agent.speed = runSpeed;
+        agent.SetDestination(targetPos);
+
+        if (GetDistance(targetPos) <= attackRange || GetDistance(targetPos) <= skillRange)
         {
-            isChase = true;
-            agent.speed = runSpeed;
+            state = State.Attack;
         }
-        agent.SetDestination(target.transform.position);
+
+        if (GetDistance(targetPos) > recognitionRange)
+        {
+            CheackLoseTarget();
+        }
     }
 
     // 타겟 위치 재확인, 타겟 해제 
@@ -266,13 +298,14 @@ public class EnemyBase : ChampBase
         if (target == null)
             return;
 
-        if (GetDistance(target.transform.position) <= recognitionRange) // 타겟이 인식 범위 밖에 있을 경우
-            return;
+        //if (GetDistance(target.transform.position) <= recognitionRange) // 타겟이 인식 범위 안에 있을 경우
+        //    return;
 
         agent.speed = data.moveSpeed;
         target = null;      // 타겟 해제
-        isChase = false;    // 추적 해제
-        isPatrol = true;    // 정찰 시작
+        //isChase = false;    // 추적 해제
+        //isPatrol = true;    // 정찰 시작
+        state = State.Patrol;
     }
 
     // 타겟 해제 코루틴
@@ -286,7 +319,7 @@ public class EnemyBase : ChampBase
     // 타겟 해제 
     protected void LoseTarget()
     {
-        if (target != null && GetDistance(target.transform.position) <= recognitionRange)   // 타겟 설정이 안 되어있고, 타겟이 인식 범위에 있을 경우
+        if (target != null && GetDistance(target.transform.position) <= recognitionRange)   // 타겟 설정이 되어있고, 타겟이 인식 범위에 있을 경우
         {
             if (loseTargetCoroutine != null)    // 타겟 해제 코루틴이 실행 중일 때
             {
@@ -294,7 +327,8 @@ public class EnemyBase : ChampBase
                 StopCoroutine(loseTargetCoroutine);
                 patrolCoroutine = null;
                 loseTargetCoroutine = null;
-                isPatrol = true;
+                //isPatrol = true;
+                state = State.Patrol;
             }
 
             return;
@@ -306,14 +340,16 @@ public class EnemyBase : ChampBase
     // 정찰 행동 
     protected void Patrol()
     {
-        if (!isPatrol)
-            return;
+        //if (!isPatrol)
+        //    return;
 
-        if (isChase)
-        {
-            isChase = false;
-            agent.speed = data.moveSpeed;
-        }
+        //if (isChase)
+        //{
+        //    isChase = false;
+        //    agent.speed = data.moveSpeed;
+        //}
+
+        agent.speed = data.moveSpeed;
 
         if (patrolCoroutine == null)                                    // 코루틴이 실행되지 않았을 경우
             patrolCoroutine = StartCoroutine(CoPatrol());               // 코루틴 시작
@@ -327,8 +363,14 @@ public class EnemyBase : ChampBase
             }
 
             target = player;    // 타겟 설정 (플레이어)
-            isPatrol = false;   // 정찰 중지
+            //isPatrol = false;   // 정찰 중지
+            state = State.Chase;
         }
+    }
+
+    public void SetPatrolState()
+    {
+        state = State.Patrol;
     }
 
     // 범위 내 랜덤 위치로 이동하는 코루틴

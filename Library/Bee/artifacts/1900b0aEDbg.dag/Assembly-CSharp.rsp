@@ -442,7 +442,6 @@
 "Assets/Scripts/Story/DialogueManager.cs"
 "Assets/Scripts/UI/DraggableSkill.cs"
 "Assets/Scripts/UI/DraggableSkillCreator.cs"
-"Assets/Scripts/UI/RaycastedCanvas.cs"
 "Assets/Scripts/UI/SkillButton.cs"
 "Assets/Scripts/UI/SkillDropZone.cs"
 "Assets/Scripts/UI/SkillSlotManager.cs"
