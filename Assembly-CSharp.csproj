@@ -81,6 +81,7 @@
     <Compile Include="Assets\Scripts\UI\SkillDropZone.cs" />
     <Compile Include="Assets\Scripts\UI\StatusController.cs" />
     <Compile Include="Assets\Scripts\UI\SkillWindowController.cs" />
+    <Compile Include="Assets\Scripts\Utility\ListManager.cs" />
     <Compile Include="Assets\Scripts\Utility\Raycast.cs" />
     <Compile Include="Assets\TwoUncleVFX\Common\Script\ChangeFX.cs" />
     <Compile Include="Assets\Toby Fredson\The Toby Foliage Engine\(TTFE)_Demo\Scripts\FPSController.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Assets\Scripts\AutoAttack\TargetingAutoAttack.cs" />
     <Compile Include="Assets\Scripts\Skill\BuffSkill.cs" />
     <Compile Include="Assets\Scripts\Utility\EnumConverter.cs" />
+    <Compile Include="Assets\Scripts\Utility\SkillButtonListManager.cs" />
     <Compile Include="Assets\Scripts\UI\UIRaycaster.cs" />
     <Compile Include="Assets\Scripts\UI\DraggableSkill.cs" />
     <Compile Include="Assets\Scripts\Utility\CSVReader.cs" />

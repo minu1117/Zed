@@ -508,7 +508,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cfbe2ebf7ab03144977e2aad9d22e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonDatas: []
+  buttonDatas:
+  - {fileID: 11400000, guid: 645d42af9014c124daef8ed27fe6ef71, type: 2}
   excutorPrefab: {fileID: 5880283225972054831, guid: 78c6415a02a1d2542ad5db4b20362697, type: 3}
 --- !u!114 &734329960825758658
 MonoBehaviour:
