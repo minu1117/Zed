@@ -8,24 +8,26 @@ public class EliteEnemy : EnemyBase
     {
         Normal,
         Combo,
+        Pattern,
     }
 
-    [SerializeField] private ListManagerSkillButtonData comboSkillLists;
-    private Dictionary<int, List<SkillButtonData>> comboDict;
+    [SerializeField] protected ListManagerSkillButtonData comboSkillLists;
+    protected Dictionary<int, List<SkillButtonData>> comboDict;
 
     private float addWaitTime = 1f;
-    private bool availableCombo;
+    protected bool availableCombo;
     private float waitComboTime = 5f;
     private WaitForSeconds waitComboTimer;
-    private Coroutine waitUseComboCoroutine;
+    protected Coroutine waitUseComboCoroutine;
     private Coroutine useComboCoroutine;
 
-    private AttackMode attackMode;
+    protected AttackMode attackMode;
 
     protected override void Awake()
     {
         base.Awake();
-        AddComboSkill();
+        comboDict = new();
+        AddComboSkill(comboSkillLists, comboDict);
     }
 
     public override void Init()
@@ -33,7 +35,7 @@ public class EliteEnemy : EnemyBase
         base.Init();
         waitComboTimer = new WaitForSeconds(waitComboTime);
         attackMode = AttackMode.Normal;
-        waitUseComboCoroutine = StartCoroutine(CoWaitUseCombo());
+        waitUseComboCoroutine = StartCoroutine(CoWaitUseCombo());   // 콤보 스킬 사용 대기
     }
 
     public override void Update()
@@ -44,6 +46,11 @@ public class EliteEnemy : EnemyBase
 
     protected override void StateBehavior()
     {
+        if (!availableCombo && waitUseComboCoroutine != null)
+            attackMode = AttackMode.Normal;
+        else
+            attackMode = AttackMode.Combo;
+
         switch (state)
         {
             case State.Patrol:
@@ -58,13 +65,8 @@ public class EliteEnemy : EnemyBase
         }
     }
 
-    private void AttackByMode()
+    protected virtual void AttackByMode()
     {
-        if (!availableCombo && waitUseComboCoroutine != null)
-            attackMode = AttackMode.Normal;
-        else
-            attackMode = AttackMode.Combo;
-
         switch (attackMode)
         {
             case AttackMode.Normal:
@@ -72,6 +74,8 @@ public class EliteEnemy : EnemyBase
                 break;
             case AttackMode.Combo:
                 UseComboSkill();
+                break;
+            default:
                 break;
         }
     }
@@ -122,14 +126,11 @@ public class EliteEnemy : EnemyBase
         waitUseComboCoroutine = null;
     }
 
-    private void AddComboSkill()
+    protected void AddComboSkill(ListManagerSkillButtonData skillList, Dictionary<int, List<SkillButtonData>> dict)
     {
-        var listOfList = comboSkillLists.GetListOfLists();
-        if (comboSkillLists == null || listOfList == null || listOfList.Count == 0)
+        var listOfList = skillList.GetListOfLists();
+        if (skillList == null || listOfList == null || listOfList.Count == 0)
             return;
-
-        comboDict = new();
-        var parent = slot.GetSlotObj();
 
         int comboName = 0;
         foreach (var list in listOfList)
@@ -138,12 +139,8 @@ public class EliteEnemy : EnemyBase
             if (items == null || items.Count == 0)
                 continue;
 
-            foreach (var skillData in items)
-            {
-                slot.CreateExcutor(parent, skillData);
-            }
-
-            comboDict.Add(comboName++, items);
+            CreateNewSkills(items);
+            dict.Add(comboName++, items);
         }
     }
 }

@@ -17,7 +17,7 @@ public enum EnemySkill
     Count,
 }
 
-public class EnemyBase : ChampBase
+public abstract class EnemyBase : ChampBase
 {
     protected enum State
     {
@@ -90,7 +90,7 @@ public class EnemyBase : ChampBase
         MoveAnimation();
     }
 
-    private void MoveAnimation()
+    protected void MoveAnimation()
     {
         float speed = agent.velocity.magnitude;
         animationController.SetFloat(moveAnimControllParam, speed);
@@ -264,17 +264,12 @@ public class EnemyBase : ChampBase
         isSkillUsed = true;
         useSkillCoroutine = null;
     }
+
     // 추적 행동 
     protected void Chase()
     {
         if (target == null)
             return;
-
-        //if (!isChase)
-        //{
-        //    isChase = true;
-        //    agent.speed = runSpeed;
-        //}
 
         var targetPos = target.transform.position;
         agent.speed = runSpeed;
@@ -287,7 +282,6 @@ public class EnemyBase : ChampBase
 
         if (GetDistance(targetPos) > recognitionRange)
         {
-            //CheackLoseTarget();
             LoseTarget();
         }
     }
@@ -302,10 +296,8 @@ public class EnemyBase : ChampBase
             return;
 
         agent.speed = data.moveSpeed;
-        target = null;      // 타겟 해제
-        //isChase = false;    // 추적 해제
-        //isPatrol = true;    // 정찰 시작
-        state = State.Patrol;
+        target = null;          // 타겟 해제
+        state = State.Patrol;   // 정찰 시작
     }
 
     // 타겟 해제 코루틴
@@ -343,15 +335,6 @@ public class EnemyBase : ChampBase
     // 정찰 행동 
     protected void Patrol()
     {
-        //if (!isPatrol)
-        //    return;
-
-        //if (isChase)
-        //{
-        //    isChase = false;
-        //    agent.speed = data.moveSpeed;
-        //}
-
         agent.speed = data.moveSpeed;
 
         if (patrolCoroutine == null)                                    // 코루틴이 실행되지 않았을 경우
@@ -365,27 +348,12 @@ public class EnemyBase : ChampBase
                 patrolCoroutine = null;
             }
 
-            target = player;    // 타겟 설정 (플레이어)
-            //isPatrol = false;   // 정찰 중지
-            state = State.Chase;
+            target = player;        // 타겟 설정 (플레이어)
+            state = State.Chase;    // 정찰 중지
         }
     }
 
-    protected virtual void StateBehavior()
-    {
-        switch (state)
-        {
-            case State.Patrol:
-                Patrol();
-                break;
-            case State.Chase:
-                Chase();
-                break;
-            case State.Attack:
-                EnemyAttack();
-                break;
-        }
-    }
+    protected abstract void StateBehavior();
 
     public void SetPatrolState()
     {
@@ -404,6 +372,15 @@ public class EnemyBase : ChampBase
         yield return new WaitForSeconds(1f);                            // 도착 후 1초 대기
 
         patrolCoroutine = null;
+    }
+
+    protected void CreateNewSkills(List<SkillButtonData> datas)
+    {
+        var parent = slot.GetSlotObj();
+        foreach (var skillData in datas)
+        {
+            slot.CreateExcutor(parent, skillData);
+        }
     }
 
     // 에디터 전용 코드

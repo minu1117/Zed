@@ -105,7 +105,7 @@ public class ChampBase : MonoBehaviour
     }
 
     // 데미지 받기
-    public void OnDamage(float damage)
+    public virtual void OnDamage(float damage)
     {
         if (data.currentHp - damage >= 0)   // 현재 HP - 받는 데미지가 0 이상일 경우
         {

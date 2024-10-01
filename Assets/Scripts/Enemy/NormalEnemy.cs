@@ -5,4 +5,20 @@ public class NormalEnemy : EnemyBase
         base.Update();
         StateBehavior();
     }
+
+    protected override void StateBehavior()
+    {
+        switch (state)
+        {
+            case State.Patrol:
+                Patrol();
+                break;
+            case State.Chase:
+                Chase();
+                break;
+            case State.Attack:
+                EnemyAttack();
+                break;
+        }
+    }
 }

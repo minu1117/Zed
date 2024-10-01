@@ -94,6 +94,7 @@
     <Compile Include="Assets\Scripts\Camera\CameraShakeController.cs" />
     <Compile Include="Assets\Scripts\Enemy\EliteEnemy.cs" />
     <Compile Include="Assets\Scripts\Skill\SkillExcutor.cs" />
+    <Compile Include="Assets\Scripts\Enemy\BossEnemy.cs" />
     <Compile Include="Assets\Scripts\Skill\ZedSkillButtonData.cs" />
     <Compile Include="Assets\Scripts\UI\DraggableSkillCreator.cs" />
     <Compile Include="Assets\Toby Fredson\The Toby Foliage Engine\(TTFE)_Demo\Scripts\ExtendedFlycam.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Assets\Scripts\Character\ChampBase.cs" />
     <Compile Include="Assets\Samples\Universal RP\14.0.8\URP Package Samples\RendererFeatures\KeepFrame\KeepFrameFeature.cs" />
     <Compile Include="Assets\Samples\Universal RP\14.0.8\URP Package Samples\SharedAssets\Scripts\FirstPersonController.cs" />
+    <Compile Include="Assets\Scripts\Skill\BossSkillButtonData.cs" />
     <Compile Include="Assets\Scripts\AutoAttack\NoneTargetAutoAttack.cs" />
     <Compile Include="Assets\Scripts\Skill\DashSkill.cs" />
     <Compile Include="Assets\Scripts\Story\DialogueManager.cs" />
